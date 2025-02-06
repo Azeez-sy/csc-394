@@ -67,7 +67,28 @@ class Note(models.Model):
     event = models.CharField(max_length = 100) #Write in Event
     courseName = models.CharField(max_length = 100) #Write in Course Name
     date = models.DateTimeField(default = now) #TimeStamp of Note Creation
+
+  
+    
+ #Roberto (Bobby Nieves)
+    
+class HourLog(models.Model):
+    logId = models.AutoField(primary_key=True)  
+    tutorId = models.ForeignKey(User, on_delete=models.CASCADE)  
+    totalHours = models.IntegerField()  
+    date = models.DateField()  
     
     def __str__(self):
-        return (self.noteId, self.contentType, self.content, self.authorId, self.authorId, self.authorName, self.event, self.courseName, self.date)
+        return (self.logId, self.tutorId, self.totalHours, self.date)
+
+class Schedule(models.Model):
+    scheduleId = models.AutoField(primary_key=True)  
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)  
+    assignees = models.ManyToManyField(User)  
+    start = models.DateTimeField()  
+    end = models.DateTimeField()    
+    location = models.CharField(max_length=100)  
+    hourLog = models.ForeignKey(HourLog, on_delete=models.CASCADE, null=True)  
     
+    def __str__(self):
+        return (self.scheduleId, self.event, self.start, self.end, self.location)
