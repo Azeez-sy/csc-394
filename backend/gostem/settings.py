@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     #'daphne',
     "django.contrib.staticfiles",
-    'rest_framework',
 
     'polls', #someone forgot to add a commma here - Bobby
+
+    'HourLog',
+    'rest_framework',
 
     #'channels',
     'notes',

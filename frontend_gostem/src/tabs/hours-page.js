@@ -1,5 +1,6 @@
-import "./styles/hours-page.css"
-import React, { useState } from 'react';
+import "./styles/hours-page.css";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const TimeCard = () => {
     const [campus, setCampus] = useState("");
@@ -10,16 +11,44 @@ const TimeCard = () => {
     const [comments, setComments] = useState("");
     const [entries, setEntries] = useState([]);
 
-    const handleAddEntry = () => {
-        const newEntry = { campus, tutorName, date, startTime, endTime, comments };
-        setEntries([...entries, newEntry]);
+    useEffect(() => {
+        fetchEntries();
+    }, []);
 
-        setCampus("");
-        setTutorName("");
-        setDate("");
-        setStartTime("");
-        setEndTime("");
-        setComments("");
+    const fetchEntries = async () => {
+        try {
+            const response = await axios.get('/api/entries/');
+            setEntries(response.data);
+        } catch (error) {
+            console.error('Error fetching entries:', error);
+        }
+    };
+
+    const handleAddEntry = async () => {
+        try {
+            const response = await axios.post('/api/entries/', {
+                campus,
+                tutorName,
+                date,
+                startTime,
+                endTime,
+                comments,
+            });
+            setEntries([...entries, response.data]);
+            setCampus("");
+            setTutorName("");
+            setDate("");
+            setStartTime("");
+            setEndTime("");
+            setComments("");
+        } catch (error) {
+            if (error.response && error.response.data) {
+                // Handle validation errors
+                console.error('Validation errors:', error.response.data);
+            } else {
+                console.error('Error adding entry:', error);
+            }
+        }
     };
 
     return (
@@ -132,4 +161,3 @@ const TimeCard = () => {
 };
 
 export default TimeCard;
-

@@ -23,7 +23,7 @@ urlpatterns = [
 
     path("api/polls/", include("polls.urls")),  # API route for polls
     path("api/notes/", include("notes.urls")),  # API route for notes
-    path("api/hours/", include("HourLog.urls")),  # API route for hours -Bobby
+    path("api/hours/", include("HourLog.urls")),  # API route for hours -Bobbya
 
     path("", include("polls.urls")),  # root URL still mapped to polls
 ]

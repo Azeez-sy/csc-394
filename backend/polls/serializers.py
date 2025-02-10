@@ -1,12 +1,19 @@
 from rest_framework import serializers
-from .models import User, Tutor, Admin, Event, Assignees, Message, Note
+from django.contrib.auth.models import User
+from .models import Tutor, Admin, Event, Assignees, Message, Note
+from HourLog.models import Entry
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'  # Include all fields or specify like ['first_name', 'last_name']
+        fields = '__all__'
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
+        fields = '__all__'
+
+class EntrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Entry
         fields = '__all__'
