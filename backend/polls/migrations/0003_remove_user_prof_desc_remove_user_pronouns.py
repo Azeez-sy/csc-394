@@ -5,7 +5,7 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("polls", "0002_rename_tutor_admin_admin_message_note"),
+        ("polls", "0002_initial"),
     ]
 
     operations = [
