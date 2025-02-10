@@ -23,12 +23,12 @@ const TimeCard = () => {
     };
 
     return (
-        <div className="body">
-            <div className="container">
-                <div className="header">
-                    <h2>Time Card: Tutor Hours</h2>
-                </div>
+        <div className="hoursPageBody">
+            <div className="header">
+                <h2>Time Card: Tutor Hours</h2>
+            </div>
 
+            <div className="container">
                 <div className="form-section">
                     <h3>New Entry</h3>
 
@@ -118,14 +118,23 @@ const TimeCard = () => {
 
                 <div className="recent-entries">
                     <h3>Recent Entries</h3>
-                    <ul>
+                    <div className="entries-container">
                         {entries.map((entry, index) => (
-                            <li key={index} className="entry-item">
-                                <strong>Campus:</strong> {entry.campus} | <strong>Tutor Name:</strong> {entry.tutorName} | <strong>Date:</strong> {entry.date} | <strong>Time:</strong> {entry.startTime} - {entry.endTime} | <strong>Comments:</strong> {entry.comments}
-                            </li>
+                            <div key={index} className="entry-card">
+                                <div className="entry-header">
+                                    <strong>Campus:</strong> {entry.campus}
+                                </div>
+                                <div className="entry-details">
+                                    <p><strong>Tutor Name:</strong> {entry.tutorName}</p>
+                                    <p><strong>Date:</strong> {entry.date}</p>
+                                    <p><strong>Time:</strong> {entry.startTime} - {entry.endTime}</p>
+                                    <p><strong>Comments:</strong> {entry.comments}</p>
+                                </div>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
+
             </div>
         </div>
     );
