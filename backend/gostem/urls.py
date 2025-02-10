@@ -17,15 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-
-
 urlpatterns = [
+    path("polls/", include("polls.urls")),  # Polls app URLs
+    path("admin/", admin.site.urls),  # Admin panel
 
-    path("polls/", include("polls.urls")),
-    path("admin/", admin.site.urls),
-    path('api/', include('polls.urls')),
-    path('admin/', admin.site.urls),
-    path('', include('polls.urls')),
-    path('api/', include('notes.urls')),
+    path("api/polls/", include("polls.urls")),  # API route for polls
+    path("api/notes/", include("notes.urls")),  # API route for notes
+    path("api/hours/", include("HourLog.urls")),  # API route for hours -Bobby
 
+    path("", include("polls.urls")),  # root URL still mapped to polls
 ]
+
+
+#fixed an issue where there were two admins was giving me issues when i ran the run server command - Bobby

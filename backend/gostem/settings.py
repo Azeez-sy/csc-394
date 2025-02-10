@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',
 
-    'polls'
+    'polls', #someone forgot to add a commma here - Bobby
 
     #'channels',
     'notes',
