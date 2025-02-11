@@ -3,6 +3,9 @@ from django.utils.timezone import now
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 
+from django.contrib.auth.models import User
+from django.db import models
+
 
 
 
@@ -91,7 +94,8 @@ class Note(models.Model):
     noteId = models.AutoField(primary_key = True) #Auto Incrementing Note ID
     contentType = models.CharField(max_length = 50)
     content = models.TextField() #Text or a file path
-    authorId = models.ForeignKey(User, on_delete=models.CASCADE) #Links to User Model
+    #authorId = models.ForeignKey(User, on_delete=models.CASCADE) #Links to User Model
+    authorId = models.ForeignKey(User, on_delete=models.CASCADE, related_name='polls_notes')
     authorName = models.CharField(max_length = 100) #Write in Author name
     event = models.CharField(max_length = 100) #Write in Event
     courseName = models.CharField(max_length = 100) #Write in Course Name

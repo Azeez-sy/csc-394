@@ -16,7 +16,8 @@ class Note(models.Model):
     created_at  = models.DateTimeField(auto_now_add=True)
     contentType = models.CharField(max_length = 50, default=None)
     # content     = models.TextField() #Text or a file path
-    authorId    = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_author) #Links to User Model
+    #authorId    = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_author) #Links to User Model
+    authorId = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes_notes')
     authorName  = models.CharField(max_length = 100, default=None) #Write in Author name
     event       = models.CharField(max_length = 100, default=None) #Write in Event
     programName = models.ForeignKey(Program, on_delete=models.CASCADE) #Write in Course Name

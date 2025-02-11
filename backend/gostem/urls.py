@@ -28,4 +28,7 @@ urlpatterns = [
     path('', include('polls.urls')),
     path('api/', include('notes.urls')),
 
+    path('polls/', include('polls.urls')),
+    path('notes/', include('notes.urls')),
+
 ]
