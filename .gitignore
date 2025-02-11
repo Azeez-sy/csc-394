@@ -8,3 +8,5 @@ backend/venv/
 # Ignore Python cache
 *.pyc
 __pycache__/
+
+node_modules/
