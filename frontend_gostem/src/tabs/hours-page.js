@@ -1,6 +1,5 @@
-import "./styles/hours-page.css";
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import "./styles/hours-page.css"
+import React, { useState } from 'react';
 
 const TimeCard = () => {
     const [campus, setCampus] = useState("");
@@ -11,53 +10,25 @@ const TimeCard = () => {
     const [comments, setComments] = useState("");
     const [entries, setEntries] = useState([]);
 
-    useEffect(() => {
-        fetchEntries();
-    }, []);
+    const handleAddEntry = () => {
+        const newEntry = { campus, tutorName, date, startTime, endTime, comments };
+        setEntries([...entries, newEntry]);
 
-    const fetchEntries = async () => {
-        try {
-            const response = await axios.get('/api/entries/');
-            setEntries(response.data);
-        } catch (error) {
-            console.error('Error fetching entries:', error);
-        }
-    };
-
-    const handleAddEntry = async () => {
-        try {
-            const response = await axios.post('/api/entries/', {
-                campus,
-                tutorName,
-                date,
-                startTime,
-                endTime,
-                comments,
-            });
-            setEntries([...entries, response.data]);
-            setCampus("");
-            setTutorName("");
-            setDate("");
-            setStartTime("");
-            setEndTime("");
-            setComments("");
-        } catch (error) {
-            if (error.response && error.response.data) {
-                // Handle validation errors
-                console.error('Validation errors:', error.response.data);
-            } else {
-                console.error('Error adding entry:', error);
-            }
-        }
+        setCampus("");
+        setTutorName("");
+        setDate("");
+        setStartTime("");
+        setEndTime("");
+        setComments("");
     };
 
     return (
-        <div className="body">
-            <div className="container">
-                <div className="header">
-                    <h2>Time Card: Tutor Hours</h2>
-                </div>
+        <div className="hoursPageBody">
+            <div className="header">
+                <h2>Time Card: Tutor Hours</h2>
+            </div>
 
+            <div className="container">
                 <div className="form-section">
                     <h3>New Entry</h3>
 
@@ -147,14 +118,23 @@ const TimeCard = () => {
 
                 <div className="recent-entries">
                     <h3>Recent Entries</h3>
-                    <ul>
+                    <div className="entries-container">
                         {entries.map((entry, index) => (
-                            <li key={index} className="entry-item">
-                                <strong>Campus:</strong> {entry.campus} | <strong>Tutor Name:</strong> {entry.tutorName} | <strong>Date:</strong> {entry.date} | <strong>Time:</strong> {entry.startTime} - {entry.endTime} | <strong>Comments:</strong> {entry.comments}
-                            </li>
+                            <div key={index} className="entry-card">
+                                <div className="entry-header">
+                                    <strong>Campus:</strong> {entry.campus}
+                                </div>
+                                <div className="entry-details">
+                                    <p><strong>Tutor Name:</strong> {entry.tutorName}</p>
+                                    <p><strong>Date:</strong> {entry.date}</p>
+                                    <p><strong>Time:</strong> {entry.startTime} - {entry.endTime}</p>
+                                    <p><strong>Comments:</strong> {entry.comments}</p>
+                                </div>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
+
             </div>
         </div>
     );
