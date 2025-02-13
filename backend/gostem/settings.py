@@ -37,13 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    #'daphne',
     "django.contrib.staticfiles",
     'rest_framework',
-
-    'polls',
-
-    #'channels',
+    'polls'
     'notes',
 
 
@@ -100,9 +96,9 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': 'gostem_db',  # Your PostgreSQL database name
-#         'USER': 'gostem_user',  # Your PostgreSQL username
-#         'PASSWORD': 'gostem',  # Your PostgreSQL password
-#         'HOST': 'localhost',  # Change to your DB server if remote
+#         'USER': 'gostem_admin',  # Your PostgreSQL username
+#         'PASSWORD': 'gostem_pass',  # Your PostgreSQL password
+#         'HOST': 'gostem-db.choq48q2ai4n.us-west-2.rds.amazonaws.com',  # RDS Endpoint
 #         'PORT': '5432',  # Default PostgreSQL port
 #     }
 # }
