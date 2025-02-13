@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'polls.apps.PollsConfig',
     'rest_framework',
     'notes',
+    'schedule',
 ]
 
 MIDDLEWARE = [

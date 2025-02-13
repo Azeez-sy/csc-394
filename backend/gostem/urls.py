@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('polls.urls')),
     path('api/', include('notes.urls')),
+    path('schedule/', include('schedule.urls'))
 ]
