@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/', include('notes.urls')),
     path('wel/', ReactView.as_view(), name="something"),
     path('notes/', include('notes.urls')),
+    path('schedule/', include('schedule.urls'))
 ]
