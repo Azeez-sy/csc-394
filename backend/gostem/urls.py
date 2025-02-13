@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include('polls.urls')),
     path('api/', include('notes.urls')),
 
+    path('wel/', ReactView.as_view(), name="something")
     path('polls/', include('polls.urls')),
     path('notes/', include('notes.urls')),
 
