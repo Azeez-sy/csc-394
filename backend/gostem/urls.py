@@ -30,4 +30,6 @@ urlpatterns = [
 
     path('notes/', include('notes.urls')),
 
+    path("accounts/", include("allauth.urls")),
+    path("", include("user.urls")),
 ]
