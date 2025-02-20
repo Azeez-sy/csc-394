@@ -1,32 +1,29 @@
 from django.db import models
 
 # Create your models here.
-#from django.contrib.auth.models import User
-from polls.models import Program, User, Event
-    
 
-def get_default_author(): # for stupid errors that ask for default.
-    return User.objects.get(id=1)
+class File(models.Model):
+    # note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='files')
+    file = models.FileField(upload_to='notes/note_files/')
+
+    def __str__(self):
+        return self.file.name
 
 class Note(models.Model):
-    noteId      = models.AutoField(primary_key = True) #Auto Incrementing Note ID
-    #file        = models.FileField(upload_to='uploads/')
-    title       = models.CharField(max_length=100, default=None)
-    description = models.TextField(max_length=500, default=None)
+    title       = models.CharField(max_length=50)
+    description = models.TextField(max_length=250)
+    authorName  = models.CharField(max_length = 100, default="Anonymous") 
     created_at  = models.DateTimeField(auto_now_add=True)
-    contentType = models.CharField(max_length = 50, default=None)
-    # content     = models.TextField() #Text or a file path
-    authorId    = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_author) #Links to User Model
-    authorName  = models.CharField(max_length = 100, default=None) #Write in Author name
-    event       = models.CharField(max_length = 100, default=None) #Write in Event
-    programName = models.ForeignKey(Program, on_delete=models.CASCADE) #Write in Course Name
-    # date        = models.DateTimeField(default = now) #TimeStamp of Note Creation
-    """include: models.FileType() attribute, seperate from description (text)"""
-    """filter based on program name"""
-    """coursename == programname"""
+    updated_at  = models.DateTimeField(auto_now=True, blank=True)
+    files       = models.ManyToManyField('File', blank=True) 
+
+    """filter based on program name TODO"""
+    # add programId back for filtering when model is set up in schedule - sky
+    # programId = models.ForeignKey(Program, on_delete=models.CASCADE, related_name='programNote', null=True) # set to null since there are no programs rn - sky
+    """Every note should include a users name (by: someone) TODO"""
+    # add authorId back when user authentication has been fully implemented - sky
+    # authorId    = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authorNote', null=True) # null set true for now, since there are no users currently -sky
+
     def __str__(self):
-        return f"{self.noteId}, {self.contentType}, {self.content}, {self.authorId}, {self.authorName}, {self.event}, {self.programName}, {self.date}"
+        return f" {self.title}, {self.description}, {self.authorName}, {self.created_at}, {self.updated_at}"
     
-class File(models.Model):
-    note = models.ForeignKey(Note, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='uploads/')

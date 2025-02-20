@@ -1,11 +1,16 @@
 # notes/urls.py
-from django.http import HttpResponse
-from django.urls import path
-from .views import NotesView #, CreateNote  # or NoteViewSet
-from notes import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import NoteViewSet
+
+router = DefaultRouter()
+router.register(r'notes', NoteViewSet)
+
 
 urlpatterns = [
-    path('notes/', NotesView.as_view(), name='notesList'),
-    path('notes/create/', views.create_note, name='createNote'),
-    #path('notes/create/', CreateNote.as_view(), name='createNote'),
+    path('', include(router.urls)),
+    #path('', views.list_all_notes, name='notes'),
+    #path('create/', views.create_note, name='create_note'),
+    #path('note/<int:pk>/', views.list_all_notes, name='note_detail'), # individual view of a users note, will create template if needed (TODO) -sky
+    #path('program/<str:program_name>/', views.list_all_notes, name='program_filter'),  # allow users to filter by program - sky
 ]

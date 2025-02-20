@@ -26,6 +26,5 @@ urlpatterns = [
     path('api/', include('polls.urls')),
     path('admin/', admin.site.urls),
     path('', include('polls.urls')),
-    path('api/', include('notes.urls')),
-
+    path('notes/', include('notes.urls')),
 ]
