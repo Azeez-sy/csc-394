@@ -1,0 +1,67 @@
+.notes-editor-container {
+  flex:1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+form.create-note {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+  
+form.create-note input {
+  font-size: 1.9em;
+  font-weight: 600;
+}
+
+form.create-note textarea {
+  font-size: 1em;
+  margin-top: 5px;
+  border-top: 1px solid #000000;
+}
+
+form.create-note input,
+form.create-note textarea {
+  font-family: 'Montserrat', sans-serif;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 2px;
+}
+
+.modify-notes-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px;
+  margin-left: auto;
+}
+
+.modify-notes-btns button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modify-notes-btns button:hover {
+  background-color: #216661;
+  color: white;
+  box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.cancel-note-btn {
+  background-color: #e5e7eb;
+  color: #333;
+}
+
+.add-note-btn {
+  background-color: #133d3b;
+  color: #fff;
+}

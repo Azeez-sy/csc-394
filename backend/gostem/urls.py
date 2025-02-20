@@ -21,14 +21,15 @@ from django.urls import path, include
 
 urlpatterns = [
 
-    path("polls/", include("polls.urls")),
+    path("chats/", include("chats.urls")),
     path("admin/", admin.site.urls),
-    path('api/', include('polls.urls')),
+    path('api/', include('chats.urls')),
     path('admin/', admin.site.urls),
-    path('', include('polls.urls')),
+    path('', include('chats.urls')),
     path('api/', include('notes.urls')),
 
-    path('polls/', include('polls.urls')),
     path('notes/', include('notes.urls')),
 
+    path("accounts/", include("allauth.urls")),
+    path("", include("user.urls")),
 ]

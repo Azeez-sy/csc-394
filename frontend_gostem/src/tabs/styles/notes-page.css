@@ -1,9 +1,10 @@
-.notes-page-container{
+.notes-page-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh; 
   width: 100%;
 }
-.notes-body{ 
+
+.notes-body { 
   flex: 1;  
   background-color: #afdcd5;
   display: flex;
@@ -13,67 +14,27 @@
   font-size: calc(10px + 2vmin);
   color: #afdcd5;
   padding: 20px;
+  max-height: 100vh;
+}
 
-  }
-
-.notes-wrapper{
+.notes-wrapper {
   display: flex;
   flex-direction: column;
   min-width: 80%;
   background-color: white;
   border-radius: 8px;
+  height: 95vh;
 }
 
-.notes-header{
+.notes-header {
   display: flex;
   align-items: center;
   height: clamp(4rem, 5dvh, 1rem);
-
   justify-content: left;
   padding: 5px 5px 5px 15px;
-  
   border-radius: 8px 8px 0 0;
   background-color: #133d3b;
   color: white;
   font-size: clamp(.9rem, 2vw, 1.1rem);
-}
-
-.notes-editor-container{
-  display: flex;
-  height: 80dvh;
-
-  padding: 15px;
-
-  border-radius: 0 0 8px 8px;
-  background-color: white;
-
-  justify-content: left;
-  align-items: flex-start;
-}
-
-form.create-note {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-form.create-note input {
-  font-size: 1.2em;
-  font-weight: 600;
-
-}
-
-form.create-note textarea {
-  font-size: 0.7em;
-  margin-top: 5px;
-  border-top: 1px solid #000000;
-}
-
-form.create-note input,
-form.create-note textarea {
-  font-family: 'Montserrat', sans-serif;
-  border:none;
-  outline: none;
-  resize:none;
-  padding: 5px;
+  flex-shrink: 0; 
 }
