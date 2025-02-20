@@ -1,6 +1,9 @@
 from django.db import models
 
 # Create your models here.
+#from django.contrib.auth.models import User
+from gostem.models import Program, User
+    
 
 class File(models.Model):
     # note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='files')

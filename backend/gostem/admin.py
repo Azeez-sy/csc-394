@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import User, Tutor, Admin, Event, Assignees, Message, Note
+from gostem.models import User, Tutor, Admin, Event, Assignees, Note
+from chats.models import Message
 
 # Register models
 admin.site.register(User)

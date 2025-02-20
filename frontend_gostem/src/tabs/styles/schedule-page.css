@@ -1,33 +1,111 @@
-.body{ 
-    background-color: #afdcd5;
-    min-height: 100%;
-    min-width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: #133d3b ;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-  }
-  .schedule-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+.schedule-page-container {
+  display: flex;
+  height: 100vh; 
+  width: 100%;
+  overflow: hidden; 
+}
+
+.schedule-content-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%; 
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.calendar-controls {
+  background-color: #afddd5;
+  height: 60px;
+  width: 100%;
+  min-width: 0;
+  word-wrap: break-word;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+}
+
+.calendar-controls--date {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  min-width: 200px;
+  font-size: clamp(16px, 5vw, 25px);
+}
+
+.calender-controls--navigation {
+  display: flex;
+  gap: 5px;
+  min-width: auto;
+}
+
+.calender-controls--navigation .cc-btn:hover  {
+  background-color: #0000001a;
+}
+
+.calendar-controls--view {
+  display: flex;
+  gap: 5px;
+  min-width: auto;
+  justify-content: flex-end;
+}
+
+.calendar-controls--view .cc-btn:hover {
+  background-color: #0000001a;
+}
+
+.cc-btn.is-active {
+  background-color: #133d3b;
+  color: white;
+}
+
+.cc-btn {
+  padding: 6px;
+  font-size: clamp(12px, 2vw, 0.875rem);
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 5px;
+  border-width: 0;
+  
+}
+
+.schedule-header {
+  color: #afddd5;
+  text-align: center;
+}
+
+.calendar-view {
+  width: 100%;
+  flex: 1;
+  background-color: white;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.calendar-day {
+  flex: 1;
+  min-height: 0;
+}
+
+@media screen and (max-width: 540px) {
+  .calendar-controls {
+    height: auto;
+    padding: 10px;
+    gap: 10px;
   }
   
-  .schedule-header {
-    color: #133d3b;
-    padding: 20px;
+  .calendar-controls--date {
     width: 100%;
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
+    order: -1;
   }
+  
+  .calender-controls--navigation,
+  .calendar-controls--view {
+    width: 100%;
+    justify-content: center;
+  }
+}

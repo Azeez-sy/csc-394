@@ -1,9 +1,10 @@
 import React from "react";
 import "./styles/profile-page.css"
+import Sidebar from './components/sidebar';
 
-const ProfilePage = () => {
+const ProfileContent = () => {
   return (
-    <div className="body">
+    <div className="profile-body">
       <header className="profile-header">
         <h1>Profile</h1>
       </header>
@@ -11,4 +12,12 @@ const ProfilePage = () => {
   );
 };
 
+const ProfilePage = () => {
+  return (
+  <div className="chat-page-container">
+      <Sidebar />
+      <ProfileContent/>
+  </div>
+  );
+};
 export default ProfilePage;

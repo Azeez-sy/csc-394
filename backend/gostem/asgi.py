@@ -12,7 +12,7 @@ import os
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter , URLRouter
 from django.core.asgi import get_asgi_application
-import polls.routing 
+import chats.routing 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gostem.settings")
 
@@ -22,7 +22,7 @@ application = ProtocolTypeRouter({
     "http": django_asgi_app, # Handles regular HTTP request
     "websocket" : AuthMiddlewareStack(
         URLRouter(
-            polls.routing.websocket_urlpatterns 
+            chats.routing.websocket_urlpatterns 
         )
     )
 })
