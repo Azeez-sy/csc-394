@@ -1,59 +1,66 @@
 .sidebar-container {
-    width: 100px;
-    min-height: 100vh;
-    background-color: #133d3b; /* Dark teal */
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  width: 100px;
+  min-height: 100vh;
+  background-color: #133d3b;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+  .sidebar-item {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.sidebar-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-image-button {
+  background: none;
+  border: none;
+  color: inherit;
+  text-align: center;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sidebar-image-button img {
+  width: 32px; 
+  height: 32px;
+}
+.sidebar-button-text {
+  color: white; 
+  font-style: normal;
+  text-decoration: none;
+  margin-top: 0.25rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.sidebar-container a {
+  text-decoration: none;
+}
+
+@media (max-width: 767px) {
+
+  .sidebar-container {
+    display: none;
   }
-  .sidebar-top {
-    display: flex;
-    flex-direction: column;
-    margin-top: 1rem;
-  }
-  
-  .sidebar-bottom {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-  }
-    .sidebar-item {
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  .sidebar-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .sidebar-image-button {
-    background: none;
-    border: none;
-    color: inherit;
-    text-align: center;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .sidebar-image-button img {
-    width: 32px; 
-    height: 32px;
-  }
-  .sidebar-button-text {
-    color: white; 
-    font-style: normal;
-    text-decoration: none;
-    margin-top: 0.25rem;
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-  .sidebar-container a {
-    text-decoration: none;
-  }
-  
+
+}

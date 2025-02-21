@@ -1,0 +1,26 @@
+.dropzone-section {
+    margin: 15px 0;
+  }
+
+.dropzone-container {
+    border: 1px dashed #133d3b; 
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f8f8f8;
+}
+
+
+.dropzone-container:hover {
+    border-color: #133d3b;
+    background-color: #f0f0f0;
+}
+
+
+.dropzone-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: black;
+}

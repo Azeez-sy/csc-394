@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 #from django.contrib.auth.models import User
-from polls.models import Program, User, Event
+from gostem.models import Program, User, Event
     
 
 def get_default_author(): # for stupid errors that ask for default.

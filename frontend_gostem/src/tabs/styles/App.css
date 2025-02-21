@@ -42,6 +42,7 @@
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.4);
   font-family: 'Montserrat', sans-serif;
 }
+
 .Login-button:hover{ 
   background-color: #216661;
   box-shadow: 4px 6px 10px rgba(0, 0, 0, 0.6);
@@ -60,4 +61,34 @@
 }
 
 
+@media (max-width: 767px) {
 
+  .App-logo {
+    height: 200px;
+    pointer-events: none;
+    animation: dropDown 1s ease-out;
+  }
+
+  .Login-button{ 
+    background-color: #133d3b ;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 18px;
+    color:  #f3eddf;
+    padding: 17px;
+    margin-left: 0;
+    text-align: center;
+    border: none;
+    width:120px;
+    transition: none;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.4);
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 25px;
+  }
+
+  .Login-button:hover{ 
+    box-shadow: 4px 6px 10px rgba(0, 0, 0, 0.6);
+    transform: none;
+  }
+
+}

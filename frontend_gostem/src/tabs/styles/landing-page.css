@@ -37,7 +37,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin: 40px 0;
+  margin: 40px 0px;
 }
 
 .image-button {
@@ -45,10 +45,10 @@
   border-radius: 25px;
   font-weight: bold;
   font-size: 25px;
-  font-family: monospace;
+  /* font-family: monospace; */
   color:  #f3eddf;
   padding: 20px;
-  margin-left: 10px;
+  /* margin-left: 10px; */
   text-align: center;
   cursor: pointer;
   border: none;
@@ -57,7 +57,6 @@
   font-family: 'Montserrat', sans-serif;
   width: 250px;
   height: 200px;
-
 }
 
 .image-button img {
@@ -66,7 +65,9 @@
   height: 60%;
   border-radius: 10px;
   transition: transform 0.3s ease-in-out;
+  margin-bottom: 10px;
 }
+
 .button-text{
   margin-top: 5px;
   font-weight: bold;
@@ -101,8 +102,82 @@
   box-shadow: 4px 6px 10px rgba(0, 0, 0, 0.6);
   transform: scale(1.05);
 }
+
 .image-button:hover {
   background-color: #216661;
   box-shadow: 4px 6px 10px rgba(0, 0, 0, 0.6);
   transform: scale(1.05);
+}
+
+
+@media (max-width: 767px) {
+
+  /* hover rules */
+
+  .image-button:hover img {
+    transform: none;
+  }
+
+  .bottom-button:hover {
+    background-color: #133d3b;
+    box-shadow: 4px 6px 10px rgba(0, 0, 0, 0.3);
+    transform: none;
+  }
+  
+  .image-button:hover {
+    background-color: #133d3b;
+    box-shadow: 4px 6px 10px rgba(0, 0, 0, 0.3);
+    transform: none;
+  }
+
+  .button-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+  }
+
+  .image-button {
+    background-color: #133d3b ;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: .7em;
+    color:  #f3eddf;
+    padding: 20px;
+    width: 130px;
+    height: 120px;
+  }
+
+  .image-button img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 0px;
+  }
+
+  .button-text {
+    display: none;
+  }
+
+  .bottom-button {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+
+  .bottom-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 10px;
+    /* margin-left: 10px; */
+    gap: 20px;
+  }
+
+  .landing-header {
+    color: #133d3b ;
+    text-align: center;
+    margin: 0 auto;
+    min-width: 100%;
+    display: none;
+  }
+
 }

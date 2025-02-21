@@ -76,26 +76,13 @@ class Assignees(models.Model):
     # readable
     def __str__(self):
         return (f"self.event, self.assignee")
-    
-class Message(models.Model):
-    message_id = models.AutoField(primary_key = True) #Auto Incrementing Message ID
-    content = models.TextField() #Message Content
-    timestamp = models.DateTimeField(default = now) #Timestamp of Message
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name ='sent_messages') # Sender reference
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages') # Receiver reference
-    # Comments: 
-    """ include """
-
-    def __str__(self):
-        return (f"self.message_id, self.content, self.timestamp, self.sender, self.receiver")
-
 
 class Note(models.Model):
     noteId = models.AutoField(primary_key = True) #Auto Incrementing Note ID
     contentType = models.CharField(max_length = 50)
     content = models.TextField() #Text or a file path
     #authorId = models.ForeignKey(User, on_delete=models.CASCADE) #Links to User Model
-    authorId = models.ForeignKey(User, on_delete=models.CASCADE, related_name='polls_notes')
+    authorId = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chats_notes')
     authorName = models.CharField(max_length = 100) #Write in Author name
     event = models.CharField(max_length = 100) #Write in Event
     courseName = models.CharField(max_length = 100) #Write in Course Name

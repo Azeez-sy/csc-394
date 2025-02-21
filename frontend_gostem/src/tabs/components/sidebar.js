@@ -4,14 +4,14 @@ import '../styles/sidebar.css';
 import clock from '../components/icons/clock.png';
 import chat from '../components/icons/chat.png';
 import gear from '../components/icons/gear.png';
-import home from '../components/icons/home.png';
+import home from '../components/icons/logo.png';
 import logout from '../components/icons/logout.png';
 import notes from '../components/icons/notes.png';
 import schedule from '../components/icons/schedule.png';
 import user from '../components/icons/user.png';
 
 
-import { Link } from 'react-router-dom/cjs/react-router-dom.min';
+import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
@@ -90,4 +90,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
