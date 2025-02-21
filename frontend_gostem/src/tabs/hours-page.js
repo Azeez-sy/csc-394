@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './styles/hours-page.css';
 import Sidebar from './components/sidebar';
-import BurgerMenu from './components/burger';  
+import BurgerMenu from './components/burger';
+
+// Configure axios defaults
+axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 const TimeCard = () => {
     const [campus, setCampus] = useState("");
@@ -11,18 +16,68 @@ const TimeCard = () => {
     const [endTime, setEndTime] = useState("");
     const [comments, setComments] = useState("");
     const [entries, setEntries] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const handleAddEntry = () => {
-        const newEntry = { campus, tutorName, date, startTime, endTime, comments };
-        setEntries([...entries, newEntry]);
+    // Fetch entries when component mounts
+    useEffect(() => {
+        fetchEntries();
+    }, []);
 
-        // Reset the form fields
-        setCampus("");
-        setTutorName("");
-        setDate("");
-        setStartTime("");
-        setEndTime("");
-        setComments("");
+    const fetchEntries = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('/hourlog/');
+            setEntries(response.data);
+            setError(null);
+        } catch (error) {
+            console.error('Error fetching entries:', error);
+            setError('Failed to load entries');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleAddEntry = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const newEntry = {
+                campus: campus,
+                date: date,
+                start_time: startTime,
+                end_time: endTime,
+                comments: comments,
+                tutor: 1  // For testing, using ID 1
+            };
+
+            console.log('Sending data:', newEntry); // Debug log
+
+            const response = await axios.post('/hourlog/', newEntry);
+            console.log('Response:', response.data);
+            
+            // Refresh the entries list
+            await fetchEntries();
+
+            // Reset form
+            setCampus("");
+            setTutorName("");
+            setDate("");
+            setStartTime("");
+            setEndTime("");
+            setComments("");
+
+        } catch (error) {
+            console.error('Error details:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status
+            });
+            setError('Failed to add entry. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -30,25 +85,27 @@ const TimeCard = () => {
             <div className="hours-header">
                 <h2>Time Card: Tutor Hours</h2>
             </div>
+
+            {error && (
+                <div className="error-message">
+                    {error}
+                </div>
+            )}
+
             <div className="form-section">
                 <h3 className='form-header'>New Entry</h3>
                 <div className="grid">
                     <div className="input-group">
                         <label>Campus</label>
-                        <select value={campus} onChange={(e) => setCampus(e.target.value)}>
+                        <select 
+                            value={campus} 
+                            onChange={(e) => setCampus(e.target.value)}
+                            disabled={loading}
+                        >
                             <option value="">Select a Campus</option>
                             <option value="Campus A">Campus A</option>
                             <option value="Campus B">Campus B</option>
                         </select>
-                    </div>
-                    <div className="input-group">
-                        <label>Tutor Name</label>
-                        <input
-                            type="text"
-                            placeholder="Enter Tutor Name"
-                            value={tutorName}
-                            onChange={(e) => setTutorName(e.target.value)}
-                        />
                     </div>
                 </div>
 
@@ -59,6 +116,7 @@ const TimeCard = () => {
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
+                            disabled={loading}
                         />
                     </div>
                     <div className="grid">
@@ -68,6 +126,7 @@ const TimeCard = () => {
                                 type="time"
                                 value={startTime}
                                 onChange={(e) => setStartTime(e.target.value)}
+                                disabled={loading}
                             />
                         </div>
                         <div className="input-group">
@@ -76,6 +135,7 @@ const TimeCard = () => {
                                 type="time"
                                 value={endTime}
                                 onChange={(e) => setEndTime(e.target.value)}
+                                disabled={loading}
                             />
                         </div>
                     </div>
@@ -87,6 +147,7 @@ const TimeCard = () => {
                         rows="3"
                         value={comments}
                         onChange={(e) => setComments(e.target.value)}
+                        disabled={loading}
                     ></textarea>
                 </div>
 
@@ -101,11 +162,16 @@ const TimeCard = () => {
                             setEndTime("");
                             setComments("");
                         }}
+                        disabled={loading}
                     >
                         Cancel
                     </button>
-                    <button className="button add" onClick={handleAddEntry}>
-                        Add Entry
+                    <button 
+                        className="button add" 
+                        onClick={handleAddEntry}
+                        disabled={loading}
+                    >
+                        {loading ? 'Adding...' : 'Add Entry'}
                     </button>
                 </div>
             </div>
@@ -113,15 +179,16 @@ const TimeCard = () => {
             <div className="recent-entries">
                 <h3>Recent Entries</h3>
                 <div className="entries-container">
+                    {loading && <div>Loading...</div>}
+                    {!loading && entries.length === 0 && <div>No entries found</div>}
                     {entries.map((entry, index) => (
                         <div key={index} className="entry-card">
                             <div className="entry-header">
                                 <strong>Campus:</strong> {entry.campus}
                             </div>
                             <div className="entry-details">
-                                <p><strong>Tutor Name:</strong> {entry.tutorName}</p>
                                 <p><strong>Date:</strong> {entry.date}</p>
-                                <p><strong>Time:</strong> {entry.startTime} - {entry.endTime}</p>
+                                <p><strong>Time:</strong> {entry.start_time} - {entry.end_time}</p>
                                 <p><strong>Comments:</strong> {entry.comments}</p>
                             </div>
                         </div>
@@ -145,4 +212,3 @@ const HoursPage = () => {
 };
 
 export default HoursPage;
-
