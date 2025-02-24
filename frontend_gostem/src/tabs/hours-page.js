@@ -46,17 +46,18 @@ const TimeCard = () => {
                 start_time: startTime,
                 end_time: endTime,
                 comments: comments,
-                tutor: 1  // For testing
+                tutor: 1
             };
     
-            // Debug logs
-            console.log('Attempting to send data:', newEntry);
+            console.log('📤 Sending to backend:', newEntry);
     
             const response = await axios.post('/hourlog/', newEntry);
-            console.log('Success Response:', response.data);
+            console.log('✅ Backend response:', response.data);
+            console.log('🔄 Refreshing entries list...');
             
             await fetchEntries();
-            
+            console.log('✨ Entries refreshed successfully');
+    
             // Reset form
             setCampus("");
             setDate("");
@@ -65,12 +66,11 @@ const TimeCard = () => {
             setComments("");
     
         } catch (error) {
-            // Detailed error logging
-            console.error('Full error:', error);
-            console.error('Error response data:', error.response?.data);
-            console.error('Error response status:', error.response?.status);
-            console.error('Error response headers:', error.response?.headers);
-            setError(`Failed to add entry: ${error.response?.data?.detail || error.message}`);
+            console.error('X Error details:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status
+            });
         }
     };
     
