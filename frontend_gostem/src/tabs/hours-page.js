@@ -40,45 +40,40 @@ const TimeCard = () => {
 
     const handleAddEntry = async () => {
         try {
-            setLoading(true);
-            setError(null);
-
             const newEntry = {
                 campus: campus,
                 date: date,
                 start_time: startTime,
                 end_time: endTime,
                 comments: comments,
-                tutor: 1  // For testing, using ID 1
+                tutor: 1  // For testing
             };
-
-            console.log('Sending data:', newEntry); // Debug log
-
+    
+            // Debug logs
+            console.log('Attempting to send data:', newEntry);
+    
             const response = await axios.post('/hourlog/', newEntry);
-            console.log('Response:', response.data);
+            console.log('Success Response:', response.data);
             
-            // Refresh the entries list
             await fetchEntries();
-
+            
             // Reset form
             setCampus("");
-            setTutorName("");
             setDate("");
             setStartTime("");
             setEndTime("");
             setComments("");
-
+    
         } catch (error) {
-            console.error('Error details:', {
-                message: error.message,
-                response: error.response?.data,
-                status: error.response?.status
-            });
-            setError('Failed to add entry. Please try again.');
-        } finally {
-            setLoading(false);
+            // Detailed error logging
+            console.error('Full error:', error);
+            console.error('Error response data:', error.response?.data);
+            console.error('Error response status:', error.response?.status);
+            console.error('Error response headers:', error.response?.headers);
+            setError(`Failed to add entry: ${error.response?.data?.detail || error.message}`);
         }
     };
+    
 
     return (
         <div className="hours-container">
