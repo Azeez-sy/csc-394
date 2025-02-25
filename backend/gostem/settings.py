@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 SITE_ID = 2
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -190,6 +191,14 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend"
 )
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+
+
 
 LOGIN_REDIRECT_URL = "/landing-page"
 LOGOUT_REDIRECT_URL = "/"

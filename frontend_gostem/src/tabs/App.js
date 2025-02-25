@@ -31,7 +31,7 @@ const Home = () => {
     <div className="App">
       <header className="Landing-page">
         <img src={goStemLogo} className="App-logo" alt="logo" />
-        < a href="{% provider_login_url 'google' %}">
+        < a href="/accounts/google/login/?process=login">
           <button className="Login-button">
             Login
           </button>
