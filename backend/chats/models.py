@@ -6,6 +6,10 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
 from django.db import models
 
+from django.contrib.auth.models import User
+from django.conf import settings
+
+
 class Message(models.Model):
     message_id = models.AutoField(primary_key = True) #Auto Incrementing Message ID
     content = models.TextField() #Message Content
@@ -17,3 +21,5 @@ class Message(models.Model):
 
     def __str__(self):
         return (f"self.message_id, self.content, self.timestamp, self.sender, self.receiver")
+
+

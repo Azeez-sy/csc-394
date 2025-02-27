@@ -1,111 +1,60 @@
 .schedule-page-container {
   display: flex;
-  height: 100vh; 
   width: 100%;
-  overflow: hidden; 
+  height: 100vh;
 }
 
-.schedule-content-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%; 
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.calendar-controls {
-  background-color: #afddd5;
-  height: 60px;
-  width: 100%;
+.calendar-wrapper {
+  flex: 1;
   min-width: 0;
-  word-wrap: break-word;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-  box-sizing: border-box;
-  flex-wrap: wrap;
+  padding: 20px;
 }
 
-.calendar-controls--date {
-  flex: 1;
-  text-align: center;
-  margin: 0;
-  min-width: 200px;
-  font-size: clamp(16px, 5vw, 25px);
-}
-
-.calender-controls--navigation {
-  display: flex;
-  gap: 5px;
-  min-width: auto;
-}
-
-.calender-controls--navigation .cc-btn:hover  {
-  background-color: #0000001a;
-}
-
-.calendar-controls--view {
-  display: flex;
-  gap: 5px;
-  min-width: auto;
-  justify-content: flex-end;
-}
-
-.calendar-controls--view .cc-btn:hover {
-  background-color: #0000001a;
-}
-
-.cc-btn.is-active {
-  background-color: #133d3b;
-  color: white;
-}
-
-.cc-btn {
-  padding: 6px;
-  font-size: clamp(12px, 2vw, 0.875rem);
+.fc {
   font-family: 'Montserrat', sans-serif;
-  border-radius: 5px;
-  border-width: 0;
-  
 }
 
-.schedule-header {
-  color: #afddd5;
-  text-align: center;
+.fc .fc-button:focus {
+  outline: none !important;
+  box-shadow: none !important; 
 }
 
-.calendar-view {
-  width: 100%;
-  flex: 1;
-  background-color: white;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
+.fc .fc-button {
+  background-color: #133d3b !important; 
+  border: none !important;
+  color: white !important; 
+  margin: 0 4px !important;
+  border-radius: 8px !important;
+  transition:  background-color 0.3s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.calendar-day {
-  flex: 1;
-  min-height: 0;
+.fc .fc-button:hover {
+  background-color: #216661 !important;
+  color: white;
+  box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
 }
 
-@media screen and (max-width: 540px) {
-  .calendar-controls {
-    height: auto;
-    padding: 10px;
-    gap: 10px;
-  }
-  
-  .calendar-controls--date {
-    width: 100%;
-    order: -1;
-  }
-  
-  .calender-controls--navigation,
-  .calendar-controls--view {
-    width: 100%;
-    justify-content: center;
-  }
+.fc .fc-button-active {
+  background-color: #afdcd5 !important;
+  color: #133d3b !important; 
+}
+
+.fc .fc-button-active:hover {
+  background-color: #216661 !important;
+  color: white !important; 
+}
+
+.fc .fc-today-button:disabled {
+  opacity: 1 !important;
+  background-color: #afdcd5 !important;
+  color: #133d3b !important;
+}
+
+.fc .fc-day-today {
+  background-color: rgba(175, 221, 213, 0.3) !important;
+}
+
+.event-title {
+  font-weight: 600;
 }

@@ -1,15 +1,15 @@
 .notes-list-container {
-    display: flex;
-    height: calc(100% - 5dvh); 
-    padding: 15px;
-    border-radius: 0 0 8px 8px;
-    background-color: white;
-    justify-content: left;
-    align-items: flex-start;
-    overflow-y: auto;
-    overflow-x: hidden; 
+  display: flex;
+  height: calc(100% - 5dvh);
+  padding: 15px;
+  border-radius: 0 0 8px 8px;
+  background-color: white;
+  justify-content: left;
+  align-items: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
-  
+
 .notes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -22,36 +22,90 @@
 .note-item {
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: 15px;
   border-radius: 8px;
   background-color: #e0e0e0;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.note-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.note-item-header {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.program {
+  display: inline-flex;
+  border-radius: 16px;
+  padding: 3px 10px;
+  background-color: #133d3b;
+  max-width: fit-content;
+  align-items: center;
+  margin: 0;
+}
+
+.program p {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  color: white !important;
+}
+
+.user-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
 }
 
 .notes-item-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
   margin-top: auto;
-  padding-top: 10px; 
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.notes-item-footer .date-info {
+  font-size: 1.8rem;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.notes-item-footer .button-group {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .trash-icon {
-  width: 15px;
-  height: 18px;
-  vertical-align: middle; 
+  width: 11px;
+  height: 13px;
+  vertical-align: middle;
 }
+
 .edit-icon {
-  width: 15px;
-  height: 15px;
-  vertical-align: middle; 
+  width: 13px;
+  height: 13px;
+  vertical-align: middle;
 }
 
 .notes-item-footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: #133d3b;
   color: #fff;
   max-width: fit-content;
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 8px;
   border: none;
   cursor: pointer;
@@ -67,10 +121,20 @@
 }
 
 .note-final-title {
-  margin: 0;
+  margin: 0 0 4px 0;
   color: black;
-  font-size: 1.5rem;
-  margin-bottom: 8px
+  font-size: clamp(1.25rem, 2vw, .7rem);
+}
+
+.author-name {
+  margin: 0 0 8px 0 !important;
+  font-size: 0.8rem !important;
+  color: #555555 !important;
+  font-style: italic;
+}
+
+.description {
+  margin: 0 0 16px 0 !important;
 }
 
 .note-item p {

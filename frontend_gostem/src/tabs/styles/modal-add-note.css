@@ -6,6 +6,13 @@
   height: 100%;
 }
 
+.error-message {
+  color: red;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .8em;
+  padding: 0 0 0 2px
+}
+
 form.create-note {
   display: flex;
   flex-direction: column;
@@ -20,7 +27,6 @@ form.create-note input {
 form.create-note textarea {
   font-size: 1em;
   margin-top: 5px;
-  border-top: 1px solid #000000;
 }
 
 form.create-note input,
@@ -29,7 +35,13 @@ form.create-note textarea {
   border: none;
   outline: none;
   resize: none;
-  padding: 2px;
+  padding: 1.5px;
+}
+
+.notes-filters-modal {
+  padding: 3px 0 3px 0;
+  display: flex;
+  gap: 8px;
 }
 
 .modify-notes-btns {
