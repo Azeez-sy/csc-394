@@ -35,4 +35,5 @@ urlpatterns = [
     path("dashboard/", dashboard, name="dashboard"),  # Ensure this route is defined
     re_path(r'^.*$', landing_page),  # Catch-all pattern to serve index.html for all routes
 
+    path('schedule/', include('schedule.urls'))
 ]
