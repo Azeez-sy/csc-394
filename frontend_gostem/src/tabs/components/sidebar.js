@@ -77,7 +77,7 @@ const Sidebar = () => {
           </Link>
         </div>
         <div className="sidebar-item">
-          <Link to="./logout">
+          <Link to="./">
             <button className="sidebar-image-button">
               <img src={logout} alt="Logout" />
               <span className="sidebar-button-text">Logout</span>

@@ -20,7 +20,8 @@ const NotesPage = () => {
       authorName: "John Doe",
       programName: "Program 1",
       description: "Lorem ipsum odor amet, consectetuer adipiscing elit.",
-      file: "File names"
+      file: "File names",
+      isShared: true
     }
   ]);
 

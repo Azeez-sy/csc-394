@@ -51,11 +51,16 @@
     align-items: center;
 }
 
-.file-icon {
+.document-icon-container{
     margin-right: 8px;
 }
 
-.delete-button {
+.document-icon-container img{
+    width: 20px;
+    height: 20px;
+}
+
+.x-button {
     border: none;
     background: none;
     cursor: pointer;
@@ -65,7 +70,13 @@
     border-radius: 8px;
 }
 
-.delete-button:hover {
+.x-icon {
+    width: 9px;
+    height: 9px;
+    vertical-align: middle; 
+  }
+
+.x-button:hover {
     background-color: #e0e0e0dd;
     padding: 8px 16px;
     border-radius: 8px;

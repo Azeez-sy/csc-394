@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'gostem',
     'chats',
 
+
     'channels',
     'notes',
 
@@ -197,7 +198,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-
 
 
 LOGIN_REDIRECT_URL = "/landing-page"

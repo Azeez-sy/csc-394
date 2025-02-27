@@ -10,6 +10,7 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
   const [content, setContent] = useState("");
   const [file, setFile] = useState("No files uploaded");
   const [titleError, setTitleError] = useState("");
+  const [contentError, setContentError] = useState("");
 
   // Get note's info
   useEffect(() => {
@@ -18,22 +19,23 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
       setContent(note.description);
       setFile(note.file);
       setProgram(note.programName.toLowerCase().includes('program 1') ? 'program-1' : 'program-2');
-      // You could add logic here to set noteType based on the note
+      setNoteType(note.isShared ? 'shared-notes' : 'personal-notes');
     }
   }, [note]);
 
   const handleModalClose = () => {
+    setContentError("");
     setTitleError("");
     setTitle("");
     setContent("");
     setFile("No files uploaded");
-    setProgram('program-1');
-    setNoteType('shared-notes');
+    setProgram(note.programName.toLowerCase().includes('program 1') ? 'program-1' : 'program-2');
+    setNoteType(note.isShared ? 'shared-notes' : 'personal-notes');
     onClose();
   };
 
   // Error Message for when a title is not inputted
-  const validateNote = () => {
+  const validateTitle = () => {
     setTitleError("");
 
     if(!title.trim()) {
@@ -41,25 +43,41 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
       return false;
     }
 
+    if(title.length > 50){
+      setTitleError("Title cannot exceed 50 characters");
+      return false
+    }
+
     return true;
   };
+
+  const validateContent = () => {
+    setContentError("");
+    if(content.length > 500){
+      setContentError("Description cannot exceed 500 characters");
+      return false;
+    }
+    return true;
+  };
+
+  // Error Message for 
 
   // Updates note
   const handleUpdateClick = (event) => {
     event.preventDefault();
 
-    if(!validateNote()) {
-      return;
-    }
+    if(!validateTitle() ||!validateContent()) {return;}
 
     const programName = program === 'program-1' ? 'Program 1' : 'Program 2'
+    const isShared = noteType === 'shared-notes';
 
     const updatedNote = {
       ...note,
       title: title.trim(),
       programName: programName,
       description: content,
-      file: file
+      file: file,
+      isShared: isShared
     };
 
     onUpdateNote(updatedNote);
@@ -100,12 +118,18 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
               
                 <textarea
                   value={content}
-                  onChange={(event)=>
-                    setContent(event.target.value)
+                  onChange={(event)=> {
+                    setContent(event.target.value);
+                    if (contentError && event.target.value.length <= 500) {
+                      setContentError("");
+                    }
+                  }
                   }
                   placeholder="Description"
-                  rows={4}
+                  rows={5}
+                  className={contentError ? "error-input" : ""}
                 />
+                {contentError && <p className='error-message'>{contentError}</p>}
               </form>
               <div className="notes-filters-modal">
                 <select 

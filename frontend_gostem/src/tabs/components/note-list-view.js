@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import trash from './icons/trash.png'
 import edit from './icons/edit.png'
+import singleUser from './icons/personal-user.png'
+import groupUser from './icons/group-users.png'
 import "../styles/note-list-view.css"
 
 const NoteListView = ({ notes, setNotes, onAddClick, onDeleteNote, onEditNote }) => {
@@ -9,11 +11,25 @@ const NoteListView = ({ notes, setNotes, onAddClick, onDeleteNote, onEditNote })
 
     // filter notes
     const filteredNotes = notes.filter(note => {
+      // Program Filter
       if (program !== 'all-programs' && !note.programName.toLowerCase().includes(program.replace('-', ' '))) {
         return false;
       }
+
+      // Shared Filter
+      if (noteType === 'personal-notes' && note.isShared) {
+        return false;
+      }
+      if (noteType === 'shared-notes' && !note.isShared) {
+        return false;
+      }
+            
       return true;
     });
+
+    const getNoteIcon = (isShared) => {
+      return isShared ? groupUser : singleUser;
+    };
 
     const handleDelete = (noteId) => {
       if (window.confirm("Are you sure you want to delete this note?")) {
@@ -56,7 +72,12 @@ const NoteListView = ({ notes, setNotes, onAddClick, onDeleteNote, onEditNote })
           <div className="notes-grid">
           {filteredNotes.map((note) => (
               <div className="note-item" key={note.id}>
-                <div className='program'><p>{note.programName}</p></div>
+                <div className='note-item-header'>
+                  <div className='program'><p>{note.programName}</p></div>
+                  <img src={getNoteIcon(note.isShared)} 
+                  alt={note.isShared ? "Shared Note" : "Personal Note"} 
+                  className="user-icon" />
+                </div>
                 <h3 className="note-final-title">{note.title}</h3>
                 <p className='author-name'>{note.authorName}</p>
                 <p className='description'>{note.description}</p>

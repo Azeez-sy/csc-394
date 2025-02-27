@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Dropzone, { useDropzone } from 'react-dropzone';
 import "../styles/drag-drop-files.css"
+import x from "./icons/x.png"
+import document from "./icons/document.png"
 
 const FileUploadZone = () => {
   const [files, setFiles] = useState([])
@@ -49,15 +51,16 @@ const FileUploadZone = () => {
               {files.map(file => (
                 <li key={file.name} className="file-item">
                   <div className='file-content'>
-                    <span className='file-icon'>📄</span>
+                    <span className='document-icon-container'>
+                      <img src={document} alt="📄" className='document-icon'/>
+                    </span>
                     <span className='file-name'>{file.name}</span>
                   </div>
                   <button
                     type="button"
-                    className='delete-button'
-                    onClick={() => removeFile(file.name)}
-                    >
-                    X
+                    className='x-button'
+                    onClick={() => removeFile(file.name)}>
+                    <img src={x} alt="X" className='x-icon' />
                   </button>
                 </li>
               ))}
