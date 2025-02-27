@@ -1,0 +1,101 @@
+.burger-menu {
+    display: none;
+}
+
+.burger-container {
+    display: none;
+}
+
+@media (max-width: 767px) {
+
+    .burger-menu-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+        padding: 10px;
+    }
+
+    .hours-page-container {
+        padding-top: 60px;
+        background-color: #afdcd5;
+    }
+
+    .burger-container {
+        display: block;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+    }
+
+    .burger-button {
+        background: none;
+        border: none;
+    }
+
+    .burger-button img {
+        width: 40px;
+        height: 40px;
+        position: fixed;
+        top: 15px;
+    }
+
+    .burger-menu {
+        position: fixed;
+        top: 0;
+        left: -350px;
+        /* Hidden by default */
+        width: 120px;
+        min-height: 100vh;
+        background-color: #133d3b;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+        transition: left 0.3s ease-in-out;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .burger-menu.open {
+        left: 0;
+        /* Slide in when open */
+    }
+
+    .burger-item {
+        margin: 15px 0;
+    }
+
+    .link {
+        text-decoration: none;
+    }
+
+    .burger-image-button {
+        display: flex;
+        align-items: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        width: 100%;
+        text-align: left;
+        color: white;
+        text-decoration: none;
+    }
+
+    .burger-image-button img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+    }
+
+    .burger-button-text {
+        font-size: 16px;
+        text-decoration: none;
+    }
+
+    .burger-divider {
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        margin: 20px 0;
+    }
+}

@@ -1,33 +1,60 @@
-.body{ 
-    background-color: #afdcd5;
-    min-height: 100%;
-    min-width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: #133d3b ;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-  }
-  .schedule-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-  
-  .schedule-header {
-    color: #133d3b;
-    padding: 20px;
-    width: 100%;
-    text-align: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-  }
+.schedule-page-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.calendar-wrapper {
+  flex: 1;
+  min-width: 0;
+  padding: 20px;
+}
+
+.fc {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.fc .fc-button:focus {
+  outline: none !important;
+  box-shadow: none !important; 
+}
+
+.fc .fc-button {
+  background-color: #133d3b !important; 
+  border: none !important;
+  color: white !important; 
+  margin: 0 4px !important;
+  border-radius: 8px !important;
+  transition:  background-color 0.3s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.fc .fc-button:hover {
+  background-color: #216661 !important;
+  color: white;
+  box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.fc .fc-button-active {
+  background-color: #afdcd5 !important;
+  color: #133d3b !important; 
+}
+
+.fc .fc-button-active:hover {
+  background-color: #216661 !important;
+  color: white !important; 
+}
+
+.fc .fc-today-button:disabled {
+  opacity: 1 !important;
+  background-color: #afdcd5 !important;
+  color: #133d3b !important;
+}
+
+.fc .fc-day-today {
+  background-color: rgba(175, 221, 213, 0.3) !important;
+}
+
+.event-title {
+  font-weight: 600;
+}
