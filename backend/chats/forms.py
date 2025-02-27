@@ -8,9 +8,9 @@ from .models import *
 class ChatmessageCreateForm(ModelForm) :
     class Meta:
         model = Message
-        fields = ['context']
+        fields = ['content']
         widgets = {
-            'context' : forms.TextInput
+            'content' : forms.TextInput
             (attrs={'placeholder': 'Add message ...', 'class': 'p-4 text-black', 'maxlength' : '300', 'autofocus': True })
         }
 
