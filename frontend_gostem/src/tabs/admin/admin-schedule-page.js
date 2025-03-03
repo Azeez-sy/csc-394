@@ -1,11 +1,11 @@
 import React from "react";
-import "./styles/schedule-page.css"
-import Sidebar from './components/sidebar';
+import "../styles/schedule-page.css"
+import Sidebar from '../components/sidebar';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 
-const SchedulePage= () => {
+const AdminSchedulePage= () => {
   /*
   tutor - drop down
   date
@@ -57,12 +57,20 @@ const SchedulePage= () => {
           headerToolbar={{
             left: 'today,prev,next',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek'
+            right: 'addEvent,dayGridMonth,timeGridWeek'
           }}
           buttonText={{
             today: 'Today',
             month: 'Month',
-            week: 'Week'
+            week: 'Week',
+          }}
+          customButtons={{
+            addEvent:{
+              text: 'Add Event',
+              click: function() {
+                console.log('Add event button clicked');
+              }
+            }
           }}
           eventColor="#afdcd5"
           eventTextColor="#000000"
@@ -103,4 +111,4 @@ const SchedulePage= () => {
   );
 };
 
-export default SchedulePage;
+export default AdminSchedulePage;
