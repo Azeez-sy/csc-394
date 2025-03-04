@@ -60,6 +60,9 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google"
 ]
 
+SOCIALACCOUNT_LOGIN_ON_GET=True 
+
+
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         # The following provider-specific settings will be used for all apps:
@@ -83,6 +86,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "login_required.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "gostem.urls"
@@ -203,7 +207,14 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 LOGIN_REDIRECT_URL = "/landing-page"
+LOGIN_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+LOGIN_REQUIRED_IGNORE_PATHS = [
+    '/$',
+]
+
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 # For production, specify allowed origins:
