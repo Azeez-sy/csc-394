@@ -1,4 +1,5 @@
 from rest_framework import status
+from .serializers import ChatMessageSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from gostem.models import User, Event
@@ -8,29 +9,30 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import *
 
-
-@login_required
-def chat_view(request):  #This will need to be changed to front end location
-    chat_group = get_object_or_404(ChatGroup, group_name = "public-chat")
+@api_view(['GET'])
+def chat_messages_view(request):
+    """Fetch chat messages from the public chat group"""
+    chat_group = get_object_or_404(ChatGroup, group_name ="public-chat")
     chat_messages = chat_group.chat_messages.all()
-    form = ChatmessageCreateForm()
+    serializer = ChatMessageSerializer(chat_messages, many = True)
+    return Response(serializer.data)
 
+@api_view(['POST'])
+def chat_message_create_view(request):
+    """Create a new chat message in the public chat."""
+    chat_group = get_object_or_404(ChatGroup, group_name ="public-chat")
+    chat_messages = chat_group.chat_messages.all()
+    serializer = ChatMessageSerializer(data= request.data)
 
-    if request.method == 'POST':
-        form = ChatmessageCreateForm(request.POST)
-        if form.is_valid:
-            message = form.save(commit=False)
-            message.sender = request.user
-            message.group = chat_group
-            message.save()
-            context = {
-                'message' : message,
-                'user' : request.user
-            }  #Will need to redirect to front end html component
-            return redirect(request, 'chats/partials/chat_message_p.html', context)
+    if serializer.is_valid():
+        message = Message.objects.create(
+            group = chat_group,
+            sender = request.user,
+            content= serializer.validated_data['content']
+        )
+        return Response(ChatMessageSerializer(message).data, status= status.HTTP_201_CREATED)
 
-
-    return render(request, "chats/chat.html", {'chat_messages' : chat_messages, 'form' : form })  
+    return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def create_user(request):
@@ -48,6 +50,3 @@ def create_event(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def chatPage(request, *args, **kwargs):
-    context = {}
-    return render(request, "chats/chatPage.html", context)

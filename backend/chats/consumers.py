@@ -3,6 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer, WebsocketConsumer
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from asgiref.sync import async_to_sync
+from channels.db import database_sync_to_async
 from .models import *
 
 class ChatConsumer(WebsocketConsumer):
@@ -26,14 +27,14 @@ class ChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data) 
         content = text_data_json['content']
 
-        message = Message.objects.create(
-            content = content,
-            sender = self.user,
-            group = self.chatroom
-        )
+        message = async_to_sync(self.create_message(content))
+
         event = {
             'type': 'message_handler',
             'message_id' : message.id,
+            'content' : message.content,
+            'sender' : message.sender.username,
+            'timestamp' : message.timestamp.isoformat(),
         }
 
 
@@ -41,15 +42,18 @@ class ChatConsumer(WebsocketConsumer):
             self.chatroom_name, event
         )
 
-    def message_handler(self, event): 
-        message_id = event['message_id']
-        message = Message.objects.get(id=message_id)
-        context = {
-            'message' : message,
-            'user': self.user,
-        } # again needs to be directed to frontend
-        html = render_to_string("chat/partials/chat_message_p/html", context = context)
-        self.send(text_data=html)
+    async def message_handler(self, event): 
+        message_data = event['message']
+        await self.send(text_data = json.dumps(message_data))
+
+    async def create_message(self, content):
+
+        message = await database_sync_to_async(Message.objects.create)(
+            content = content,
+            sender = self.user,
+            group = self.chatroom
+        )
+        return message
 
 
 
