@@ -18,11 +18,46 @@ const TimeCard = () => {
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [currentPeriod, setCurrentPeriod] = useState("");
+    const [minDate, setMinDate] = useState("");
+    const [maxDate, setMaxDate] = useState("");
 
-    // Fetch entries when component mounts
+    // Calculate the biweekly date constraints and fetch entries when component mounts
     useEffect(() => {
+        calculateBiweeklyPeriod();
         fetchEntries();
     }, []);
+
+    // Calculate the current biweekly period (1st-15th or 16th-end of month)
+    const calculateBiweeklyPeriod = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        let startDate, endDate;
+        
+        // First half of the month (1st-15th)
+        if (today.getDate() <= 15) {
+            startDate = new Date(year, month, 1);
+            endDate = new Date(year, month, 15);
+            setCurrentPeriod(`Period: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
+        } 
+        // Second half of the month (16th-end)
+        else {
+            startDate = new Date(year, month, 16);
+            // Get the last day of the current month
+            endDate = new Date(year, month + 1, 0);
+            setCurrentPeriod(`Period: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
+        }
+        
+        // Format dates for the date input min/max attributes
+        setMinDate(formatDateForInput(startDate));
+        setMaxDate(formatDateForInput(endDate));
+    };
+
+    // Format a date as YYYY-MM-DD for input value/min/max attributes
+    const formatDateForInput = (date) => {
+        return date.toISOString().split('T')[0];
+    };
 
     const fetchEntries = async () => {
         try {
@@ -46,7 +81,8 @@ const TimeCard = () => {
                 start_time: startTime,
                 end_time: endTime,
                 comments: comments,
-                tutor: 1
+                tutor: 1,
+                period: currentPeriod // Store the period information
             };
     
             console.log('📤 Sending to backend:', newEntry);
@@ -73,12 +109,12 @@ const TimeCard = () => {
             });
         }
     };
-    
 
     return (
         <div className="hours-container">
             <div className="hours-header">
                 <h2>Time Card: Tutor Hours</h2>
+                {currentPeriod && <div className="current-period">{currentPeriod}</div>}
             </div>
 
             {error && (
@@ -106,12 +142,14 @@ const TimeCard = () => {
 
                 <div className="grid">
                     <div className="input-group">
-                        <label>Date</label>
+                        <label>Date (Limited to current biweekly period)</label>
                         <input
                             type="date"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
                             disabled={loading}
+                            min={minDate}
+                            max={maxDate}
                         />
                     </div>
                     <div className="grid">
@@ -184,6 +222,7 @@ const TimeCard = () => {
                             <div className="entry-details">
                                 <p><strong>Date:</strong> {entry.date}</p>
                                 <p><strong>Time:</strong> {entry.start_time} - {entry.end_time}</p>
+                                {entry.period && <p><strong>Period:</strong> {entry.period}</p>}
                                 <p><strong>Comments:</strong> {entry.comments}</p>
                             </div>
                         </div>
