@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from decouple import config
 import os
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -29,23 +28,25 @@ DEBUG = config('DEBUG', cast=bool, default=False)
 
 ALLOWED_HOSTS = []
 
-SITE_ID = 2
+SITE_ID = 3
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    'daphne',
     "django.contrib.staticfiles",
     'rest_framework',
     'gostem',
     'chats',
-
+    'schedule',
+    
+    'corsheaders',  
 
     'channels',
     'notes',
@@ -58,6 +59,9 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google"
 ]
+
+SOCIALACCOUNT_LOGIN_ON_GET=True 
+
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -73,6 +77,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -81,6 +86,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "login_required.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "gostem.urls"
@@ -201,4 +207,18 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 LOGIN_REDIRECT_URL = "/landing-page"
+LOGIN_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
+
+LOGIN_REQUIRED_IGNORE_PATHS = [
+    '/$',
+]
+
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+# For production, specify allowed origins:
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "https://yourdomain.com",
+# ]

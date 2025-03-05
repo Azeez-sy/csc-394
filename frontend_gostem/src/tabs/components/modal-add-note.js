@@ -4,11 +4,10 @@ import FileUploadZone from './drag-drop-files';
 import "../styles/modal-add-note.css"
 
 const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
-  const [noteType, setNoteType] = useState('shared-notes');
   const [program, setProgram] = useState('program-1');
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [file, setFile] = useState("No files uploaded");
+  const [files, setFiles] = useState("No files uploaded");
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
 
@@ -18,9 +17,8 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     setTitleError("");
     setTitle("");
     setContent("");
-    setFile("No files uploaded");
+    setFiles("No files uploaded");
     setProgram('program-1');
-    setNoteType('shared-notes');
     onClose();
   };
 
@@ -58,41 +56,38 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     if(!validateTitle() ||!validateContent()) {return;}
     
     const programName = program === 'program-1' ? 'Program 1' : 'Program 2';
-    const isShared = noteType === 'shared-notes';
     
+    // Getting filenames
+    const fileNames = files.length > 0 
+      ? files.map(file => file.name).join(", ") 
+      : "No files uploaded";
+
     const newNote = {
       title: title,
-      noteTypeName: noteType,
       programName: programName,
       description: content,
-      file: file,
-      isShared: isShared
+      file: fileNames,
+      files: files
     };
     
     onAddNote(newNote);
     
     // Resets Modal after add
-    
     setTitle("");
     setContent("");
-    setFile("No files uploaded");
+    setFiles("No files uploaded");
     setProgram('program-1');
-    setNoteType('shared-notes');
   };
 
-  // Handle file uploads - FIX
+  // Handle file uploads
   const handleFileUpload = (uploadedFiles) => {
-    if (uploadedFiles && uploadedFiles.length > 0) {
-      setFile(uploadedFiles.map(file => file.name || "Unnamed file").join(", "));
-    } else {
-      setFile("No files uploaded");
-    }
+    setFiles(uploadedFiles);
   };
 
   return (
     <Modal isOpen={isOpen} onClose={handleModalClose}>
-      <div className="notes-wrapper">
-          <div className="notes-header">
+      <div className="notesModal-wrapper">
+          <div className="notesModal-header">
             <h1 className="notes-header-text">Add Note</h1>
           </div>
           <div className="notes-editor-container">
@@ -136,15 +131,6 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
                 >
                   <option value="program-1">Program 1</option>
                   <option value="program-2">Program 2</option>
-                </select>
-  
-                <select 
-                  value={noteType} 
-                  onChange={(e) => setNoteType(e.target.value)}
-                  className="notes-select"
-                >
-                  <option value="shared-notes">Shared Note</option>
-                  <option value="personal-notes">Personal Note</option>
                 </select>
               </div>
               <div>

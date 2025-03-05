@@ -20,9 +20,9 @@
 }
 
 .fc .fc-button {
-  background-color: #133d3b !important; 
+  background-color: #afdcd5 !important; 
   border: none !important;
-  color: white !important; 
+  color: black !important; 
   margin: 0 4px !important;
   border-radius: 8px !important;
   transition:  background-color 0.3s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
@@ -36,8 +36,8 @@
 }
 
 .fc .fc-button-active {
-  background-color: #afdcd5 !important;
-  color: #133d3b !important; 
+  background-color:#133d3b  !important;
+  color: white !important; 
 }
 
 .fc .fc-button-active:hover {
@@ -47,8 +47,8 @@
 
 .fc .fc-today-button:disabled {
   opacity: 1 !important;
-  background-color: #afdcd5 !important;
-  color: #133d3b !important;
+  background-color: #133d3b !important;
+  color: white !important;
 }
 
 .fc .fc-day-today {

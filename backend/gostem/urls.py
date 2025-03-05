@@ -27,12 +27,14 @@ urlpatterns = [
     path('api/', include('chats.urls')),
     # path('', include('chats.urls')),
     path('api/', include('notes.urls')),
-
     path('notes/', include('notes.urls')),
-
     path("accounts/", include("allauth.urls")),
     path("", include("user.urls")),
-    path("dashboard/", dashboard, name="dashboard"),  # Ensure this route is defined
+    path("dashboard/", dashboard, name="dashboard"),
+    path('api/schedule/', include('schedule.urls')),  
+    path('schedule/', include('schedule.urls')),
+
     re_path(r'^.*$', landing_page),  # Catch-all pattern to serve index.html for all routes
 
+   
 ]

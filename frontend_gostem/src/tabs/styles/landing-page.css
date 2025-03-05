@@ -112,8 +112,6 @@
 
 @media (max-width: 767px) {
 
-  /* hover rules */
-
   .image-button:hover img {
     transform: none;
   }
@@ -168,16 +166,21 @@
     flex-direction: row;
     justify-content: center;
     margin-top: 10px;
-    /* margin-left: 10px; */
     gap: 20px;
   }
 
   .landing-header {
-    color: #133d3b ;
-    text-align: center;
-    margin: 0 auto;
-    min-width: 100%;
     display: none;
+  }
+
+  .landing-container {
+    /* display: 100vh; */
+  }
+
+  .body {
+    min-width: none;
+    min-height: none;
+    height: 95vh;
   }
 
 }
