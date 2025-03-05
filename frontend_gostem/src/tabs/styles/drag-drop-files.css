@@ -24,26 +24,33 @@
     color: black;
 }
 
+.dropzone-text-small {
+    font-family: 'Montserrat', sans-serif;
+    font-size: .7rem;
+    color: black;
+}
+
 .dropzone-files h4 {
     font-family: 'Montserrat', sans-serif;
 }
 
-.file-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.file-preview {
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 5px;
 }
 
 .file-item {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     padding: 8px 12px;
     margin: 8px 0;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
     background-color: #f8f8f8;
     font-family: 'Montserrat', sans-serif;
+    list-style-type: none;
 }
 
 .file-content {

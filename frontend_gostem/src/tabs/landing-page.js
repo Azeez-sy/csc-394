@@ -28,8 +28,6 @@ const LandingPage = () => {
   //   return () => window.removeEventListener("resize", handleResize);
   // }, []);
 
-
-
   return (
     
     <div className="body">
@@ -92,10 +90,10 @@ const LandingPage = () => {
         <Link to="">
           <button className="bottom-button">Settings</button>
         </Link>
-        
-        <Link to="./">
+          
+        <a onClick={() => {window.location.href='/logout'}}>
           <button className="bottom-button">Log Out</button>
-        </Link>
+        </a>
 
       </div>
 
