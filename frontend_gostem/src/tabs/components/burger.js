@@ -29,12 +29,10 @@ const BurgerMenu = () => {
       }
     };
 
-    // Add event listener
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
-    // Clean up event listener
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };

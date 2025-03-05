@@ -20,6 +20,7 @@
 }
 
 .note-item {
+  cursor: pointer;
   display: flex;
   flex-direction: column;
   padding: 15px;
@@ -190,4 +191,42 @@
   font-family: 'Montserrat', sans-serif;
   padding: 6px 12px;
   border-radius: 8px;
+}
+
+@media (max-width: 767px) { 
+
+  .notes-header-btn-filter {
+    justify-content: center;
+    margin-left: 0px;
+    padding-top: 15px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .notes-header-btn-filter button {
+    width: 100%;
+    max-width: none;
+    font-size: 1.2rem;
+  }
+
+  .notes-select {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .note-item:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .notes-item-footer button:hover {
+    box-shadow: none;
+    transform: none;
+  }
+
+  .notes-header-btn-filter button:hover {
+    box-shadow: none;
+    transform: none;
+  }
+
 }

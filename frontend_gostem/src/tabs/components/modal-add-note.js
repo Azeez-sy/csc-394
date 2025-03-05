@@ -86,8 +86,8 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={handleModalClose}>
-      <div className="notes-wrapper">
-          <div className="notes-header">
+      <div className="notesModal-wrapper">
+          <div className="notesModal-header">
             <h1 className="notes-header-text">Add Note</h1>
           </div>
           <div className="notes-editor-container">

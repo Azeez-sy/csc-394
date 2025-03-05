@@ -89,3 +89,27 @@
     border-radius: 8px;
     border: none;
 }
+
+@media (max-width: 767px) {
+
+    .file-preview {
+        max-height: 70px;
+    }
+
+    /* .x-button {
+        padding: 4px 10px;
+    } */
+
+    .dropzone-files h4 {
+        font-size: 1em;
+        text-align: center;
+        margin-bottom: 0px;
+        margin-top: 10px;
+    }
+
+    .dropzone-container {
+        padding: 10px;
+        height: 100px;
+    }
+
+}

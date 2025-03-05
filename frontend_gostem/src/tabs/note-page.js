@@ -6,6 +6,7 @@ import NoteListView from './components/note-list-view';
 import ModalAddNote from './components/modal-add-note';
 import ModalEditNote from './components/modal-edit-note';
 import ModalViewNote from './components/modal-view-note';
+import BurgerMenu from './components/burger';
 
 const NotesPage = () => {
   const [isAddingNote, setIsAddingNote] = useState(false);
@@ -84,6 +85,9 @@ const NotesPage = () => {
 
   return (
     <div className="notes-page-container">
+      <div className="burger-menu-container">
+        {!isAddingNote && !isEditingNote && !isViewNote && <BurgerMenu />}
+      </div>
       <Sidebar />
       <ModalViewNote
         isOpen={isViewNote}
