@@ -1,6 +1,11 @@
+.notes-body {
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
 .notes-list-container {
   display: flex;
-  height: calc(100% - 5dvh);
+  min-height: calc(100vh - 5dvh);
   padding: 15px;
   border-radius: 0 0 8px 8px;
   background-color: white;
@@ -16,7 +21,8 @@
   grid-auto-rows: minmax(200px, auto);
   gap: 20px;
   width: 100%;
-  height: fit-content;
+  /* height: fit-content; */
+  height: auto;
 }
 
 .note-item {
@@ -209,14 +215,42 @@
     font-size: 1.2rem;
   }
 
+  .button-group {
+    display: flex;
+    flex-direction: row !important;
+  }
+
   .notes-select {
     width: 100%;
     font-size: 1rem;
   }
 
+  .note-item {
+    background-color: #fff; 
+  }
+
+  /* .note-item p {
+    font-size: .8em;
+  } */
+
+  .description {
+    font-size: .8em !important;
+  }
+
+  .notes-item-footer button {
+    /* display: flex; */
+    width: 100%;
+    max-width: none;
+  }
+
   .note-item:hover {
     transform: none;
     box-shadow: none;
+  }
+
+  .notes-item-footer {
+    flex-direction: column;
+    align-items: unset;
   }
 
   .notes-item-footer button:hover {
@@ -227,6 +261,16 @@
   .notes-header-btn-filter button:hover {
     box-shadow: none;
     transform: none;
+  }
+
+  .notes-list-container {
+    padding-bottom: 190px;
+    background-color: #467d7a;
+    margin-top: 15px;
+  }
+
+  .notes-body {
+    overflow-y: scroll;
   }
 
 }
