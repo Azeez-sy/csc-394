@@ -29,7 +29,9 @@ def user_list(request):
 
          new_user = User(first_name=first_name, last_name=last_name, email=email, role=role, isAdmin=isAdmin)
          new_user.save()
-    return render(request, 'user_list.html')
+
+    user_list = User.objects.all()
+    return render(request, 'user_list.html', {'data': user_list})
 
 def dashboard(request):
     return redirect("/landing-page")  # Redirect to the root URL which will be handled by React Router
