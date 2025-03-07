@@ -25,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool, default=False)
-
+#DEBUG = config('DEBUG', cast=bool, default=False)
+DEBUG = True #UNDOOOO!!!!!! 
 ALLOWED_HOSTS = []
 
 SITE_ID = 2
@@ -45,18 +45,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'gostem',
     'chats',
-
-
     'channels',
     'notes',
-
     #OAuth apps
     "user",
     "django.contrib.sites",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "allauth.socialaccount.providers.google"
+    "allauth.socialaccount.providers.google",
+    'corsheaders',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -73,6 +71,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', 
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -81,10 +80,29 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [ # for development purposes, not for production - sky
+    "http://localhost:3000", # frontend
+    "http://127.0.0.1:8000", # backend
+
+]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Allows all origins (for dev purposes, but NOT good for production!) - sky
+CSRF_COOKIE_NAME = "csrftoken" # for dev purposes, not production - sky
+CSRF_COOKIE_HTTPONLY = False # for dev purposes, not production - sky
+CORS_ALLOW_CREDENTIALS = True # for dev purposes, not production -sky
 
 ROOT_URLCONF = "gostem.urls"
 
+# for adding a file to a note functionality (development purposes!) -sky
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+# for create date and update date attributes for note functionality - sky
+USE_TZ = True
+TIME_ZONE = 'America/Chicago'
 
 TEMPLATES = [
     {
@@ -178,9 +196,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/" 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '..', 'frontend_gostem', 'build', 'static'),
+    os.path.join(BASE_DIR, '..', 'frontend_gostem', 'build', 'static'), 
 ]
 
 # Default primary key field type
@@ -193,11 +211,11 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
-CSRF_TRUSTED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = [ # for development purposes -sky
     "http://127.0.0.1:8000",
     "http://localhost:3000",
 ]
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"] # for development purposes -sky
 
 
 LOGIN_REDIRECT_URL = "/landing-page"

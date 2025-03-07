@@ -15,9 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include, re_path
 from user.views import landing_page, dashboard
-
+from . import settings
 
 
 urlpatterns = [
@@ -26,13 +28,13 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/', include('chats.urls')),
     # path('', include('chats.urls')),
-    path('api/', include('notes.urls')),
 
-    path('notes/', include('notes.urls')),
+    path('api/', include('notes.urls')),
 
     path("accounts/", include("allauth.urls")),
     path("", include("user.urls")),
     path("dashboard/", dashboard, name="dashboard"),  # Ensure this route is defined
     re_path(r'^.*$', landing_page),  # Catch-all pattern to serve index.html for all routes
-
-]
+    
+    
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

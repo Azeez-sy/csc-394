@@ -1,24 +1,18 @@
+# Created by Sky Roman
+
 from django.db import models
-
 # Create your models here.
-#from django.contrib.auth.models import User
 from gostem.models import Program, User
-    
-
-class File(models.Model):
-    # note = models.ForeignKey(Note, on_delete=models.CASCADE, related_name='files')
-    file = models.FileField(upload_to='notes/note_files/')
-
-    def __str__(self):
-        return self.file.name
 
 class Note(models.Model):
     title       = models.CharField(max_length=50)
-    description = models.TextField(max_length=250)
+    description = models.TextField(max_length =150, blank=True, null=True)
     authorName  = models.CharField(max_length = 100, default="Anonymous") 
-    created_at  = models.DateTimeField(auto_now_add=True)
-    updated_at  = models.DateTimeField(auto_now=True, blank=True)
-    files       = models.ManyToManyField('File', blank=True) 
+    programName = models.CharField(max_length=100, blank=True, null=True)
+    dateCreated = models.DateTimeField(auto_now_add=True)
+    dateModified = models.DateTimeField(auto_now=True)
+    file = models.FileField(upload_to='note_attaches/', blank=True, null=True) 
+    isShared = models.BooleanField(default=False)
 
     """filter based on program name TODO"""
     # add programId back for filtering when model is set up in schedule - sky
@@ -28,5 +22,11 @@ class Note(models.Model):
     # authorId    = models.ForeignKey(User, on_delete=models.CASCADE, related_name='authorNote', null=True) # null set true for now, since there are no users currently -sky
 
     def __str__(self):
-        return f" {self.title}, {self.description}, {self.authorName}, {self.created_at}, {self.updated_at}"
-    
+        return f" {self.title}, {self.description}, {self.authorName}, {self.dateCreated}, {self.dateModified}"
+
+class Attachment(models.Model):
+    note = models.ForeignKey(Note, related_name='attachments', on_delete=models.CASCADE)
+    file = models.FileField(upload_to='note_attachments/')
+
+    def __str__(self):
+        return self.file.name

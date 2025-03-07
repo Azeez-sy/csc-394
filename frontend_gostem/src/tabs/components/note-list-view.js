@@ -36,8 +36,7 @@ const NoteListView = ({ notes, setNotes, onAddClick, onDeleteNote, onEditNote })
         onDeleteNote(noteId)
       }
     };
-    
-  
+
     return (
       <div className="notes-body">
       <div className="notes-wrapper">
@@ -81,7 +80,22 @@ const NoteListView = ({ notes, setNotes, onAddClick, onDeleteNote, onEditNote })
                 <h3 className="note-final-title">{note.title}</h3>
                 <p className='author-name'>{note.authorName}</p>
                 <p className='description'>{note.description}</p>
-                <p className='file'>File(s): {note.file}</p> 
+                <div className='file'>
+                  <p>File(s):</p>
+                  {note.attachments && note.attachments.length > 0 ? (
+                    <ul>
+                      {note.attachments.map((attachment, index) => (
+                        <li key={index}>
+                          <a href={attachment.file} target="_blank" rel="noopener noreferrer">
+                            {attachment.file.split('/').pop()}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No files attached.</p>
+                  )}
+                </div>
               <div className="notes-item-footer">
                 <div className='date-info'><p>{note.dateCreated}</p></div>
                 <div className='button-group'> 

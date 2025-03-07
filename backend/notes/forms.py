@@ -1,6 +1,6 @@
-# forms.py
+# For testing backend notes functionality - Sky
 from django import forms
-from .models import Note, File
+from .models import Note, Attachment
 
 class NoteForm(forms.ModelForm):
     class Meta:
@@ -9,6 +9,6 @@ class NoteForm(forms.ModelForm):
 
 class FileForm(forms.ModelForm):
     class Meta:
-        model   = File
+        model   = Attachment
         fields  = ['file']
         widgets = {'file': forms.ClearableFileInput(attrs={'allow_multiple_selected': True})}

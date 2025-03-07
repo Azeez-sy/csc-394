@@ -1,16 +1,15 @@
-# notes/urls.py
+# Created by Sky Roman 
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import NoteViewSet
+from .views import NoteListCreate, NoteRetrieveUpdateDestroy
+from gostem import settings
+from django.conf.urls.static import static
 
-router = DefaultRouter()
-router.register(r'notes', NoteViewSet)
-
+#router = DefaultRouter()
+#router.register(r'note', NoteViewSet, basename='note')
 
 urlpatterns = [
-    path('', include(router.urls)),
-    #path('', views.list_all_notes, name='notes'),
-    #path('create/', views.create_note, name='create_note'),
-    #path('note/<int:pk>/', views.list_all_notes, name='note_detail'), # individual view of a users note, will create template if needed (TODO) -sky
-    #path('program/<str:program_name>/', views.list_all_notes, name='program_filter'),  # allow users to filter by program - sky
-]
+    path('notes/', NoteListCreate.as_view()),
+    path('notes/<int:pk>/', NoteRetrieveUpdateDestroy.as_view()),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

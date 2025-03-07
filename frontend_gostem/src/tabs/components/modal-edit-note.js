@@ -8,7 +8,8 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
   const [program, setProgram] = useState('program-1');
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [file, setFile] = useState("No files uploaded");
+  //const [file, setFile] = useState("No files uploaded");
+  const [files, setFiles] = useState([]); // Initialize files as an array
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
 
@@ -17,7 +18,13 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     if (note) {
       setTitle(note.title);
       setContent(note.description);
-      setFile(note.file);
+      
+      /*if (note && note.attachments) {*/
+      if (note.attachments) {
+        setFiles(note.attachments); 
+      } else {
+          setFiles([]);
+      }
       setProgram(note.programName.toLowerCase().includes('program 1') ? 'program-1' : 'program-2');
       setNoteType(note.isShared ? 'shared-notes' : 'personal-notes');
     }
@@ -28,7 +35,7 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     setTitleError("");
     setTitle("");
     setContent("");
-    setFile("No files uploaded");
+    setFiles([]);
     setProgram(note.programName.toLowerCase().includes('program 1') ? 'program-1' : 'program-2');
     setNoteType(note.isShared ? 'shared-notes' : 'personal-notes');
     onClose();
@@ -71,26 +78,57 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     const programName = program === 'program-1' ? 'Program 1' : 'Program 2'
     const isShared = noteType === 'shared-notes';
 
-    const updatedNote = {
+    /*const updatedNote = {
       ...note,
       title: title.trim(),
       programName: programName,
       description: content,
       file: file,
       isShared: isShared
-    };
+    };*/
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', content);
+    formData.append('programName', programName);
+    formData.append('isShared', isShared);
+    //formData.append('authorName', "Your Author Name"); // Add author name
+    console.log(files);
+    /*if (Array.isArray(files)) {
+      files.forEach(fileObject => {
+          if (fileObject.file) {
+              // This is a new file
+              console.log("File to append:", fileObject.file); // Debugging
 
-    onUpdateNote(updatedNote);
+              formData.append('files', fileObject.file, fileObject.file.name);
+          } else if(fileObject.id){
+              //This is an already existing file.
+              //Do nothing.
+          } else {
+              console.log("fileObject error: ", fileObject);
+          }
+      });
+    }*/
+    if (Array.isArray(files)) {
+      files.forEach(fileObject => {
+          if (fileObject instanceof File) {
+              // New file
+              formData.append('files', fileObject, fileObject.name);
+          } else if (fileObject.id) {
+              // Existing attachment
+              formData.append('existing_attachments', fileObject.id); // Send existing attachment ID
+          } else {
+              console.log("fileObject error: ", fileObject);
+          }
+      });
+    }
 
+    //onUpdateNote(updatedNote);
+    onUpdateNote(formData);
   };
 
   // Handle files - FIX --- does not work 
   const handleFileUpload = (uploadedFiles) => {
-    if (uploadedFiles && uploadedFiles.length > 0) {
-      setFile(uploadedFiles.map(file => file.name || "Unnamed file").join(", "));
-    } else {
-      setFile("No files uploaded");
-    }
+    setFiles(uploadedFiles);
   };
 
   return (
@@ -153,6 +191,7 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
               <div>
                 <FileUploadZone onFileUpload={handleFileUpload}/>
               </div>
+              
               <div className="modify-notes-btns">
               <button className="cancel-note-btn" onClick={handleModalClose}>Cancel</button>
               <button className="add-note-btn" onClick={handleUpdateClick}>Update Note</button>

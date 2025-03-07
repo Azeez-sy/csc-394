@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import Modal from './modal';
 import FileUploadZone from './drag-drop-files';
-import "../styles/modal-add-note.css"
+import "../styles/modal-add-note.css";
+
 
 const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
   const [noteType, setNoteType] = useState('shared-notes');
   const [program, setProgram] = useState('program-1');
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [file, setFile] = useState("No files uploaded");
+  const [files, setFiles] = useState([]);
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
 
@@ -18,7 +19,7 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     setTitleError("");
     setTitle("");
     setContent("");
-    setFile("No files uploaded");
+    setFiles([]);
     setProgram('program-1');
     setNoteType('shared-notes');
     onClose();
@@ -52,7 +53,7 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
   };
 
   // Creates a new note
-  const handleAddClick = (event) => {
+  /*const handleAddClick = (event) => {
     event.preventDefault();
 
     if(!validateTitle() ||!validateContent()) {return;}
@@ -78,15 +79,65 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     setFile("No files uploaded");
     setProgram('program-1');
     setNoteType('shared-notes');
-  };
+  };*/
+
+  const handleAddClick = async (event) => {
+    event.preventDefault();
+
+    if (!validateTitle() || !validateContent()) {
+        return;
+    }
+
+    const programName = program === 'program-1' ? 'Program 1' : 'Program 2';
+    const isShared = noteType === 'shared-notes';
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', content);
+    formData.append('programName', programName);
+    formData.append('isShared', isShared);
+    //formData.append('authorName', "Your Author Name"); // Add author name
+    console.log(files)
+    if(files.length !== 0){ // just don't do anything if no files are added
+      files.forEach(file => {
+        formData.append('files', file); // Append each file
+      });
+    }
+
+    console.log("FormData:", formData.get('file'));
+
+    try {
+        
+        onAddNote(formData);
+        handleModalClose(); // Reset the modal after adding
+    } catch (error) {
+        console.error('Error adding note:', error.response.data);
+    }
+};
 
   // Handle file uploads - FIX
+  /*
   const handleFileUpload = (uploadedFiles) => {
     if (uploadedFiles && uploadedFiles.length > 0) {
       setFile(uploadedFiles.map(file => file.name || "Unnamed file").join(", "));
     } else {
       setFile("No files uploaded");
     }
+  };*/
+  /*const handleFileUpload = (uploadedFiles) => {
+    if (uploadedFiles && uploadedFiles.length > 0) {
+        console.log("File Object Received:", uploadedFiles[0]);
+        setFile(uploadedFiles[0]);
+    } else {
+        setFile(null);
+    }
+  };*/
+  /*const handleFileUpload = (event) => {
+    setFile(event.target.files[0]);
+  };*/
+  const handleFileUpload = (uploadedFiles) => {
+  
+    setFiles(uploadedFiles);
   };
 
   return (
@@ -97,7 +148,7 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
           </div>
           <div className="notes-editor-container">
             <div>
-              <form className="create-note" onSubmit={(event)=> handleAddClick(event)}> 
+              <form className="create-note" onSubmit={handleAddClick}> 
                 <input
                 value={title}
                 onChange={(event)=> {
@@ -149,6 +200,7 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
               </div>
               <div>
                 <FileUploadZone onFileUpload={handleFileUpload}/>
+                {/*<input type="file" onChange={handleFileUpload} />*/}
               </div>
               <div className="modify-notes-btns">
               <button className="cancel-note-btn" onClick={handleModalClose}>Cancel</button>

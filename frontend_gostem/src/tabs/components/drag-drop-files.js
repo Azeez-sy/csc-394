@@ -1,27 +1,41 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import Dropzone, { useDropzone } from 'react-dropzone';
+import Dropzone from 'react-dropzone';
 import "../styles/drag-drop-files.css"
 import x from "./icons/x.png"
 import document from "./icons/document.png"
 
-const FileUploadZone = () => {
+const FileUploadZone = ({ onFileUpload }) => {
   const [files, setFiles] = useState([])
   const [rejected, setRejected] = useState([])
 
+  useEffect(() => {
+    if (onFileUpload) {
+      onFileUpload(files);
+    }
+  }, [files, onFileUpload]);
+
   const handleDrop = useCallback((acceptedFiles, rejectedFiles) => {
     if (acceptedFiles?.length) {
+      
       setFiles(previousFiles => [
         ...previousFiles,
         ...acceptedFiles.map(file =>
           Object.assign(file, { preview: URL.createObjectURL(file) })
         )
-      ])
+      ]);
+
+      onFileUpload([...files, ...acceptedFiles.map(file =>
+        Object.assign(file, { preview: URL.createObjectURL(file) })
+      )
+      ]);
+    }else{
+      onFileUpload([]);
     }
 
     if (rejectedFiles?.length) {
       setRejected(previousFiles => [...previousFiles, ...rejectedFiles])
     }
-  }, []);
+  }, [onFileUpload, files]);
 
   useEffect(() => {
     return () => files.forEach(file => URL.revokeObjectURL(file.preview))
