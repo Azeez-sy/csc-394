@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from gostem.models import User, Tutor, Admin, Event, Assignees, Note
+from gostem.models import User, Event, Assignees, Note
 from chats.models import Message
 
 class UserSerializer(serializers.ModelSerializer):

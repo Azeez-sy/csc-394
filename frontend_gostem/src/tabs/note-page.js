@@ -1,17 +1,20 @@
 // Created by Mya Von Behren, Feb 12th, 2025
-  import React, { useState, useEffect } from 'react';
-  import "./styles/notes-page.css"
-  import Sidebar from './components/sidebar';
-  import NoteListView from './components/note-list-view';
-  import ModalAddNote from './components/modal-add-note';
-  import ModalEditNote from './components/modal-edit-note';
-  import axios from 'axios';
+import React, { useState } from 'react';
+import "./styles/notes-page.css"
+import Sidebar from './components/sidebar';
+import NoteListView from './components/note-list-view';
+import ModalAddNote from './components/modal-add-note';
+import ModalEditNote from './components/modal-edit-note';
+import ModalViewNote from './components/modal-view-note';
+import BurgerMenu from './components/burger';
 
-  const NotesPage = () => {
-
-    const [isAddingNote, setIsAddingNote] = useState(false);
-    const [isEditingNote, setIsEditingNote] = useState(false);
-    const [currentNote, setCurrentNote] = useState(null)
+const NotesPage = () => {
+  const [isAddingNote, setIsAddingNote] = useState(false);
+  const [isEditingNote, setIsEditingNote] = useState(false);
+  const [currentNote, setCurrentNote] = useState(null)
+  const [isViewNote, setIsViewNote] = useState(false)
+  const [selectedNote, setSelectedNote] = useState(null)
+  const [notes, setNotes] = useState([]);
 
     useEffect(() => {
       fetchNotes();
@@ -26,7 +29,7 @@
         }
     };
 
-    const [notes, setNotes] = useState([
+    /*const [notes, setNotes] = useState([
       {
         id: 1,
         title: "ACT Prep",
@@ -38,7 +41,7 @@
         file: "File names",
         isShared: true
       }
-    ]);
+    ]);*/
 
     const handleEditClick = (note) => {
       setCurrentNote(note);

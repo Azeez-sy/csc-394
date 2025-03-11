@@ -1,13 +1,9 @@
 from django.contrib import admin
-from gostem.models import User, Tutor, Admin, Event, Assignees, Note
-from chats.models import Message
+from gostem.models import User, Event, Assignees, Note
 
 # Register models
-admin.site.register(User)
-admin.site.register(Tutor)
-admin.site.register(Admin)
+admin.site.unregister(User)
 admin.site.register(Event)
 admin.site.register(Assignees)
-admin.site.register(Message)
 admin.site.register(Note)
 

@@ -77,12 +77,12 @@ const Sidebar = () => {
           </Link>
         </div>
         <div className="sidebar-item">
-          <Link to="./">
+          <a onClick={() => {window.location.href='/logout'}}>
             <button className="sidebar-image-button">
               <img src={logout} alt="Logout" />
               <span className="sidebar-button-text">Logout</span>
             </button>
-          </Link>
+          </a>
         </div>
       </div>
     </div>

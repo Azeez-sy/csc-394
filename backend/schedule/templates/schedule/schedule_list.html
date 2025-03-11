@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Weekly Tutor Schedule</h2>
+<table border="1">
+    <tr>
+        <th>Tutor</th>
+        <th>Date</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Subject</th>
+    </tr>
+    {% for schedule in schedules %}
+    <tr>
+        <td>{{ schedule.tutor.name }}</td>
+        <td>{{ schedule.date }}</td>
+        <td>{{ schedule.start_time }}</td>
+        <td>{{ schedule.end_time }}</td>
+        <td>{{ schedule.subject }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'schedule_create' %}">Add New Schedule</a>
+{% endblock %}

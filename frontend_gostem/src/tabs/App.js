@@ -9,6 +9,7 @@ import ChatPage from "./chats-page";
 import HoursPage from "./hours-page";
 import ProfilePage from "./profile-page";
 import SchedulePage from "./schedule-page";
+import AdminSchedulePage from "./admin/admin-schedule-page";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/hours-page" component={HoursPage} />
         <Route path="/profile-page" component={ProfilePage} />
         <Route path="/schedule-page" component={SchedulePage} />
+        <Route path="/admin-schedule-page" component={AdminSchedulePage} />
       </Switch>
     </Router>
   );

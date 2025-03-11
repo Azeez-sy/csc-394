@@ -102,6 +102,11 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+.input-group textarea {
+  resize: none;
+  height: 100px;
+}
+
 .input-group select:focus,
 .input-group input:focus,
 .input-group textarea:focus {
@@ -211,7 +216,7 @@
     }
 
     .hours-header h2 {
-      font-size: 20px;
+      font-size: 1.3rem;
     }
 
     .hours-header {
