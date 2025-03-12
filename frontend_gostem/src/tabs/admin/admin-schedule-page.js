@@ -56,9 +56,6 @@ const AdminSchedulePage= () => {
       }
     };
     
-    useEffect(() => {
-      fetchSchedules();
-    }, []);
   
   const handleClose = () => {
     setIsAddingEvent(false);
@@ -69,7 +66,10 @@ const AdminSchedulePage= () => {
     setIsAddingEvent(false);
   };
 
-
+  /*useEffect(() => {
+    fetchSchedules();
+  }, []);*/
+  
   const renderEventContent = (eventInfo) => {
     const isMonthView = eventInfo.view.type === 'dayGridMonth';
     const start = eventInfo.event.start;

@@ -28,8 +28,7 @@ DEBUG = config('DEBUG', cast=bool, default=False)
 
 ALLOWED_HOSTS = []
 
-SITE_ID = 3
-
+#SITE_ID = 1
 
 # Application definition
 
@@ -52,16 +51,17 @@ INSTALLED_APPS = [
     'notes',
 
     #OAuth apps
-    "user",
-    "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google"
+    'user',
+    #'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google'
 ]
 
 SOCIALACCOUNT_LOGIN_ON_GET=True 
 
+AUTH_USER_MODEL = "user.User"
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {

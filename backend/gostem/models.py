@@ -3,8 +3,7 @@ from django.utils.timezone import now
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 
-from django.contrib.auth.models import User
-from django.db import models
+from user.models import User
 
 # Create your models here.
 class Program(models.Model):
