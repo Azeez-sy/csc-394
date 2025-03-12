@@ -37,7 +37,7 @@ def dashboard(request):
     return redirect("/landing-page")  # Redirect to the root URL which will be handled by React Router
 
 def landing_page(request):
-    return render(request, 'index.html')
+    return render(request, './index.html')
 
 def get_user_profile(request):
     user = request.user
