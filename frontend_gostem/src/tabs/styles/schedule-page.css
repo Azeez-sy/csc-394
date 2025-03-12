@@ -16,16 +16,16 @@
 
 .fc .fc-button:focus {
   outline: none !important;
-  box-shadow: none !important; 
+  box-shadow: none !important;
 }
 
 .fc .fc-button {
-  background-color: #afdcd5 !important; 
+  background-color: #afdcd5 !important;
   border: none !important;
-  color: black !important; 
+  color: black !important;
   margin: 0 4px !important;
   border-radius: 8px !important;
-  transition:  background-color 0.3s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .fc .fc-button:hover {
@@ -36,13 +36,13 @@
 }
 
 .fc .fc-button-active {
-  background-color:#133d3b  !important;
-  color: white !important; 
+  background-color: #133d3b !important;
+  color: white !important;
 }
 
 .fc .fc-button-active:hover {
   background-color: #216661 !important;
-  color: white !important; 
+  color: white !important;
 }
 
 .fc .fc-today-button:disabled {
@@ -57,4 +57,28 @@
 
 .event-title {
   font-weight: 600;
+}
+
+.event-title,
+.event-location,
+.event-tutor-name,
+.event-time {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.event-content-month .event-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.event-content-short .event-title {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  font-size: 0.9em;
 }

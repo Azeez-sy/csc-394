@@ -60,7 +60,15 @@ const SchedulePage = () => {
 
   const renderEventContent = (eventInfo) => {
     const isMonthView = eventInfo.view.type === 'dayGridMonth';
-
+    const start = eventInfo.event.start;
+    const end = eventInfo.event.end;
+    
+    // Calculate event duration in minutes
+    const durationMinutes = end 
+      ? Math.round((end.getTime() - start.getTime()) / (1000 * 60)) 
+      : 0;
+    
+    // For month view (limited space)
     if (isMonthView) {
       return (
         <div className="event-content-month">
@@ -69,11 +77,22 @@ const SchedulePage = () => {
       );
     }
     
-    const startTime = eventInfo.event.start.toLocaleTimeString([], { 
+    // For short events (75 minutes or less)
+    if (durationMinutes <= 75) {
+      return (
+        <div className="event-content event-content-short">
+          <div className="event-title">{eventInfo.event.title}</div>
+        </div>
+      );
+    }
+    
+    // For normal events (more than 30 minutes)
+    const startTime = start.toLocaleTimeString([], { 
       hour: '2-digit', 
       minute: '2-digit' 
     });
-    const endTime = eventInfo.event.end.toLocaleTimeString([], { 
+    
+    const endTime = end.toLocaleTimeString([], { 
       hour: '2-digit', 
       minute: '2-digit' 
     });
@@ -81,11 +100,13 @@ const SchedulePage = () => {
     return (
       <div className="event-content">
         <div className="event-title">{eventInfo.event.title}</div>
+        <div className="event-tutor-name">{eventInfo.event.extendedProps.tutor}</div>
         <div className="event-location">{eventInfo.event.extendedProps.location}</div>
         <div className="event-time">{startTime} - {endTime}</div>
       </div>
     );
   };
+
 
   return (
     <div className="schedule-page-container">
