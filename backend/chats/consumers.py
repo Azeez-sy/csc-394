@@ -6,54 +6,72 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from .models import *
 
-class ChatConsumer(WebsocketConsumer):
-    def connect(self):
+class ChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
         self.user = self.scope['user']
-        self.chatroom_name = self.scope['url_route']['kwargs']['chatroom_name']
-        self.chatroom = get_object_or_404(ChatGroup, group_name = self.chatroom_name)
+        self.chatroom_name = "gloal_chat"
 
-        async_to_sync(self.channel_layer.group_add)(
-            self.chatroom_name, self.channel_name
+        #Send last 50 messages to the new user when they join
+        messages = await database_sync_to_async(self.get_last_50_messages)()
+
+        for message in messages:
+            await self.send(text_data=json.dumps({
+                'message': message.content,
+                'sender': message.sender.username,
+                'timestamp': message.timestamp.isoformat(),
+            }))
+
+            #Join room group
+        await self.channel_layer.group_add(
+            self.chatroom_name,
+            self.channel_name
         )
 
-        self.accept()
+        await self.accept()
 
-    def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard) (
-            self.chatroom_name, self.chatroom_name
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.chatroom_name,
+            self.channel_name
         )
 
-    def receive(self, text_data):
+    async def receive(self, text_data):
         text_data_json = json.loads(text_data) 
         content = text_data_json['content']
 
-        message = async_to_sync(self.create_message(content))
+        message = await self.create_message(content)
 
-        event = {
-            'type': 'message_handler',
-            'message_id' : message.id,
-            'content' : message.content,
-            'sender' : message.sender.username,
-            'timestamp' : message.timestamp.isoformat(),
-        }
-
-
-        async_to_sync(self.channel_layer.group_send)(
-            self.chatroom_name, event
+        await self.channel_layer.group_send(
+            self.chatroom_name,
+            {
+                'type': 'chat_message',
+                'message': message.content,
+                'sender': message.sender.username,
+                'timestamp': message.timestamp.isoformat(),
+            }
         )
 
-    async def message_handler(self, event): 
-        message_data = event['message']
-        await self.send(text_data = json.dumps(message_data))
-
-    async def create_message(self, content):
-
-        message = await database_sync_to_async(Message.objects.create)(
-            content = content,
-            sender = self.user,
-            group = self.chatroom
+    async def chat_message(self, event): 
+             # Send message to WebSocket
+        await self.send(text_data=json.dumps({
+            'message': event['message'],
+            'sender': event['sender'],
+            'timestamp': event['timestamp'],
+            }))
+        
+ # Helper function to create message
+    @database_sync_to_async
+    def create_message(self, content):
+        return Message.objects.create(
+            sender=self.user,
+            content=content
         )
-        return message
+
+    
+    def get_last_50_messages(self):
+        return list(Message.objects.all().order_by('-timestamp')[:50])
+
 
 
 

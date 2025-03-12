@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles/chats-page.css";
 import Sidebar from "./components/sidebar";
 
@@ -6,12 +6,58 @@ const ChatContent = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [userName, setUserName] = useState("Anonymous");
+  const socketRef = useRef(null);
 
+  // Fetch the user's profile name
+  useEffect(() => {
+    fetch("/api/profile/")
+      .then((response) => response.json())
+      .then((data) => setUserName(data.name || "Anonymous"))
+      .catch(() => setUserName("Anonymous"));
+  }, []);
+
+  // WebSocket connection setup
+  useEffect(() => {
+    socketRef.current = new WebSocket("ws://localhost:8000/ws/chats-page");
+
+    socketRef.current.onopen = () => {
+      console.log("Connected to WebSocket server");
+    };
+
+    socketRef.current.onmessage = (event) => {
+      const messageData = JSON.parse(event.data);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { user: messageData.sender, text: messageData.content }
+      ]);
+    };
+
+    socketRef.current.onclose = () => {
+      console.log("Disconnected from WebSocket server");
+    };
+
+    // Clean up WebSocket connection when the component unmounts
+    return () => {
+      socketRef.current.close();
+    };
+  }, []);
+
+  // Send message over WebSocket
   const handleSend = () => {
     if (input.trim() !== "") {
-      const newMessage = { user: userName, text: input };
-      setMessages([...messages, newMessage]);
-      setInput("");
+      const message = {
+        content: input,
+      };
+
+      // Send the message to the server
+      socketRef.current.send(JSON.stringify(message));
+
+      // Optimistically add the new message to the UI
+      setMessages([
+        ...messages,
+        { user: userName, text: input },
+      ]);
+      setInput(""); // Clear the input field
     }
   };
 
@@ -33,8 +79,7 @@ const ChatContent = () => {
           id="username"
           type="text"
           value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="Enter your name"
+          disabled
         />
       </div>
 
