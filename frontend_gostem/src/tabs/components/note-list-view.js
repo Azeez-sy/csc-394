@@ -6,7 +6,7 @@ import "../styles/note-list-view.css"
 
 const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote }) => {
     const [program, setProgram] = useState('all-programs');
-
+    //const filteredNotes = [];
     // Filter notes
     const filteredNotes = notes.filter(note => {
       if (program !== 'all-programs' && !note.programName.toLowerCase().includes(program.replace('-', ' '))) {
@@ -16,16 +16,20 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
     });
 
     const hasFiles = note => {
-      if (note.files && Array.isArray(note.files) && note.files.length > 0) {
+      /*if (note.files && Array.isArray(note.files) && note.files.length > 0) {
         return true;
+      }*/
+      if (note.attachments && note.attachments.length > 0 ){
+        return note.attachments;
       }
+      return false;//null;
       
       // Check if the note has a file string that's not "No files uploaded"
-      if (note.file && note.file !== "No files uploaded" && note.file !== "") {
+      /*if (note.file && note.file !== "No files uploaded" && note.file !== "") {
         return true;
       }
       
-      return false;
+      return false;*/
     };
 
     const handleDelete = (e, noteId) => {
@@ -72,7 +76,7 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
                 </div>
                 <h3 className="note-final-title">{note.title}</h3>
                 <p className='author-name'>{note.authorName}</p>
-                <p className='description'>{note.description}</p>
+                {/*<p className='description'>{note.description}</p>
                 <div className='file'>
                   <p>File(s):</p>
                   {note.attachments && note.attachments.length > 0 ? (
@@ -88,16 +92,19 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
                   ) : (
                     <p>No files attached.</p>
                   )}
-                </div>
-                {/*<p className='description'>
+                  </div>*/}
+                <p className='description'>
                   {note.description.length > 50 ?
                   `${note.description.substring(0, 50)}...` : note.description}
                 </p>
                 {hasFiles(note) && (
                   <div className="file-icon-container">
-                    <img src={document} alt="File attached" className="file-icon" />
+                    {/*<img src={document} alt="File attached" className="file-icon" />*/}
+                    {[...Array(note.attachments.length)].map((_, index) => (
+                      <img key={index} src={document} alt="File attached" className="file-icon" />
+                    ))}
                   </div>
-                )}*/}
+                )}
               <div className="notes-item-footer">
                 <div className='date-info'><p>{note.dateCreated}</p></div>
                 <div className='button-group'> 

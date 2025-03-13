@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True #UNDOOOO!!!!!! 
 ALLOWED_HOSTS = []
 
-SITE_ID = 3
+#SITE_ID = 3
 
 
 # Application definition
@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    'corsheaders',
+    #'corsheaders',
 ]
 
 SOCIALACCOUNT_LOGIN_ON_GET=True 

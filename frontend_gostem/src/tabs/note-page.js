@@ -1,5 +1,5 @@
 // Created by Mya Von Behren, Feb 12th, 2025
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "./styles/notes-page.css"
 import Sidebar from './components/sidebar';
 import NoteListView from './components/note-list-view';
@@ -7,6 +7,7 @@ import ModalAddNote from './components/modal-add-note';
 import ModalEditNote from './components/modal-edit-note';
 import ModalViewNote from './components/modal-view-note';
 import BurgerMenu from './components/burger';
+import axios from 'axios';
 
 const NotesPage = () => {
   const [isAddingNote, setIsAddingNote] = useState(false);
@@ -14,7 +15,7 @@ const NotesPage = () => {
   const [currentNote, setCurrentNote] = useState(null)
   const [isViewNote, setIsViewNote] = useState(false)
   const [selectedNote, setSelectedNote] = useState(null)
-  const [notes, setNotes] = useState([]);
+  //const [notes, setNotes] = useState([]);
 
     useEffect(() => {
       fetchNotes();
@@ -23,13 +24,14 @@ const NotesPage = () => {
     const fetchNotes = async () => {
         try {
             const response = await axios.get('http://127.0.0.1:8000/api/notes/');
+            console.log("Response Data:", response.data); // Inspect response data
             setNotes(response.data);
         } catch (error) {
             console.error('Error fetching notes:', error);
         }
     };
 
-    /*const [notes, setNotes] = useState([
+    const [notes, setNotes] = useState([
       {
         id: 1,
         title: "ACT Prep",
@@ -41,7 +43,7 @@ const NotesPage = () => {
         file: "File names",
         isShared: true
       }
-    ]);*/
+    ]);
 
     const handleEditClick = (note) => {
       setCurrentNote(note);
@@ -79,6 +81,8 @@ const NotesPage = () => {
       setIsAddingNote(false);
     };*/
     const addNote = async (formData) => {
+      console.log("adding note...")
+      console.log(formData.entries())
       try {
         console.log("Sending FormData:", formData.get('file')); // Debugging
         const response = await axios.post('http://127.0.0.1:8000/api/notes/', formData, { // Send formData
@@ -90,7 +94,11 @@ const NotesPage = () => {
         fetchNotes();
         setIsAddingNote(false);
       } catch (error) {
-          console.error('Error adding note:', error.response.data);
+        if (error.response) {
+            console.error('Error adding note:', error.response.data);
+        } else {
+            console.error('Error adding note:', error);
+        }
       }
     };
     
@@ -144,32 +152,49 @@ const NotesPage = () => {
       }
     };
 
+    const handleCloseView = () => {
+      setIsViewNote(false);
+    };
+
+    const handleViewNote = (note) => {
+      setSelectedNote(note);
+      setIsViewNote(true);
+    };
+
     return (
       <div className="notes-page-container">
-        <Sidebar />
-        <NoteListView 
-          notes={notes} 
-          setNotes={setNotes} 
-          onAddClick={handleAddClick} 
-          onDeleteNote={deleteNote}
-          onEditNote={handleEditClick} />
-
-        {isAddingNote && (
-          <ModalAddNote 
-            isOpen={isAddingNote} 
-            onClose={handleCancel} 
-            onAddNote={addNote} 
-          />
-        )}
-        {isEditingNote && currentNote && (
-          <ModalEditNote 
-            isOpen={isEditingNote}
-            onClose={handleEditClose}
-            onUpdateNote={updateNote}
-            note={currentNote}
-          />
-        )}
+      <div className="burger-menu-container">
+        {!isAddingNote && !isEditingNote && !isViewNote && <BurgerMenu />}
       </div>
+      <Sidebar />
+      <ModalViewNote
+        isOpen={isViewNote}
+        onClose={handleCloseView}
+        note={selectedNote}
+      />
+      <NoteListView
+        notes={notes}
+        onAddClick={handleAddClick}
+        onDeleteNote={deleteNote}
+        onEditNote={handleEditClick}
+        onViewNote={handleViewNote} />
+
+      {isAddingNote && (
+        <ModalAddNote
+          isOpen={isAddingNote}
+          onClose={handleCancel}
+          onAddNote={addNote}
+        />
+      )}
+      {isEditingNote && currentNote && (
+        <ModalEditNote
+          isOpen={isEditingNote}
+          onClose={handleEditClose}
+          onUpdateNote={updateNote}
+          note={currentNote}
+        />
+      )}
+    </div>
     );
   }
 

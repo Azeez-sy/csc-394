@@ -89,13 +89,13 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     }
 
     const programName = program === 'program-1' ? 'Program 1' : 'Program 2';
-    const isShared = noteType === 'shared-notes';
+    //const isShared = noteType === 'shared-notes';
 
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', content);
     formData.append('programName', programName);
-    formData.append('isShared', isShared);
+    //formData.append('isShared', isShared);
     //formData.append('authorName', "Your Author Name"); // Add author name
     console.log(files)
     if(files.length !== 0){ // just don't do anything if no files are added

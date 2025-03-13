@@ -23,14 +23,11 @@ from . import settings
 
 
 urlpatterns = [
-
+    path('api/', include('notes.urls')),
     path("chats/", include("chats.urls")),
     path("admin/", admin.site.urls),
     path('api/', include('chats.urls')),
     # path('', include('chats.urls')),
-
-    path('api/', include('notes.urls')),
-
     path("accounts/", include("allauth.urls")),
     path("", include("user.urls")),
     path("dashboard/", dashboard, name="dashboard"),
@@ -40,4 +37,4 @@ urlpatterns = [
     re_path(r'^.*$', landing_page),  # Catch-all pattern to serve index.html for all routes
     
     
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] 

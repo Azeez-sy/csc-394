@@ -85,7 +85,8 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     setContent("");
     setFiles([]);
     setProgram(note.programName.toLowerCase().includes('program 1') ? 'program-1' : 'program-2');
-    setNoteType(note.isShared ? 'shared-notes' : 'personal-notes');
+    setDeleteAttachments([]);
+    //setNoteType(note.isShared ? 'shared-notes' : 'personal-notes');
     onClose();
   };
 
@@ -100,6 +101,7 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
 
     if(title.length > 50){
       setTitleError("Title cannot exceed 50 characters");
+      alert(titleError);
       return false
     }
 
@@ -110,10 +112,34 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     setContentError("");
     if(content.length > 500){
       setContentError("Description cannot exceed 500 characters");
+      alert(contentError);
       return false;
     }
     return true;
   };
+
+  // delete previous note attachments
+  const [deleteAttachments, setDeleteAttachments] = useState([]);
+
+  const handleAttachmentDeletion = (attachmentId, attachment, checked) => {
+    console.log("Before update:", deleteAttachments);
+    console.log("id = ", attachment);
+    console.log(attachment);
+
+    /*if(checked){
+      setDeleteAttachments(...deleteAttachments, attachmentId);
+    }else{
+      setDeleteAttachments(deleteAttachments.filter(id => id !== attachmentId));
+    }*/
+    /*if (window.confirm("Are you sure you want to delete "+attachment.file.split('/').pop()+" attachment?")) {
+      setDeleteAttachments(...deleteAttachments, attachment.id);
+    }*/
+    setDeleteAttachments(...deleteAttachments, "slay"); // can be set once but not twice since id already in the list. 
+
+    setDeleteAttachments(...deleteAttachments, attachment); // can be set once but not twice since id already in the list. 
+    console.log("After update:", deleteAttachments);
+
+  }
 
   // Updates note
   const handleUpdateClick = (event) => {
@@ -140,7 +166,8 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     formData.append('title', title);
     formData.append('description', content);
     formData.append('programName', programName);
-    formData.append('isShared', isShared);
+    formData.append('documents_attached', JSON.stringify(deleteAttachments));
+    //formData.append('isShared', isShared);
     //formData.append('authorName', "Your Author Name"); // Add author name
     console.log(files);
     /*if (Array.isArray(files)) {
@@ -173,6 +200,7 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     }
 
     //onUpdateNote(updatedNote);
+
     onUpdateNote(formData);
   };
 
@@ -235,7 +263,15 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
                   initialFiles={files}
                 />
               </div>
-              
+              {note.attachments && note.attachments.map(attachment => (
+                <div key={attachment.id}>
+                    <input
+                        type="checkbox"
+                        onClick={(e) => handleAttachmentDeletion(attachment.id, attachment, e.target.checked)}
+                    />
+                    <span> {attachment.file.split('/').pop()}</span>
+                </div>
+              ))}
               <div className="modify-notes-btns">
               <button className="cancel-note-btn" onClick={handleModalClose}>Cancel</button>
               <button className="add-note-btn" onClick={handleUpdateClick}>Update Note</button>

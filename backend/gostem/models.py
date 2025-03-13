@@ -33,18 +33,4 @@ class Assignees(models.Model):
     def __str__(self):
         return (f"self.event, self.assignee")
 
-class Note(models.Model):
-    noteId = models.AutoField(primary_key = True) #Auto Incrementing Note ID
-    contentType = models.CharField(max_length = 50)
-    content = models.TextField() #Text or a file path
-    #authorId = models.ForeignKey(User, on_delete=models.CASCADE) #Links to User Model
-    authorId = models.ForeignKey(User, on_delete=models.CASCADE, related_name='chats_notes')
-    authorName = models.CharField(max_length = 100) #Write in Author name
-    event = models.CharField(max_length = 100) #Write in Event
-    courseName = models.CharField(max_length = 100) #Write in Course Name
-    date = models.DateTimeField(default = now) #TimeStamp of Note Creation
-    
-    def __str__(self):
-        return (f"self.noteId, self.contentType, self.content, self.authorId, self.authorId, self.authorName, self.event, self.courseName, self.date")
-    
 

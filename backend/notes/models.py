@@ -6,7 +6,7 @@ from gostem.models import Program, User
 
 class Note(models.Model):
     title       = models.CharField(max_length=50)
-    description = models.TextField(max_length =150, blank=True, null=True)
+    description = models.TextField(max_length =500, blank=True, null=True)
     authorName  = models.CharField(max_length = 100, default="Anonymous") 
     programName = models.CharField(max_length=100, blank=True, null=True)
     dateCreated = models.DateTimeField(auto_now_add=True)

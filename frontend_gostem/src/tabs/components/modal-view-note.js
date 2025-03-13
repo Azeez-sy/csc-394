@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './modal';
 import "../styles/modal-view-note.css"
-import document from "./icons/document.png"
+import "../components/download-note"
+import DownloadButton from '../components/download-note';
+import documentpic from './icons/document.png'
+
+//import document from "./icons/document.png"
 
 const ModalViewNote = ({ isOpen, onClose, note }) => {
 
@@ -17,11 +21,11 @@ const ModalViewNote = ({ isOpen, onClose, note }) => {
 
   // Get note's info
   useEffect(() => {
-    if (note) {
+    if (note && note.attachments && Array.isArray(note.attachments)) {
       setNoteDetails({
         title: note.title,
         content: note.description,
-        file: note.file,
+        attachments: note.attachments,
         program: note.programName,
         author: note.authorName || "Unknown",
         dateCreated: note.dateCreated || ""
@@ -31,6 +35,24 @@ const ModalViewNote = ({ isOpen, onClose, note }) => {
 
   const handleModalClose = () => {
     onClose();
+  };
+
+  const handleDownload = (fileName) => {
+    fetch(`http://localhost:8000/media/note_attachments/${fileName}`, {
+        method: 'GET',
+        responseType: 'blob',
+    })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            console.log("document:", document);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
   };
 
   return (
@@ -56,25 +78,46 @@ const ModalViewNote = ({ isOpen, onClose, note }) => {
                 <p>{noteDetails.content}</p>
               </div>
               
-              {noteDetails.file && noteDetails.file !== "No files uploaded" && (
+              {noteDetails.attachments && noteDetails.attachments.length > 0 && (
                 <div className="note-view-files">
                   <h4>Attached Files:</h4>
                   <div className='file-preview'>
                     <div className="file-list">
-                      {noteDetails.file.split(", ").map((fileName, index) => (
+                      {noteDetails.attachments.map((attachment, index) => (
                         <div key={index} className="attached-file">
                           <span className='document-icon-container'>
-                            <img src={document} alt="📄" className='document-icon'/>
+                            <img src={documentpic} alt="📄" className='document-icon' />
                           </span>
-                          <span className="file-name">{fileName}</span>
+                          {/*<a
+                            onClick={(event) => {
+                              event.preventDefault(); // Prevent default link navigation
+                              handleDownload(attachment.file.split('/').pop());
+                            }}
+                            href={attachment.file}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="file-name"
+                            download
+                          >
+                            {attachment.file.split('/').pop()}
+                          </a>
+                          <button
+                            onClick={() => handleDownload(attachment.file.split('/').pop())}
+                            className="file-name"
+                            >
+                            {attachment.file.split('/').pop()}
+                        </button>*/}
+                          <DownloadButton
+                            filename = {attachment.file.split('/').pop()}
+                            attachment = {attachment}
+                          />
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
-              )}
+            )}
             </div>
-            
             <div className="view-notes-btns">
               <button className="close-note-btn" onClick={handleModalClose}>Close</button>
             </div>
