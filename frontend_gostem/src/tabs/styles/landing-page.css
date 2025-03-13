@@ -95,6 +95,7 @@
   box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.4);
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
+  font-size: .8em;
 }
 
 .bottom-button:hover {

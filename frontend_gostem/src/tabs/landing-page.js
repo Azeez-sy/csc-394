@@ -7,7 +7,8 @@ import notes from './components/icons/notes.png'
 import schedule from './components/icons/schedule.png'
 import user from './components/icons/user.png'
 import globe from './components/icons/globe.png'
-import group from './components/icons/group-users.png'
+// import group from './components/icons/group-users.png'
+import users from './components/icons/group-users2.png'
 // import BurgerMenu from './components/burger';  
 // import Sidebar from './components/sidebar';  
 
@@ -42,13 +43,13 @@ const LandingPage = () => {
 
 
       <div className="button-grid">
-        <a href="https://thegostem.org/" target="_blank" rel="noopener noreferrer">
+        {/* <a href="https://thegostem.org/" target="_blank" rel="noopener noreferrer">
           <button className="image-button">
             <img src={globe} alt="globe" />
             <br></br>
             <span className="button-text">Website</span>
           </button>
-        </a>
+        </a> */}
         <Link to="./note-page">
           <button className="image-button">
             <img src={notes} alt="Notes" />
@@ -86,7 +87,7 @@ const LandingPage = () => {
         </Link>
         <Link to="./user-list">
           <button className="image-button">
-            <img src={group} alt="User List" />
+            <img src={users} alt="User List" />
             <br></br>
             <span className="button-text">User List</span>
           </button>
@@ -95,9 +96,9 @@ const LandingPage = () => {
 
       <div className="bottom-buttons">
 
-        <Link to="">
+        {/* <Link to="">
           <button className="bottom-button">Settings</button>
-        </Link>
+        </Link> */}
 
         <a onClick={() => {window.location.href='/logout'}}>
           <button className="bottom-button">Log Out</button>
