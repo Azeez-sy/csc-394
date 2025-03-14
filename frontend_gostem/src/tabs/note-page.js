@@ -8,7 +8,7 @@ import ModalEditNote from './components/modal-edit-note';
 import ModalViewNote from './components/modal-view-note';
 import BurgerMenu from './components/burger';
 
-const NotesPage = () => {
+const NotesContent = ({ handleLogout }) => {
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [currentNote, setCurrentNote] = useState(null)
@@ -20,7 +20,7 @@ const NotesPage = () => {
     setCurrentNote(note);
     setIsEditingNote(true);
   };
-
+  
   const handleEditClose = () => {
     setIsEditingNote(false);
     setCurrentNote(null);
@@ -81,14 +81,12 @@ const NotesPage = () => {
     setNotes(updatedNotes);
   }
 
-
-
   return (
     <div className="notes-page-container">
       <div className="burger-menu-container">
         {!isAddingNote && !isEditingNote && !isViewNote && <BurgerMenu />}
       </div>
-      <Sidebar />
+      <Sidebar handleLogout={handleLogout} />
       <ModalViewNote
         isOpen={isViewNote}
         onClose={handleCloseView}
@@ -120,6 +118,8 @@ const NotesPage = () => {
   );
 }
 
-
+const NotesPage = ({ handleLogout }) => {
+  return <NotesContent handleLogout={handleLogout} />;
+}
 
 export default NotesPage;

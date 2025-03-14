@@ -132,16 +132,20 @@ const TimeCard = () => {
     );
 };
 
-const HoursPage = () => {
+const HoursContent = ({ handleLogout }) => {
     return (
         <div className="hours-page-container">
             <div className="burger-menu-container">
                 <BurgerMenu />
             </div>
-            <Sidebar />
+            <Sidebar handleLogout={handleLogout} />
             <TimeCard />
         </div>
     );
+};
+
+const HoursPage = ({ handleLogout }) => {
+    return <HoursContent handleLogout={handleLogout} />;
 };
 
 export default HoursPage;

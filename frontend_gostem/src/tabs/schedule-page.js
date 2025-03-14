@@ -4,56 +4,65 @@ import Sidebar from './components/sidebar';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import CreateEvent from "./components/CreateEvent"; // Import admin-only event creation form
 
-const SchedulePage = () => {
+const SchedulePage = ({ handleLogout }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showCreateEvent, setShowCreateEvent] = useState(false);
 
-  // Fetch schedules from backend
+  const isAdmin = localStorage.getItem("isAdmin") === "true"; // Check if user is admin
+
+  // Fetch schedules from the Django backend
   const fetchSchedules = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/api/schedule/');
-      
+      const authToken = localStorage.getItem("authToken");
+
+      const response = await fetch("http://localhost:8000/api/schedule/events/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Token ${authToken}`,
+        },
+      });
+
       if (!response.ok) {
         throw new Error(`HTTP error ${response.status}`);
       }
-      
+
       const data = await response.json();
-      console.log("Raw data from API:", data); // Debug what we're getting
-      
-      if (!data.schedules || !Array.isArray(data.schedules)) {
+      console.log("Raw data from API:", data);
+
+      if (!Array.isArray(data)) {
         console.error("Invalid data format:", data);
         setError("Invalid data format received from server");
         return;
       }
-      
-      // Transform backend data to FullCalendar event format
-      const formattedEvents = data.schedules.map(schedule => {
-        console.log("Processing schedule:", schedule); // Debug individual record
-        return {
-          title: schedule.subject,
-          start: `${schedule.date}T${schedule.start_time}`,
-          end: `${schedule.date}T${schedule.end_time}`,
-          extendedProps: {
-            location: 'TBD',
-            tutor: schedule.tutor_id,
-            subject: schedule.subject
-          }
-        };
-      });
-      
-      console.log("Formatted events:", formattedEvents); // Debug events after transformation
+
+      const formattedEvents = data.map(event => ({
+        id: event.id,
+        title: event.class_name,
+        start: `${event.date}T${event.start_time}`,
+        end: `${event.date}T${event.end_time}`,
+        extendedProps: {
+          location: event.location,
+          tutors: event.tutors.map(tutorId => `Tutor ID: ${tutorId}`).join(", "),
+          is_recurring: event.is_recurring
+        },
+        color: event.is_recurring ? "#FFB347" : "#afdcd5",
+      }));
+
       setEvents(formattedEvents);
     } catch (error) {
-      console.error('Error fetching schedules:', error);
+      console.error("Error fetching schedules:", error);
       setError(error.message);
     } finally {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchSchedules();
   }, []);
@@ -63,12 +72,10 @@ const SchedulePage = () => {
     const start = eventInfo.event.start;
     const end = eventInfo.event.end;
     
-    // Calculate event duration in minutes
     const durationMinutes = end 
       ? Math.round((end.getTime() - start.getTime()) / (1000 * 60)) 
       : 0;
-    
-    // For month view (limited space)
+
     if (isMonthView) {
       return (
         <div className="event-content-month">
@@ -76,8 +83,7 @@ const SchedulePage = () => {
         </div>
       );
     }
-    
-    // For short events (75 minutes or less)
+
     if (durationMinutes <= 75) {
       return (
         <div className="event-content event-content-short">
@@ -85,36 +91,36 @@ const SchedulePage = () => {
         </div>
       );
     }
-    
-    // For normal events (more than 30 minutes)
-    const startTime = start.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-    
-    const endTime = end.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-    
+
+    const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     return (
       <div className="event-content">
         <div className="event-title">{eventInfo.event.title}</div>
-        <div className="event-tutor-name">{eventInfo.event.extendedProps.tutor}</div>
+        <div className="event-tutor-name">{eventInfo.event.extendedProps.tutors}</div>
         <div className="event-location">{eventInfo.event.extendedProps.location}</div>
         <div className="event-time">{startTime} - {endTime}</div>
       </div>
     );
   };
 
-
   return (
     <div className="schedule-page-container">
-      <Sidebar />
+      <Sidebar handleLogout={handleLogout} />
+
+      {isAdmin && (
+        <button className="add-event-button" onClick={() => setShowCreateEvent(!showCreateEvent)}>
+          {showCreateEvent ? "Close Event Form" : "Add Event"}
+        </button>
+      )}
+
+      {showCreateEvent && isAdmin && <CreateEvent onEventCreated={fetchSchedules} />}
+
       <div className="calendar-wrapper">
         {loading && <div>Loading schedules...</div>}
         {error && <div className="error-message">Error: {error}</div>}
-        
+
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin]}
           initialView='timeGridWeek'

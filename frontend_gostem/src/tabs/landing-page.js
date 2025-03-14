@@ -15,7 +15,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
-const LandingPage = () => {
+const LandingPage = ({ handleLogout }) => {
 
 
   // const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -99,7 +99,7 @@ const LandingPage = () => {
           <button className="bottom-button">Settings</button>
         </Link>
 
-        <a onClick={() => {window.location.href='/logout'}}>
+        <a onClick={handleLogout}>
           <button className="bottom-button">Log Out</button>
         </a>
 

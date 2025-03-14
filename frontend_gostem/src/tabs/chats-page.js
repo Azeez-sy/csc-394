@@ -61,10 +61,10 @@ const ChatContent = () => {
   );
 };
 
-const ChatPage = () => {
+const ChatPage = ({ handleLogout }) => {
   return (
     <div className="chat-page-container">
-      <Sidebar />
+      <Sidebar handleLogout={handleLogout} />
       <ChatContent />
     </div>
   );

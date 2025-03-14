@@ -2,24 +2,17 @@ import React, { useEffect, useState } from "react";
 import "./styles/profile-page.css"
 import Sidebar from './components/sidebar';
 
-// const ProfileContent = () => {
-//   return (
-//     <div className="profile-body">
-//       <header className="profile-header">
-//         <h1>Profile</h1>
-//       </header>
-//       </div>
-//   );
-// };
-
 const ProfileContent = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/profile/")
-      .then((response) => response.json())
-      .then((data) => setUser(data))
-      .catch((error) => console.error("Error fetching user data:", error));
+    // Get user data from localStorage instead of API
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }   
+    setLoading(false);
   }, []);
 
   return (
@@ -27,23 +20,25 @@ const ProfileContent = () => {
       <header className="profile-header">
         <h1>Profile</h1>
       </header>
-      {user ? (
+      {loading ? (
+        <p>Loading profile...</p>
+      ) : user ? (
         <div className="profile-info">
           <img src={user.profile_picture} alt="Profile" className="profile-pic" />
           <h2>{user.name}</h2>
           <p>{user.email}</p>
         </div>
       ) : (
-        <p>Loading profile...</p>
+        <p>Could not load profile. Please try logging in again.</p>
       )}
     </div>
   );
 };
 
-const ProfilePage = () => {
+const ProfilePage = ({ handleLogout }) => {
   return (
   <div className="chat-page-container">
-      <Sidebar />
+      <Sidebar handleLogout={handleLogout} />
       <ProfileContent/>
   </div>
   );

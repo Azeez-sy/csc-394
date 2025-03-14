@@ -13,7 +13,7 @@ import user from '../components/icons/user.png';
 
 import { Link } from 'react-router-dom';
 
-const Sidebar = () => {
+const Sidebar = ({ handleLogout }) => {
   return (
     <div className="sidebar-container">
       <div className="sidebar-top">
@@ -77,12 +77,10 @@ const Sidebar = () => {
           </Link>
         </div>
         <div className="sidebar-item">
-          <a onClick={() => {window.location.href='/logout'}}>
-            <button className="sidebar-image-button">
-              <img src={logout} alt="Logout" />
-              <span className="sidebar-button-text">Logout</span>
-            </button>
-          </a>
+          <button className="sidebar-image-button" onClick={handleLogout}>
+            <img src={logout} alt="Logout" />
+            <span className="sidebar-button-text">Logout</span>
+          </button>
         </div>
       </div>
     </div>
