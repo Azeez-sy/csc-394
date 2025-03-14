@@ -60,13 +60,24 @@ const SchedulePage = ({ userRole }) => {
     }
   };
 
+  // useEffect(() => {
+  //   fetchCSRFToken(); // Fetch CSRF token on page load
+  //   fetchSchedules(); // Fetch schedule data on page load
+  // }, []);
+
   useEffect(() => {
-    fetchCSRFToken(); // Fetch CSRF token on page load
-    fetchSchedules(); // Fetch schedule data on page load
+    async function init() {
+      await fetchCSRFToken(); // Wait for the token to be fetched
+      await fetchSchedules(); // Then fetch schedules
+    }
+    init();
   }, []);
+
 
   // Function to add events dynamically
   const addEventToSchedule = async (eventData) => {
+    console.log("CSRF Token fetched:", csrfToken);
+
     try {
       const response = await fetch('http://localhost:8000/api/schedule/', {
         method: 'POST',
@@ -74,8 +85,8 @@ const SchedulePage = ({ userRole }) => {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,  // Include CSRF token
         },
-        body: JSON.stringify(eventData),
         credentials: 'include', // Required for authentication
+        body: JSON.stringify(eventData),
       });
 
       if (!response.ok) throw new Error(`HTTP error ${response.status}`);

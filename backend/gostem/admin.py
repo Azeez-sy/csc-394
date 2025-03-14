@@ -5,4 +5,3 @@ from gostem.models import Event, Assignees, Note
 admin.site.register(Event)
 admin.site.register(Assignees)
 admin.site.register(Note)
-

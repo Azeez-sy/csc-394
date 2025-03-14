@@ -30,7 +30,8 @@ urlpatterns = [
     path('notes/', include('notes.urls')),
     path("accounts/", include("allauth.urls")),
     path("", include("user.urls")),
-    path("dashboard/", dashboard, name="dashboard"),
+    path("dashboard/", dashboard, name = "dashboard"),
+    
     path('api/schedule/', include('schedule.urls')),  
     path('schedule/', include('schedule.urls')),
 

@@ -26,9 +26,9 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool, default=False)
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
 
-#SITE_ID = 1
+SITE_ID = 2
 
 # Application definition
 
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'gostem',
     'chats',
-    'schedule',
+    #'schedule',
     
     'corsheaders',  
 
@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google'
+    'allauth.socialaccount.providers.google',
+
+    'schedule.apps.SchedulConfig',
 ]
 
 SOCIALACCOUNT_LOGIN_ON_GET=True 
@@ -81,12 +83,12 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    #"django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-    "login_required.middleware.LoginRequiredMiddleware",
+    #"login_required.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "gostem.urls"
@@ -174,7 +176,7 @@ PASSWORD_HASHERS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'America/Chicago'
 
 USE_I18N = True
 
@@ -199,11 +201,7 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:8000",
-    "http://localhost:3000",
-]
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+#ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 LOGIN_REDIRECT_URL = "/landing-page"
@@ -215,10 +213,20 @@ LOGIN_REQUIRED_IGNORE_PATHS = [
 ]
 
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]
 
 CORS_ALLOW_ALL_ORIGINS = True
-# For production, specify allowed origins:
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "https://yourdomain.com",
-# ]
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = False
+
+# CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript to access CSRF cookie
+# CSRF_COOKIE_SAMESITE = 'Lax'  # Ensure cookies work properly in cross-origin requests
+# CSRF_COOKIE_SECURE = True  # Change to True if using HTTPS
