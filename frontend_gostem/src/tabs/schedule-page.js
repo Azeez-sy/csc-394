@@ -4,47 +4,53 @@ import Sidebar from './components/sidebar';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import AddEventModal from './components/AddEventModal'; 
 
-const SchedulePage = () => {
+const SchedulePage = ({ userRole }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [csrfToken, setCsrfToken] = useState(""); // State to store CSRF token
 
-  // Fetch schedules from backend
+  // Check if user is an admin
+  const isAdmin = userRole === 'admin';
+
+  // Function to fetch CSRF token from Django backend
+  const fetchCSRFToken = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/get-csrf-token/', {
+        credentials: 'include', // Ensures cookies (session) are sent
+      });
+      const data = await response.json();
+      console.log("CSRF Token fetched:", data.csrfToken);
+      setCsrfToken(data.csrfToken); // Store CSRF token in state
+    } catch (error) {
+      console.error("Error fetching CSRF token:", error);
+    }
+  };
+
+  // Fetch schedules from the backend
   const fetchSchedules = async () => {
     try {
       setLoading(true);
       const response = await fetch('http://localhost:8000/api/schedule/');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
-      }
-      
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+
       const data = await response.json();
-      console.log("Raw data from API:", data); // Debug what we're getting
-      
       if (!data.schedules || !Array.isArray(data.schedules)) {
-        console.error("Invalid data format:", data);
         setError("Invalid data format received from server");
         return;
       }
-      
-      // Transform backend data to FullCalendar event format
-      const formattedEvents = data.schedules.map(schedule => {
-        console.log("Processing schedule:", schedule); // Debug individual record
-        return {
-          title: schedule.subject,
-          start: `${schedule.date}T${schedule.start_time}`,
-          end: `${schedule.date}T${schedule.end_time}`,
-          extendedProps: {
-            location: 'TBD',
-            tutor: schedule.tutor_id,
-            subject: schedule.subject
-          }
-        };
-      });
-      
-      console.log("Formatted events:", formattedEvents); // Debug events after transformation
+
+      // Convert API data to FullCalendar format
+      const formattedEvents = data.schedules.map(schedule => ({
+        title: schedule.subject,
+        start: `${schedule.date}T${schedule.start_time}`,
+        end: `${schedule.date}T${schedule.end_time}`,
+        extendedProps: { tutor: schedule.tutor_id, location: "TBD" }
+      }));
+
       setEvents(formattedEvents);
     } catch (error) {
       console.error('Error fetching schedules:', error);
@@ -53,68 +59,44 @@ const SchedulePage = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
-    fetchSchedules();
+    fetchCSRFToken(); // Fetch CSRF token on page load
+    fetchSchedules(); // Fetch schedule data on page load
   }, []);
 
-  const renderEventContent = (eventInfo) => {
-    const isMonthView = eventInfo.view.type === 'dayGridMonth';
-    const start = eventInfo.event.start;
-    const end = eventInfo.event.end;
-    
-    // Calculate event duration in minutes
-    const durationMinutes = end 
-      ? Math.round((end.getTime() - start.getTime()) / (1000 * 60)) 
-      : 0;
-    
-    // For month view (limited space)
-    if (isMonthView) {
-      return (
-        <div className="event-content-month">
-          <div className="event-title">{eventInfo.event.title}</div>
-        </div>
-      );
-    }
-    
-    // For short events (75 minutes or less)
-    if (durationMinutes <= 75) {
-      return (
-        <div className="event-content event-content-short">
-          <div className="event-title">{eventInfo.event.title}</div>
-        </div>
-      );
-    }
-    
-    // For normal events (more than 30 minutes)
-    const startTime = start.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-    
-    const endTime = end.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-    
-    return (
-      <div className="event-content">
-        <div className="event-title">{eventInfo.event.title}</div>
-        <div className="event-tutor-name">{eventInfo.event.extendedProps.tutor}</div>
-        <div className="event-location">{eventInfo.event.extendedProps.location}</div>
-        <div className="event-time">{startTime} - {endTime}</div>
-      </div>
-    );
-  };
+  // Function to add events dynamically
+  const addEventToSchedule = async (eventData) => {
+    try {
+      const response = await fetch('http://localhost:8000/api/schedule/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,  // Include CSRF token
+        },
+        body: JSON.stringify(eventData),
+        credentials: 'include', // Required for authentication
+      });
 
+      if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+
+      console.log("Event added successfully, re-fetching schedules...");
+      fetchSchedules(); // Ensure updated events are loaded
+    } catch (error) {
+      console.error('Error adding event:', error);
+    }
+  };
 
   return (
     <div className="schedule-page-container">
       <Sidebar />
       <div className="calendar-wrapper">
-        {loading && <div>Loading schedules...</div>}
-        {error && <div className="error-message">Error: {error}</div>}
-        
+        <AddEventModal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          onAddEvent={addEventToSchedule} 
+        />
+
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin]}
           initialView='timeGridWeek'
@@ -123,25 +105,24 @@ const SchedulePage = () => {
           allDaySlot={false}
           expandRows={true}
           height='100%'
+          
+          // Custom admin button to add events
           headerToolbar={{
-            left: 'today,prev,next',
+            left: isAdmin ? 'today prev next addEventButton' : 'today prev next',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek'
           }}
-          buttonText={{
-            today: 'Today',
-            month: 'Month',
-            week: 'Week'
-          }}
+          customButtons={ isAdmin ? {
+            addEventButton: {
+              text: 'Add Event',
+              click: () => setIsModalOpen(true),
+            },
+          } : {} }
+
+          buttonText={{ today: 'Today', month: 'Month', week: 'Week' }}
           eventColor="#afdcd5"
           eventTextColor="#000000"
-          eventContent={renderEventContent}
-          eventDisplay="block"
           events={events}
-          eventClick={(info) => {
-            console.log("Clicked event:", info.event);
-            info.el.style.borderColor = '#afdcd5';
-          }}
         />
       </div>
     </div>
