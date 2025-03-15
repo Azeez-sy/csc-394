@@ -2,7 +2,7 @@
 
 from .models import Note, Attachment
 from django.http import FileResponse, HttpResponseNotFound
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from .serializer import NoteSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -17,6 +17,8 @@ class NoteListCreate(generics.ListCreateAPIView):
     queryset = Note.objects.all()
     print(queryset)
     serializer_class = NoteSerializer
+    permission_classes = [permissions.AllowAny]  # Allow anyone to access
+
     def create(self, request, *args, **kwargs):
         print("request.POST:", request.POST)
         print("request.FILES:", request.FILES)
@@ -69,9 +71,16 @@ class NoteRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=True)
 
         # delete specified attachments user has selected upon editing a note
-        delete_attachment_ids = request.data.get('delete_attachments', [])
-        print("documents to delete: ", delete_attachment_ids)
-        Attachment.objects.filter(id__in=delete_attachment_ids, note=instance).delete()
+        program_name = request.data.get('programName', [])
+        print("program name: ", program_name)
+
+        delete_attachment_ids = request.data.get('documents_attached', [])
+        #print(delete_attachment_ids[0])
+        if delete_attachment_ids:
+            list_of_strings = [s.strip() for s in delete_attachment_ids.split(',')]
+            list_of_numbers = [int(number) for number in list_of_strings if number]
+            print("list_of_numbers: ", list_of_numbers)
+            Attachment.objects.filter(id__in=list_of_numbers, note=instance).delete()
 
         if serializer.is_valid():
             serializer.save()

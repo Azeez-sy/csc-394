@@ -122,6 +122,7 @@ const NotesPage = () => {
                   'Content-Type': 'multipart/form-data',
               },
           });
+          
           fetchNotes();
           setIsEditingNote(false);
           setCurrentNote(null);

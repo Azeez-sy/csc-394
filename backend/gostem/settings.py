@@ -57,7 +57,8 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    #'corsheaders',
+    'programs',
+    
 ]
 
 SOCIALACCOUNT_LOGIN_ON_GET=True 
@@ -86,7 +87,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
-    "login_required.middleware.LoginRequiredMiddleware",
+    #"login_required.middleware.LoginRequiredMiddleware",
 ]
 
 CORS_ALLOWED_ORIGINS = [ # for development purposes, not for production - sky
@@ -178,6 +179,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Password hashing django will use, this is specifically bcrypt, standard and enough for small applications
+'''
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
@@ -185,7 +187,7 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
     "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
-
+'''
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -221,7 +223,7 @@ CSRF_TRUSTED_ORIGINS = [ # for development purposes -sky
     "http://127.0.0.1:8000",
     "http://localhost:3000",
 ]
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"] # for development purposes -sky
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", '127.0.0.1:8000', 'localhost:8000'] # for development purposes -sky
 
 
 LOGIN_REDIRECT_URL = "/landing-page"
@@ -240,3 +242,13 @@ CORS_ALLOW_ALL_ORIGINS = True
 #     "http://localhost:3000",
 #     "https://yourdomain.com",
 # ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication', # add this if using token authentication.
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}

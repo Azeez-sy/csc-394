@@ -7,15 +7,11 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
-class Program(models.Model):
-    program_id  = models.AutoField(primary_key=True)
-    programName = models.CharField(max_length=150)
 
 class Event(models.Model):
     event_id    = models.AutoField(primary_key=True)
     date        = models.DateField()
     location    = models.CharField(max_length=100)
-    program_id  = models.ForeignKey(Program, on_delete=models.CASCADE)
     # program name, description, assignees (tutors, etc), 
 
     # readable

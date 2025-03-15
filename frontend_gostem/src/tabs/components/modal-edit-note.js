@@ -10,6 +10,8 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
   const [files, setFiles] = useState([]); // Initialize files as an array
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
+  const [deleteAttachments, setDeleteAttachments] = useState([]);
+
 
   // Get note's info
   useEffect(() => {
@@ -119,27 +121,27 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
   };
 
   // delete previous note attachments
-  const [deleteAttachments, setDeleteAttachments] = useState([]);
+  useEffect(() => {
+    console.log("Updated deleteAttachments:", deleteAttachments);
+  }, [deleteAttachments]);
 
   const handleAttachmentDeletion = (attachmentId, attachment, checked) => {
     console.log("Before update:", deleteAttachments);
     console.log("id = ", attachment);
     console.log(attachment);
+    console.log("checked:", checked); // Add this line
+    console.log("type of delete attachments", typeof attachment.id)
 
-    /*if(checked){
-      setDeleteAttachments(...deleteAttachments, attachmentId);
-    }else{
-      setDeleteAttachments(deleteAttachments.filter(id => id !== attachmentId));
-    }*/
-    /*if (window.confirm("Are you sure you want to delete "+attachment.file.split('/').pop()+" attachment?")) {
-      setDeleteAttachments(...deleteAttachments, attachment.id);
-    }*/
-    setDeleteAttachments(...deleteAttachments, "slay"); // can be set once but not twice since id already in the list. 
 
-    setDeleteAttachments(...deleteAttachments, attachment); // can be set once but not twice since id already in the list. 
+
+    if (checked) {
+        setDeleteAttachments([...deleteAttachments, attachment.id]); // Correct way to add an element
+    } else {
+        console.log(typeof deleteAttachments);
+        setDeleteAttachments(deleteAttachments.filter(id => id !== attachment.id)); // Correct way to remove an element
+    }
     console.log("After update:", deleteAttachments);
-
-  }
+  };
 
   // Updates note
   const handleUpdateClick = (event) => {
@@ -166,7 +168,7 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     formData.append('title', title);
     formData.append('description', content);
     formData.append('programName', programName);
-    formData.append('documents_attached', JSON.stringify(deleteAttachments));
+    formData.append('documents_attached', deleteAttachments);
     //formData.append('isShared', isShared);
     //formData.append('authorName', "Your Author Name"); // Add author name
     console.log(files);
@@ -263,13 +265,14 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
                   initialFiles={files}
                 />
               </div>
+              <h4>Remove Old Files</h4>
               {note.attachments && note.attachments.map(attachment => (
                 <div key={attachment.id}>
-                    <input
-                        type="checkbox"
-                        onClick={(e) => handleAttachmentDeletion(attachment.id, attachment, e.target.checked)}
-                    />
-                    <span> {attachment.file.split('/').pop()}</span>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => handleAttachmentDeletion(attachment.id, attachment, e.target.checked)}
+                  />
+                  <span> {attachment.file.split('/').pop()}</span>
                 </div>
               ))}
               <div className="modify-notes-btns">

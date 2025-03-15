@@ -2,7 +2,7 @@
 
 from django.db import models
 # Create your models here.
-from gostem.models import Program, User
+from programs.models import Program
 
 class Note(models.Model):
     title       = models.CharField(max_length=50)

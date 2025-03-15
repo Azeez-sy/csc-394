@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import Dropzone from 'react-dropzone';
 import "../styles/drag-drop-files.css"
 import x from "./icons/x.png"
@@ -7,18 +7,19 @@ import document from "./icons/document.png"
 const FileUploadZone = ({ onFileUpload, initialFiles = [] }) => {
   const [files, setFiles] = useState([])
   const [rejected, setRejected] = useState([])
+  const initialFilesRef = useRef(initialFiles);
 
   // Initialize with initialFiles when component mounts or initialFiles changes
   useEffect(() => {
-    if (initialFiles && initialFiles.length > 0) {
-      setFiles(initialFiles);
+    if (initialFiles && initialFiles.length > 0 && initialFilesRef.current !== initialFiles) {
+        setFiles(initialFiles);
+        initialFilesRef.current = initialFiles;
     }
   }, [initialFiles]);
 
-  // Call parent callback whenever files change
   useEffect(() => {
     if (onFileUpload) {
-      onFileUpload(files);
+        onFileUpload(files);
     }
   }, [files, onFileUpload]);
 
@@ -32,27 +33,17 @@ const FileUploadZone = ({ onFileUpload, initialFiles = [] }) => {
 
   const handleDrop = useCallback((acceptedFiles, rejectedFiles) => {
     if (acceptedFiles?.length) {
-      
-      setFiles(previousFiles => [
-        ...previousFiles,
-        ...acceptedFiles.map(file =>
-          Object.assign(file, { preview: URL.createObjectURL(file) })
-        )
-      ]);
-
-      onFileUpload([...files, ...acceptedFiles.map(file =>
-        Object.assign(file, { preview: URL.createObjectURL(file) })
-      )
-      ]);
-    }else{
-      onFileUpload([]);
+        setFiles(previousFiles => [
+            ...previousFiles,
+            ...acceptedFiles.map(file => Object.assign(file, { preview: URL.createObjectURL(file) }))
+        ]);
     }
 
     if (rejectedFiles?.length) {
-      setRejected(previousFiles => [...previousFiles, ...rejectedFiles]);
-      alert("Some files were rejected. Only .docx, .jpeg, .jpg, .png, and .pdf files are allowed.");
+        setRejected(previousFiles => [...previousFiles, ...rejectedFiles]);
+        alert("Some files were rejected. Only .docx, .jpeg, .jpg, .png, and .pdf files are allowed.");
     }
-  }, [onFileUpload, files]);
+  }, []);
 
   useEffect(() => {
     return () => files.forEach(file => URL.revokeObjectURL(file.preview))

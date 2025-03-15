@@ -33,6 +33,7 @@ urlpatterns = [
     path("dashboard/", dashboard, name="dashboard"),
     path('api/schedule/', include('schedule.urls')),  
     path('schedule/', include('schedule.urls')),
+    path('api/programs/', include('programs.urls')),
 
     re_path(r'^.*$', landing_page),  # Catch-all pattern to serve index.html for all routes
     

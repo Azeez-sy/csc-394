@@ -106,7 +106,7 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
                   </div>
                 )}
               <div className="notes-item-footer">
-                <div className='date-info'><p>{note.dateCreated}</p></div>
+                <div className='date-info'><p>{note.dateModified}</p></div>
                 <div className='button-group'> 
                   <button onClick={(e)=> handleEdit(e, note)}>
                       <img src={edit} alt="Modify" className="edit-icon"/>

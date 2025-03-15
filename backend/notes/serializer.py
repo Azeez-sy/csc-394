@@ -11,6 +11,8 @@
 from rest_framework import serializers
 from .models import Note, Attachment
 from django.utils import timezone # debugging purposes.
+from django.utils import timezone
+
 
 # import program and user serializer, needed for filtering through notes - sky
 
@@ -24,8 +26,8 @@ class NoteSerializer(serializers.ModelSerializer):
     # program = ProgramSerializer()                  # TODO get program details when avaialbel - sky
     # files = FileSerializer(many=True, read_only=True)  # TODO Serialize file details
 
-    dateCreated = serializers.DateTimeField(format="%m-%d-%Y %H:%M:%S", read_only=True) # initalize date created 
-    dateModified = serializers.DateTimeField(format="%m-%d-%Y %H:%M:%S", read_only=True) # initalize date updated
+    dateCreated = serializers.DateTimeField(format="%m-%d-%Y", read_only=True) # initalize date created 
+    dateModified = serializers.DateTimeField(format="%m-%d-%Y", read_only=True) # initalize date updated
     attachments = AttachmentSerializer(many=True, read_only=True) # include multiple attachments and read only
     files = serializers.ListField(child=serializers.FileField(), write_only=True, required=False) # get all files 
 
@@ -60,4 +62,11 @@ class NoteSerializer(serializers.ModelSerializer):
         if files:
             for file in files: # for the files from the parameter 
                 Attachment.objects.create(note=instance, file=file) # create a new attachment and add it to the note instance
+
+        # update date modified
+        '''print("Date before: ", instance.dateModified)
+        instance.dateModified=timezone.now()
+        print("Date after: ", instance.dateModified)'''
+        instance.save()
+
         return instance 

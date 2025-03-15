@@ -91,6 +91,30 @@ form.create-note textarea {
   color: #fff;
 }
 
+input[type="checkbox"]{
+  -webkit-appearance: initial;
+  appearance: initial;
+  background: gray;
+  width: 15px;
+  height: 15px;
+  border: none;
+  position: relative;
+}
+input[type="checkbox"]:checked {
+  background: red;
+}
+input[type="checkbox"]:checked:after {
+  content: "X";
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%,-50%);
+  -moz-transform: translate(-50%,-50%);
+  -ms-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+}
+
 @media (max-width: 767px) {
 
   .modify-notes-btns {
