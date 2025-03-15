@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const CreateEvent = ({ onEventCreated }) => {
   const [className, setClassName] = useState("");
@@ -6,12 +6,34 @@ const CreateEvent = ({ onEventCreated }) => {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [location, setLocation] = useState("");
-  const [tutors, setTutors] = useState("");
   const [isRecurring, setIsRecurring] = useState(false);
   const [repeatDays, setRepeatDays] = useState([]);
   const [repeatUntil, setRepeatUntil] = useState("");
+  const [availableTutors, setAvailableTutors] = useState([]);
+  const [selectedTutors, setSelectedTutors] = useState([]);
 
   const authToken = localStorage.getItem("authToken");
+
+  useEffect(() => {
+    const fetchTutors = async () => {
+      const authToken = localStorage.getItem("authToken");
+      try {
+        const response = await fetch("http://localhost:8000/api/users/all-users/", {
+          headers: {
+            "Authorization": `Token ${authToken}`
+          }
+        });
+        if (response.ok) {
+          const tutors = await response.json();
+          setAvailableTutors(tutors);
+        }
+      } catch (error) {
+        console.error("Error fetching tutors:", error);
+      }
+    };
+    
+    fetchTutors();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,7 +44,7 @@ const CreateEvent = ({ onEventCreated }) => {
       start_time: startTime,
       end_time: endTime,
       location,
-      tutors: tutors.split(",").map((id) => parseInt(id.trim())),
+      tutor_ids: selectedTutors,
       is_recurring: isRecurring,
       repeat_days: isRecurring ? repeatDays : null,
       repeat_until: isRecurring ? repeatUntil : null,
@@ -69,8 +91,24 @@ const CreateEvent = ({ onEventCreated }) => {
         <label>Location:</label>
         <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
 
-        <label>Tutors (Enter Tutor IDs separated by commas):</label>
-        <input type="text" value={tutors} onChange={(e) => setTutors(e.target.value)} required />
+        <div className="form-group">
+          <label>Select Tutors:</label>
+          <select 
+            multiple 
+            className="form-control" 
+            value={selectedTutors}
+            onChange={(e) => {
+              const values = Array.from(e.target.selectedOptions, option => option.value);
+              setSelectedTutors(values);
+            }}
+          >
+            {availableTutors.map(tutor => (
+              <option key={tutor.id} value={tutor.id}>
+                {tutor.first_name} {tutor.last_name} ({tutor.email})
+              </option>
+            ))}
+          </select>
+        </div>
 
         <label>Is Recurring?</label>
         <input type="checkbox" checked={isRecurring} onChange={(e) => setIsRecurring(e.target.checked)} />

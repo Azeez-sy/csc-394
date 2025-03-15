@@ -4,6 +4,9 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from django.conf import settings
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .serializers import UserSerializer
 
 class GoogleLoginView(APIView):
     permission_classes = [AllowAny]
@@ -38,3 +41,20 @@ class GoogleLoginView(APIView):
                 "role": user.role
             }
         })
+
+class TutorListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+    
+    def get_queryset(self):
+        User = get_user_model()
+        return User.objects.filter(role='tutor')
+
+class UserListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+    
+    def get_queryset(self):
+        User = get_user_model()
+        # Return all users (no filter by role)
+        return User.objects.all()

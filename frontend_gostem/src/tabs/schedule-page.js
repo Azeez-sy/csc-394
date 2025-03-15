@@ -53,7 +53,9 @@ const SchedulePage = ({ handleLogout }) => {
         end: `${event.date}T${event.end_time}`,
         extendedProps: {
           location: event.location,
-          tutors: event.tutors.map(tutorId => `Tutor ID: ${tutorId}`).join(", "),
+          // Format tutor names properly
+          tutors: event.tutors.map(tutor => 
+            `${tutor.first_name} ${tutor.last_name || ''}`).join(", "),
           is_recurring: event.is_recurring
         },
         color: event.is_recurring ? "#FFB347" : "#afdcd5",
