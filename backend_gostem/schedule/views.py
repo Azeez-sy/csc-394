@@ -1,9 +1,10 @@
 from datetime import timedelta
 from django.utils.timezone import now
-from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework import generics, permissions
+from rest_framework.permissions import IsAuthenticated
 from .models import Event
 from .serializers import EventSerializer
+from .permissions import IsFaculty
 
 # Helper function to get future dates based on selected days
 def get_next_dates(start_date, repeat_days, repeat_until):
@@ -33,7 +34,7 @@ class EventListView(generics.ListAPIView):
 class EventCreateView(generics.CreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsFaculty]
 
     def perform_create(self, serializer):
         event = serializer.save()
@@ -57,10 +58,10 @@ class EventCreateView(generics.CreateAPIView):
 class EventUpdateView(generics.UpdateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsFaculty]
 
 # ✅ Admin-only: Delete event
 class EventDeleteView(generics.DestroyAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsFaculty]

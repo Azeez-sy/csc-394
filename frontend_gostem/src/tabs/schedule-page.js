@@ -12,8 +12,11 @@ const SchedulePage = ({ handleLogout }) => {
   const [error, setError] = useState(null);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
 
-  const isAdmin = localStorage.getItem("isAdmin") === "true"; // Check if user is admin
+  // ✅ Read user role from local storage
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isFaculty = user?.role === "faculty";  // Only faculty can add events
 
+  
   // Fetch schedules from the Django backend
   const fetchSchedules = async () => {
     try {
@@ -109,13 +112,13 @@ const SchedulePage = ({ handleLogout }) => {
     <div className="schedule-page-container">
       <Sidebar handleLogout={handleLogout} />
 
-      {isAdmin && (
+      {isFaculty && (
         <button className="add-event-button" onClick={() => setShowCreateEvent(!showCreateEvent)}>
           {showCreateEvent ? "Close Event Form" : "Add Event"}
         </button>
       )}
 
-      {showCreateEvent && isAdmin && <CreateEvent onEventCreated={fetchSchedules} />}
+      {showCreateEvent && isFaculty && <CreateEvent onEventCreated={fetchSchedules} />}
 
       <div className="calendar-wrapper">
         {loading && <div>Loading schedules...</div>}

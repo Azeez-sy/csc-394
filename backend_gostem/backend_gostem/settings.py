@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    "schedule"
+    "schedule",
+    "users"
 ]
 
 MIDDLEWARE = [
@@ -167,3 +168,11 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+# List of emails that should be assigned the 'faculty' role
+FACULTY_EMAILS = [
+    "aadilpatel6103@gmail.com"
+]
+
+# Add this line near the bottom of the file
+AUTH_USER_MODEL = 'users.User'

@@ -84,7 +84,9 @@ const Sidebar = ({ handleLogout }) => {
         </div>
       </div>
     </div>
+    
   );
 };
+//const user = JSON.parse(localStorage.getItem("user"));
 
 export default Sidebar;

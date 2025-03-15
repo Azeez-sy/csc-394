@@ -45,13 +45,10 @@ function MainApp() {
       const result = await signInWithPopup(auth, provider);
       const googleUser = result.user;
   
-      // Send Google user info to Django for authentication
       const response = await fetch("http://localhost:8000/api/google-login/", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-        },
-        credentials: "include",  // Ensure cookies are included
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           email: googleUser.email,
           name: googleUser.displayName,
@@ -60,25 +57,30 @@ function MainApp() {
       });
   
       const data = await response.json();
+      console.log("Google Login API Response:", data);
+  
       if (data.key) {
-        // Use the handleLoginSuccess function
-        handleLoginSuccess(data.key, data.isAdmin);
-        
+        localStorage.setItem("authToken", data.key);
         localStorage.setItem("user", JSON.stringify({ 
-            email: googleUser.email, 
-            name: googleUser.displayName,
-            profile_picture: googleUser.photoURL
+          email: data.user.email, 
+          name: data.user.name,
+          profile_picture: googleUser.photoURL,
+          role: data.user.role  // 🚀 Store user role
         }));
-        
+  
         setAuthToken(data.key);
         setUser({
-            email: googleUser.email, 
-            name: googleUser.displayName,
-            profile_picture: googleUser.photoURL
+          email: data.user.email, 
+          name: data.user.name,
+          profile_picture: googleUser.photoURL,
+          role: data.user.role
         });
-    
-        // Redirect to landing page after successful login
-        history.push("/landing-page");
+  
+        console.log("Stored role:", localStorage.getItem("user"));
+  
+        setTimeout(() => {
+          history.push("/landing-page");
+        }, 500);
       } else {
         console.error("Login failed:", data);
       }
@@ -86,6 +88,7 @@ function MainApp() {
       console.error("Google Login Error:", error);
     }
   };
+  
   
   
   

@@ -3,11 +3,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
-
-User = get_user_model()
+from django.conf import settings
 
 class GoogleLoginView(APIView):
-    permission_classes = [AllowAny]  # Allow anyone to log in
+    permission_classes = [AllowAny]
 
     def post(self, request):
         email = request.data.get("email")
@@ -18,16 +17,24 @@ class GoogleLoginView(APIView):
             return Response({"error": "Email is required"}, status=400)
 
         # Check if user exists or create a new one
-        user, created = User.objects.get_or_create(email=email, defaults={"username": email, "first_name": name})
+        User = get_user_model()
+        user, created = User.objects.get_or_create(email=email, defaults={
+            "username": email,
+            "first_name": name
+        })
 
-        # Check if user is an admin (replace with your admin logic)
-        is_admin = user.is_staff  # For example, using is_staff flag
+        # Automatically assign faculty role if email is in FACULTY_EMAILS
+        if email in settings.FACULTY_EMAILS:
+            user.role = "faculty"
+            user.save()
 
-        # Assign or create an authentication token
         token, _ = Token.objects.get_or_create(user=user)
 
         return Response({
-            "key": token.key, 
-            "user": {"email": user.email, "name": user.first_name},
-            "isAdmin": is_admin
+            "key": token.key,
+            "user": {
+                "email": user.email,
+                "name": user.first_name,
+                "role": user.role
+            }
         })

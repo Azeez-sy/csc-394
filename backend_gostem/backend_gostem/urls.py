@@ -21,5 +21,6 @@ from users.views import GoogleLoginView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('api/google-login/', GoogleLoginView.as_view(), name='google-login'),
-    path("api/schedule/", include("schedule.urls"))
+    path("api/schedule/", include("schedule.urls")),
+    
 ]
