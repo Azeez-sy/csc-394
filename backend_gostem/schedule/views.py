@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Event
 from .serializers import EventSerializer
 from .permissions import IsFaculty
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 # Helper function to get future dates based on selected days
 def get_next_dates(start_date, repeat_days, repeat_until):
@@ -61,7 +63,13 @@ class EventUpdateView(generics.UpdateAPIView):
     permission_classes = [IsFaculty]
 
 # ✅ Admin-only: Delete event
-class EventDeleteView(generics.DestroyAPIView):
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
-    permission_classes = [IsFaculty]
+class EventDeleteView(APIView):
+    permission_classes = [IsFaculty]  # ✅ Only faculty can delete events
+
+    def delete(self, request, event_id):
+        try:
+            event = Event.objects.get(id=event_id)
+            event.delete()
+            return Response({"message": "Event deleted successfully"}, status=200)
+        except Event.DoesNotExist:
+            return Response({"error": "Event not found"}, status=404)

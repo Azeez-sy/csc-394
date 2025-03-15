@@ -11,6 +11,8 @@ const SchedulePage = ({ handleLogout }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCreateEvent, setShowCreateEvent] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   // ✅ Read user role from local storage
   const user = JSON.parse(localStorage.getItem("user"));
@@ -69,6 +71,32 @@ const SchedulePage = ({ handleLogout }) => {
   useEffect(() => {
     fetchSchedules();
   }, []);
+
+  const handleEventClick = (info) => {
+    setSelectedEvent(info.event);
+    setShowPopup(true);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedEvent) return;
+
+    const authToken = localStorage.getItem("authToken");
+
+    const response = await fetch(`http://localhost:8000/api/schedule/events/${selectedEvent.id}/delete/`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": `Token ${authToken}`,
+      },
+    });
+
+    if (response.ok) {
+        alert("Event deleted successfully!");
+        setShowPopup(false);
+        fetchSchedules(); // Refresh calendar
+      } else {
+        alert("Failed to delete event.");
+      }
+    };
 
   const renderEventContent = (eventInfo) => {
     const isMonthView = eventInfo.view.type === 'dayGridMonth';
@@ -147,12 +175,32 @@ const SchedulePage = ({ handleLogout }) => {
           eventContent={renderEventContent}
           eventDisplay="block"
           events={events}
-          eventClick={(info) => {
-            console.log("Clicked event:", info.event);
-            info.el.style.borderColor = '#afdcd5';
-          }}
+          eventClick={handleEventClick}
         />
       </div>
+
+      {/* Event Details Popup */}
+      {showPopup && selectedEvent && (
+        <div className="popup-overlay" onClick={() => setShowPopup(false)}>
+          <div className="popup-content" onClick={e => e.stopPropagation()}>
+            <h3>{selectedEvent.title}</h3>
+            <p><strong>Date:</strong> {new Date(selectedEvent.start).toLocaleDateString()}</p>
+            <p><strong>Time:</strong> {new Date(selectedEvent.start).toLocaleTimeString()} - {new Date(selectedEvent.end).toLocaleTimeString()}</p>
+            <p><strong>Location:</strong> {selectedEvent.extendedProps.location}</p>
+            <p><strong>Tutors:</strong> {selectedEvent.extendedProps.tutors}</p>
+
+            <div className="popup-buttons">
+              {isFaculty && (
+                <button className="delete-button" onClick={handleDelete}>
+                  🗑️ Delete Event
+                </button>
+              )}
+              <button className="close-button" onClick={() => setShowPopup(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 };
