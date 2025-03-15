@@ -1,6 +1,6 @@
 .dropzone-section {
     margin: 15px 0;
-  }
+}
 
 .dropzone-container {
     border: 1px dashed #133d3b; 
@@ -12,19 +12,15 @@
     background-color: #f8f8f8;
 }
 
-
 .dropzone-container:hover {
     border-color: #133d3b;
     background-color: #f0f0f0;
 }
 
-
 .dropzone-text {
     font-family: 'Montserrat', sans-serif;
     font-size: 1rem;
     color: black;
-<<<<<<< HEAD
-=======
 }
 
 .dropzone-text-small {
@@ -84,7 +80,7 @@
     width: 9px;
     height: 9px;
     vertical-align: middle; 
-  }
+}
 
 .x-button:hover {
     background-color: #e0e0e0dd;
@@ -94,7 +90,6 @@
 }
 
 @media (max-width: 767px) {
-
     .file-preview {
         max-height: 70px;
     }
@@ -114,6 +109,4 @@
         padding: 10px;
         height: 100px;
     }
-
->>>>>>> origin/DanielPushesFixing
 }

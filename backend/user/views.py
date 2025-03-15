@@ -1,26 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.http import HttpResponse
-<<<<<<< HEAD
-=======
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import User
 from django.views.decorators.csrf import csrf_exempt
-
->>>>>>> origin/DanielPushesFixing
 
 # Create your views here.
 def home(request): 
     return render(request, "home.html")
 
 def logout_view(request):
-<<<<<<< HEAD
     logout(request)
-    return redirect("")
-=======
-        logout(request)
-        return redirect('/')
+    return redirect('/')
 
 @csrf_exempt
 def user_list(request):
@@ -54,4 +46,3 @@ def get_user_profile(request):
         "profile_picture": user.socialaccount_set.filter(provider="google").first().extra_data.get("picture", "") if hasattr(user, "socialaccount_set") else "",
     }
     return JsonResponse(user_data)
->>>>>>> origin/DanielPushesFixing

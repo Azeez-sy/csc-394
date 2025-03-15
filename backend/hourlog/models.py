@@ -1,5 +1,5 @@
 from django.db import models
-from gostem.models import User  # custom model import 
+from user.models import User  # Changed from gostem.models
 
 class HourLog(models.Model):
     CAMPUS_CHOICES = [
@@ -8,10 +8,10 @@ class HourLog(models.Model):
     ]
     
     tutor = models.ForeignKey(
-        User, 
-        on_delete=models.CASCADE, 
-        related_name='hour_logs',
-        to_field='user_id'  
+    User, 
+    on_delete=models.CASCADE, 
+    related_name='hour_logs'
+    # Removed to_field='user_id' 
     )
     campus = models.CharField(max_length=50, choices=CAMPUS_CHOICES)
     date = models.DateField()
