@@ -55,19 +55,10 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
 
     if(!validateTitle() ||!validateContent()) {return;}
     
-    const programName = program === 'program-1' ? 'Program 1' : 'Program 2';
-    
-    // Getting filenames
-    const fileNames = files.length > 0 
-      ? files.map(file => file.name).join(", ") 
-      : "No files uploaded";
-
     const newNote = {
       title: title,
-      programName: programName,
-      description: content,
-      file: fileNames,
-      files: files
+      content: content  // Changed from 'description' to 'content'
+      // Remove fields that don't exist in your backend model
     };
     
     onAddNote(newNote);

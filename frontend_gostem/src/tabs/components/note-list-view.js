@@ -4,12 +4,25 @@ import edit from './icons/edit.png'
 import document from './icons/document.png'
 import "../styles/note-list-view.css"
 
-const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote }) => {
+const NoteListView = ({ notes = [], onAddClick, onDeleteNote, onEditNote, onViewNote }) => {
     const [program, setProgram] = useState('all-programs');
+
+    // Add this helper function to format dates nicely
+    const formatDate = (dateString) => {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return "Invalid date";
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short', 
+            day: 'numeric'
+        });
+    };
 
     // Filter notes
     const filteredNotes = notes.filter(note => {
-      if (program !== 'all-programs' && !note.programName.toLowerCase().includes(program.replace('-', ' '))) {
+      if (program !== 'all-programs' && note.programName && 
+          !note.programName.toLowerCase().includes(program.replace('-', ' '))) {
         return false;
       }            
       return true;
@@ -39,6 +52,12 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
       e.stopPropagation();
       onEditNote(note);
     }
+
+    const handleViewNote = (note) => {
+      if (onViewNote) {
+        onViewNote(note);
+      }
+    }
       
     return (
       <div className="notes-body">
@@ -63,18 +82,20 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
           </div>
           <div className="notes-list-container">
           <div className="notes-grid">
-          {filteredNotes.map((note) => (
+          {filteredNotes.length > 0 ? (
+            filteredNotes.map((note) => (
               <div className="note-item" 
               key={note.id}
-              onClick={()=> onViewNote(note)}>
+              onClick={()=> handleViewNote(note)}>
                 <div className='note-item-header'>
                   <div className='program'><p>{note.programName}</p></div>
                 </div>
                 <h3 className="note-final-title">{note.title}</h3>
                 <p className='author-name'>{note.authorName}</p>
                 <p className='description'>
-                  {note.description.length > 50 ?
-                  `${note.description.substring(0, 50)}...` : note.description}
+                  {note.description && note.description.length > 50 
+                    ? `${note.description.substring(0, 50)}...` 
+                    : (note.description || note.content || "No description")}
                 </p>
                 {hasFiles(note) && (
                   <div className="file-icon-container">
@@ -82,7 +103,7 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
                   </div>
                 )}
               <div className="notes-item-footer">
-                <div className='date-info'><p>{note.dateCreated}</p></div>
+                <div className='date-info'><p>{formatDate(note.dateCreated)}</p></div>
                 <div className='button-group'> 
                   <button onClick={(e)=> handleEdit(e, note)}>
                       <img src={edit} alt="Modify" className="edit-icon"/>
@@ -93,7 +114,12 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
                 </div>
               </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="no-notes-message">
+              <p>No notes available. Click "Add Note" to create one.</p>
+            </div>
+          )}
         
           </div>
         </div>

@@ -104,29 +104,29 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     return true;
   };
 
-  // Updates note
+  // Update the handleUpdateClick function
   const handleUpdateClick = (event) => {
     event.preventDefault();
-
+  
     if(!validateTitle() ||!validateContent()) {return;}
-
-    const programName = program === 'program-1' ? 'Program 1' : 'Program 2';
-
-    // Get file names as a comma-separated string
-    const fileNames = files.length > 0 
-      ? files.map(file => file.name).join(", ") 
-      : "No files uploaded";
-
+  
+    // Create a backend-ready object with only the fields the API expects
     const updatedNote = {
-      ...note,
+      id: note.id,  // Keep the ID for the API endpoint
       title: title.trim(),
-      programName: programName,
-      description: content,
-      file: fileNames,
-      files: files, // Store the actual file objects for future use
+      content: content  // Use "content" instead of "description"
+      
+      // Don't include these fields in the API request:
+      // programName, file, files - they're not in your backend model
     };
-
-    onUpdateNote(updatedNote);
+  
+    // Pass frontend-specific data separately if needed for UI
+    const frontendData = {
+      programName: program === 'program-1' ? 'Program 1' : 'Program 2',
+      files: files
+    };
+  
+    onUpdateNote(updatedNote, frontendData);
   };
 
   // Handle files 

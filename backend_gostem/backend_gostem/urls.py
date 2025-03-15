@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
     path('api/schedule/', include('schedule.urls')),
+    path("api/notes/", include("notes.urls")),
     
     # Add a direct path to match your frontend's expectations
     path('api/google-login/', GoogleLoginView.as_view(), name='google-login-direct'),

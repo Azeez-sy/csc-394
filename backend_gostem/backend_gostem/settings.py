@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     "schedule",
-    "users"
+    "users",
+    "notes"
 ]
 
 MIDDLEWARE = [
