@@ -22,6 +22,12 @@
         background-color: #afdcd5;
     }
 
+    .notes-page-container {
+        padding-top: 60px;
+        background-color: #afdcd5;
+        position: fixed;
+    }
+
     .burger-container {
         display: block;
         position: fixed;

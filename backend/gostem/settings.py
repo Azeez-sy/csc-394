@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool, default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 SITE_ID = 2
 
@@ -48,14 +48,18 @@ INSTALLED_APPS = [
     'channels',
     'notes',
     #OAuth apps
-    "user",
+    'user',
     "django.contrib.sites",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
-    'hourlog.apps.HourlogConfig',  # Change this line
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'hourlog.apps.HourlogConfig',  # Keep hourlog app
 ]
+
+SOCIALACCOUNT_LOGIN_ON_GET=True 
+
+AUTH_USER_MODEL = "user.User"
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -80,6 +84,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "login_required.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "gostem.urls"
@@ -190,8 +195,18 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend"
 )
 
-LOGIN_REDIRECT_URL = "/"
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+]
+
+LOGIN_REDIRECT_URL = "/landing-page"  #  Daniel's redirect URL
+LOGIN_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-CORS_ALLOW_ALL_ORIGINS = True   #added so hourlog can connect with frontend
-CORS_ALLOW_CREDENTIALS = True
+LOGIN_REQUIRED_IGNORE_PATHS = [
+    '/$',
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True  # bobby hour log 

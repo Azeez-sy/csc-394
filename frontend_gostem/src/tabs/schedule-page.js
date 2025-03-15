@@ -1,111 +1,149 @@
-import React from "react";
-import "./styles/schedule-page.css"
+import React, { useState, useEffect } from "react";
+import "./styles/schedule-page.css";
 import Sidebar from './components/sidebar';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
 
-import { useState } from 'react';
+const SchedulePage = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-import MonthlyCalendar from "./components/monthly-calendar";
-import WeeklyCalendar from "./components/weekly-calendar";
-
-const ScheduleContent = () => {
-  const [currentView, setCurrentView] = useState('week')
-
-  const [currentDay, setCurrentDay] = useState(new Date());
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-                 'July', 'August', 'September', 'October', 'November', 'December'];
-
-  const changeCurrentDay = (day) => {
-    setCurrentDay(new Date(day.year, day.month, day.number));
+  // Fetch schedules from backend
+  const fetchSchedules = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:8000/api/schedule/');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log("Raw data from API:", data); // Debug what we're getting
+      
+      if (!data.schedules || !Array.isArray(data.schedules)) {
+        console.error("Invalid data format:", data);
+        setError("Invalid data format received from server");
+        return;
+      }
+      
+      // Transform backend data to FullCalendar event format
+      const formattedEvents = data.schedules.map(schedule => {
+        console.log("Processing schedule:", schedule); // Debug individual record
+        return {
+          title: schedule.subject,
+          start: `${schedule.date}T${schedule.start_time}`,
+          end: `${schedule.date}T${schedule.end_time}`,
+          extendedProps: {
+            location: 'TBD',
+            tutor: schedule.tutor_id,
+            subject: schedule.subject
+          }
+        };
+      });
+      
+      console.log("Formatted events:", formattedEvents); // Debug events after transformation
+      setEvents(formattedEvents);
+    } catch (error) {
+      console.error('Error fetching schedules:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
-
-  // Goes to the current day
-  const goToToday = () => setCurrentDay(new Date());
-
-  // Functions to change the month to the previous or next month
-  const goToNextMonth = () => {
-    const nextMonth = new Date(currentDay);
-    nextMonth.setMonth(currentDay.getMonth() + 1);
-    setCurrentDay(nextMonth);
-  };
-
-  const goToPrevMonth = () => {
-    const prevMonth = new Date(currentDay);
-    prevMonth.setMonth(currentDay.getMonth() - 1);
-    setCurrentDay(prevMonth);
-  };
-
-  // Function to change the calendar view - monthly or weekly
-  const handleViewChange = (view) => {
-    setCurrentView(view);
-  }
   
-  return (
-    <div className="schedule-content-container">
-      {/* Setting up the calendar buttons */}
-      <div className="calendar-controls">
-        {/* Today button - goes to today's date */}
-        {/* Prev and Next button - goes to previous or next month */}
-        <div className="calender-controls--navigation">
-          <button className = "cc-btn cc-btn--today" onClick={goToToday}>Today</button>
-          <button className="cc-btn cc-btn--prev" onClick={goToPrevMonth}>Prev</button>
-          <button className="cc-btn cc-btn--next"onClick={goToNextMonth}>Next</button>
+  useEffect(() => {
+    fetchSchedules();
+  }, []);
+
+  const renderEventContent = (eventInfo) => {
+    const isMonthView = eventInfo.view.type === 'dayGridMonth';
+    const start = eventInfo.event.start;
+    const end = eventInfo.event.end;
+    
+    // Calculate event duration in minutes
+    const durationMinutes = end 
+      ? Math.round((end.getTime() - start.getTime()) / (1000 * 60)) 
+      : 0;
+    
+    // For month view (limited space)
+    if (isMonthView) {
+      return (
+        <div className="event-content-month">
+          <div className="event-title">{eventInfo.event.title}</div>
         </div>
-
-        <h2 className="calendar-controls--date">{months[currentDay.getMonth()]} {currentDay.getFullYear()}</h2>
-
-        {/* Week and Month button - goes to selected view */}
-        {/* + button - adds events */}
-        <div className="calendar-controls--view">
-          <button 
-            className={`cc-btn cc-btn--week ${
-              currentView === 'week' ? 'is-active' : ''
-            }`}
-            onClick={() => handleViewChange('week')}
-          >
-            Week
-          </button>
-
-          <button 
-            className={`cc-btn cc-btn--month ${
-              currentView === 'month' ? 'is-active' : ''
-            }`}
-            onClick={() => handleViewChange('month')}
-          >
-            Month
-          </button>
-
-          <button className="cc-btn cc-btn--add">+</button>
+      );
+    }
+    
+    // For short events (75 minutes or less)
+    if (durationMinutes <= 75) {
+      return (
+        <div className="event-content event-content-short">
+          <div className="event-title">{eventInfo.event.title}</div>
         </div>
+      );
+    }
+    
+    // For normal events (more than 30 minutes)
+    const startTime = start.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+    
+    const endTime = end.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+    
+    return (
+      <div className="event-content">
+        <div className="event-title">{eventInfo.event.title}</div>
+        <div className="event-tutor-name">{eventInfo.event.extendedProps.tutor}</div>
+        <div className="event-location">{eventInfo.event.extendedProps.location}</div>
+        <div className="event-time">{startTime} - {endTime}</div>
       </div>
-
-      <div className="calendar-view">
-        {currentView === 'week' ? 
-        (
-          <WeeklyCalendar 
-            currentDay={currentDay}
-            changeCurrentDay={changeCurrentDay}
-          /> 
-        ):
-        (
-          <MonthlyCalendar 
-            currentDay={currentDay}
-            changeCurrentDay={changeCurrentDay}
-          /> 
-        )
-        }
-        
+    );
+  };
 
 
-      </div>
-    </div>
-  );
-};
-
-const SchedulePage= () => {
   return (
     <div className="schedule-page-container">
       <Sidebar />
-      <ScheduleContent />
+      <div className="calendar-wrapper">
+        {loading && <div>Loading schedules...</div>}
+        {error && <div className="error-message">Error: {error}</div>}
+        
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin]}
+          initialView='timeGridWeek'
+          slotMinTime={"07:00:00"}
+          slotMaxTime={"20:00:00"}
+          allDaySlot={false}
+          expandRows={true}
+          height='100%'
+          headerToolbar={{
+            left: 'today,prev,next',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek'
+          }}
+          buttonText={{
+            today: 'Today',
+            month: 'Month',
+            week: 'Week'
+          }}
+          eventColor="#afdcd5"
+          eventTextColor="#000000"
+          eventContent={renderEventContent}
+          eventDisplay="block"
+          events={events}
+          eventClick={(info) => {
+            console.log("Clicked event:", info.event);
+            info.el.style.borderColor = '#afdcd5';
+          }}
+        />
+      </div>
     </div>
   );
 };

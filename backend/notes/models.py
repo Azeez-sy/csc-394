@@ -2,7 +2,8 @@ from django.db import models
 
 # Create your models here.
 #from django.contrib.auth.models import User
-from gostem.models import Program, User, Event
+from gostem.models import Program, Event
+from user.models import User
     
 
 def get_default_author(): # for stupid errors that ask for default.
@@ -17,7 +18,6 @@ class Note(models.Model):
     contentType = models.CharField(max_length = 50, default=None)
     # content     = models.TextField() #Text or a file path
     #authorId    = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_author) #Links to User Model
-    authorId = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes_notes')
     authorName  = models.CharField(max_length = 100, default=None) #Write in Author name
     event       = models.CharField(max_length = 100, default=None) #Write in Event
     programName = models.ForeignKey(Program, on_delete=models.CASCADE) #Write in Course Name
