@@ -14,16 +14,23 @@ const NotesContent = ({ handleLogout }) => {
   const [isViewNote, setIsViewNote] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [notes, setNotes] = useState([]);
+  // New state for toggling between My Notes and All Notes
+  const [showAllNotes, setShowAllNotes] = useState(false);
 
   const authToken = localStorage.getItem("authToken");
 
   useEffect(() => {
     fetchNotes();
-  }, []);
+  }, [showAllNotes]); // Re-fetch when view changes
 
   const fetchNotes = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/notes/", {
+      // Add query parameter for all notes
+      const endpoint = showAllNotes 
+        ? "http://localhost:8000/api/notes/?all=true" 
+        : "http://localhost:8000/api/notes/";
+      
+      const response = await fetch(endpoint, {
         headers: { "Authorization": `Token ${authToken}` }
       });
       const data = await response.json();
@@ -115,26 +122,49 @@ const NotesContent = ({ handleLogout }) => {
 
   return (
     <div className="notes-page-container">
+      <div className="burger-menu-container">
+        <BurgerMenu />
+      </div>
       <Sidebar handleLogout={handleLogout} />
-      <NoteListView 
-        notes={notes} 
-        onAddClick={() => setIsAddingNote(true)} 
-        onDeleteNote={deleteNote} 
-        onEditNote={(note) => {
-          setCurrentNote(note);
-          setIsEditingNote(true);
-        }}
-        onViewNote={viewNote} // Add this line - this is what was missing!
-      />
-      {isAddingNote && <ModalAddNote isOpen={isAddingNote} onClose={() => setIsAddingNote(false)} onAddNote={addNote} />}
-      {isEditingNote && currentNote && <ModalEditNote isOpen={isEditingNote} onClose={() => setIsEditingNote(false)} onUpdateNote={updateNote} note={currentNote} />}
-      {isViewNote && selectedNote && (
-        <ModalViewNote 
-          isOpen={isViewNote} 
-          onClose={() => setIsViewNote(false)} 
-          note={selectedNote} 
+      
+      <div className="notes-content-area">
+        {/* Updated view toggle to match hours-page style */}
+        <div className="view-toggle">
+          <button 
+            className={!showAllNotes ? "active" : ""}
+            onClick={() => setShowAllNotes(false)}
+          >
+            My Notes
+          </button>
+          <button 
+            className={showAllNotes ? "active" : ""}
+            onClick={() => setShowAllNotes(true)}
+          >
+            All Notes
+          </button>
+        </div>
+        
+        <NoteListView 
+          notes={notes} 
+          onAddClick={() => setIsAddingNote(true)} 
+          onDeleteNote={deleteNote} 
+          onEditNote={(note) => {
+            setCurrentNote(note);
+            setIsEditingNote(true);
+          }}
+          onViewNote={viewNote}
+          showAllNotes={showAllNotes}
         />
-      )}
+        {isAddingNote && <ModalAddNote isOpen={isAddingNote} onClose={() => setIsAddingNote(false)} onAddNote={addNote} />}
+        {isEditingNote && currentNote && <ModalEditNote isOpen={isEditingNote} onClose={() => setIsEditingNote(false)} onUpdateNote={updateNote} note={currentNote} />}
+        {isViewNote && selectedNote && (
+          <ModalViewNote 
+            isOpen={isViewNote} 
+            onClose={() => setIsViewNote(false)} 
+            note={selectedNote} 
+          />
+        )}
+      </div>
     </div>
   );
 };
