@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./styles/chats-page.css";
 import Sidebar from "./components/sidebar";
 
@@ -6,11 +6,51 @@ const ChatContent = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [userName, setUserName] = useState("Anonymous");
+  const [socket, setSocket] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    console.log("Attempting to connect to WebSocket...");
+    const chatSocket = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
+
+    chatSocket.onopen = () => {
+      console.log("WebSocket connected successfully");
+      setIsConnected(true);
+    };
+
+    chatSocket.onmessage = (event) => {
+      console.log("Received message:", event.data);
+      const data = JSON.parse(event.data);
+      setMessages((prevMessages) => [...prevMessages, { user: data.username, text: data.message }]);
+    };
+
+    chatSocket.onclose = (event) => {
+      console.error("WebSocket disconnected:", event.code, event.reason);
+      setIsConnected(false);
+    };
+
+    chatSocket.onerror = (error) => {
+      console.error("WebSocket Error:", error);
+      setIsConnected(false);
+    };
+
+    setSocket(chatSocket);
+
+    return () => {
+      console.log("Cleaning up WebSocket connection");
+      chatSocket.close();
+    };
+  }, []);
 
   const handleSend = () => {
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+      console.error("WebSocket is not open. Cannot send message.");
+      return;
+    }
+
     if (input.trim() !== "") {
-      const newMessage = { user: userName, text: input };
-      setMessages([...messages, newMessage]);
+      const messageData = { message: input, username: userName };
+      socket.send(JSON.stringify(messageData));
       setInput("");
     }
   };
@@ -24,7 +64,7 @@ const ChatContent = () => {
   return (
     <div className="chat-body">
       <div className="chat-header">
-        <h1>Chat Room</h1>
+        <h1>Chat Room {isConnected ? "🟢" : "🔴"}</h1>
       </div>
 
       <div className="username-input">
@@ -54,8 +94,9 @@ const ChatContent = () => {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type your message..."
+          disabled={!isConnected}
         />
-        <button onClick={handleSend}>Send</button>
+        <button onClick={handleSend} disabled={!isConnected}>Send</button>
       </div>
     </div>
   );

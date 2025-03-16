@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-w6ya=21(%%+x@^k6=ly06-zjooy4#$t1@pio85vlsgrd08u@mz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -36,13 +36,19 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "daphne",
     "django.contrib.staticfiles",
     # Third-party packages
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+
     "schedule",
+
     "users",
+
+    "chat",
+    "channels",,
     "notes",
     "hour_log"
 ]
@@ -144,6 +150,7 @@ REST_FRAMEWORK = {
 # Enable CORS for React frontend
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React frontend
+    "http://127.0.0.1:3000",
 ]
 
 # CORS settings
@@ -178,3 +185,12 @@ FACULTY_EMAILS = [
 
 # Add this line near the bottom of the file
 AUTH_USER_MODEL = 'users.User'
+
+ASGI_APPLICATION = "backend_gostem.asgi.application"
+
+# WebSockets will use Redis as a message broker
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Use Redis in production
+    },
+}
