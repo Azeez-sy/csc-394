@@ -223,6 +223,72 @@
   cursor: not-allowed;
 }
 
+.hours-summary {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 75%;
+  margin: 20px auto;
+}
+
+.hours-summary h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.faculty-view .entries-container {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.faculty-view .entry-card {
+  border-left: 4px solid #133d3b;
+}
+
+/* Add styles for user filtering and highlighting */
+.user-filter {
+  margin-bottom: 20px;
+}
+
+.user-filter select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.view-toggle {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+  width: 50%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #e5e7eb;
+}
+
+.view-toggle button {
+  flex: 1;
+  padding: 10px 15px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.view-toggle button.active {
+  background-color: #133d3b;
+  color: white;
+}
+
+.view-toggle button:hover:not(.active) {
+  background-color: #d1d5db;
+}
+
 @media (max-width: 767px) {
 
   .grid {

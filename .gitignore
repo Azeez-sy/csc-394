@@ -17,3 +17,8 @@ db.sqlite3
 node_modules/
 .eslintcache
 *.pack
+
+db.sqlite3
+node_modules/
+.eslintcache
+*.pack

@@ -4,7 +4,7 @@ from rest_framework import generics, permissions
 from rest_framework.permissions import IsAuthenticated
 from .models import Event
 from .serializers import EventSerializer
-from .permissions import IsFaculty
+from users.permissions import IsFaculty
 from rest_framework.views import APIView
 from rest_framework.response import Response
 

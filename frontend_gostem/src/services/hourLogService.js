@@ -59,6 +59,23 @@ const hourLogService = {
       console.error('Error deleting hour log:', error);
       throw error;
     }
+  },
+
+  // New method for faculty to get all hour logs
+  getAllHourLogs: async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      
+      const response = await axios.get(`${API_URL}/hour_log/faculty/all/`, {
+        headers: {
+          'Authorization': `Token ${token}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching all hour logs:', error);
+      throw error;
+    }
   }
 };
 

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, permissions
 from .models import HourLog
 from .serializers import HourLogSerializer
+from users.permissions import IsFaculty
 
 class HourLogListCreateView(generics.ListCreateAPIView):
     serializer_class = HourLogSerializer
@@ -23,3 +24,14 @@ class HourLogDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         # Only allow operations on logs belonging to the current user
         return HourLog.objects.filter(user=self.request.user)
+
+# Add a new view for faculty to see all hour logs
+class FacultyHourLogListView(generics.ListAPIView):
+    permission_classes = [IsFaculty]  # ✅ Only faculty can delete events
+
+    serializer_class = HourLogSerializer
+    permission_classes = [permissions.IsAuthenticated, IsFaculty]
+    
+    def get_queryset(self):
+        # Faculty can see all logs from all users
+        return HourLog.objects.all()
