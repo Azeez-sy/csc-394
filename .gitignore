@@ -13,3 +13,7 @@ node_modules/
 frontend_gostem/node_modules/.cache/default-development/2.pack
 frontend_gostem/node_modules/.cache/default-development/3.pack
 backend/db.sqlite3
+db.sqlite3
+node_modules/
+.eslintcache
+*.pack
