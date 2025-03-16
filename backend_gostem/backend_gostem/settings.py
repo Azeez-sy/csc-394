@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'corsheaders',
     "schedule",
     "users",
-    "notes"
+    "notes",
+    "hour_log"
 ]
 
 MIDDLEWARE = [
