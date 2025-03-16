@@ -33,27 +33,31 @@
 
 .note-view-program-type {
   display: flex;
-  gap: 10px;
+  gap: 12px;  /* Increased gap */
+  flex-wrap: wrap;  /* Allow wrapping for multiple badges */
+  margin: 8px 0;  /* Added vertical margin */
 }
 
 .program-badge {
   display: inline-flex;
   border-radius: 16px;
-  padding: 4px 12px;
+  padding: 6px 14px;  /* Increased padding */
   background-color: #133d3b;
   color: white;
   font-size: 0.75rem;
   font-weight: 500;
+  margin: 4px;  /* Added margin around badges */
 }
 
 .note-type-badge {
   display: inline-flex;
   border-radius: 16px;
-  padding: 4px 12px;
+  padding: 6px 14px;  /* Increased padding */
   background-color: #455a64;
   color: white;
   font-size: 0.75rem;
   font-weight: 500;
+  margin: 4px;  /* Added margin around badges */
 }
 
 .note-view-author {
