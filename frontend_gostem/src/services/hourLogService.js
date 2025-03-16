@@ -41,6 +41,24 @@ const hourLogService = {
       console.error('Error creating hour log:', error);
       throw error;
     }
+  },
+  
+  // Delete an hour log entry
+  deleteHourLog: async (id) => {
+    try {
+      // Get token from localStorage (same as in App.js)
+      const token = localStorage.getItem("authToken");
+      
+      await axios.delete(`${API_URL}/hour_log/${id}/`, {
+        headers: {
+          'Authorization': `Token ${token}`
+        }
+      });
+      return true; // Return true on successful deletion
+    } catch (error) {
+      console.error('Error deleting hour log:', error);
+      throw error;
+    }
   }
 };
 

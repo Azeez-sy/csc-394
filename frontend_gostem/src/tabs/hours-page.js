@@ -94,6 +94,28 @@ const TimeCard = () => {
         fetchHourLogs();
     }, []);
 
+    // Modify handleDeleteEntry to include confirmation
+    const handleDeleteEntry = async (id) => {
+        // Ask for confirmation before deleting
+        if (!window.confirm("Are you sure you want to delete this entry?")) {
+            return;
+        }
+        
+        try {
+            setLoading(true);
+            await hourLogService.deleteHourLog(id);
+            
+            // Remove the deleted entry from the state
+            setEntries(entries.filter(entry => entry.id !== id));
+            setError(null);
+        } catch (err) {
+            setError('Failed to delete entry. Please try again.');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="hours-container">
             <div className="hours-header">
@@ -186,6 +208,13 @@ const TimeCard = () => {
                         <div key={entry.id || index} className="entry-card">
                             <div className="entry-header">
                                 <strong>Subject:</strong> {entry.subject}
+                                <button 
+                                    onClick={() => handleDeleteEntry(entry.id)}
+                                    className="delete-button"
+                                    disabled={loading}
+                                >
+                                    Delete
+                                </button>
                             </div>
                             <div className="entry-details">
                                 <p><strong>User:</strong> {entry.user}</p>
