@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import "../styles/create-event.css";
 
-const CreateEvent = ({ onEventCreated }) => {
+const CreateEvent = ({ onEventCreated, onClose }) => {
   const [className, setClassName] = useState("");
   const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -63,6 +64,7 @@ const CreateEvent = ({ onEventCreated }) => {
       if (response.ok) {
         alert("Event created successfully!");
         onEventCreated();
+        onClose(); // Close the modal after successful creation
       } else {
         alert("Failed to create event.");
       }
@@ -72,77 +74,96 @@ const CreateEvent = ({ onEventCreated }) => {
     }
   };
 
+  const handleOverlayClick = (e) => {
+    if (e.target.className === 'modal-overlay') {
+      onClose();
+    }
+  };
+
   return (
-    <div className="create-event-container">
-      <h2>Create Event (Admin Only)</h2>
-      <form onSubmit={handleSubmit}>
-        <label>Class Name:</label>
-        <input type="text" value={className} onChange={(e) => setClassName(e.target.value)} required />
-
-        <label>Date:</label>
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
-
-        <label>Start Time:</label>
-        <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
-
-        <label>End Time:</label>
-        <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
-
-        <label>Location:</label>
-        <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
-
-        <div className="form-group">
-          <label>Select Tutors:</label>
-          <select 
-            multiple 
-            className="form-control" 
-            value={selectedTutors}
-            onChange={(e) => {
-              const values = Array.from(e.target.selectedOptions, option => option.value);
-              setSelectedTutors(values);
+    <div className="modal-overlay" onClick={handleOverlayClick}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>Create Event</h2>
+          <button 
+            className="close-button" 
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
             }}
           >
-            {availableTutors.map(tutor => (
-              <option key={tutor.id} value={tutor.id}>
-                {tutor.first_name} {tutor.last_name} ({tutor.email})
-              </option>
-            ))}
-          </select>
+            &times;
+          </button>
         </div>
+        <form onSubmit={handleSubmit}>
+          <label>Class Name:</label>
+          <input type="text" value={className} onChange={(e) => setClassName(e.target.value)} required />
 
-        <label>Is Recurring?</label>
-        <input type="checkbox" checked={isRecurring} onChange={(e) => setIsRecurring(e.target.checked)} />
+          <label>Date:</label>
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
 
-        {isRecurring && (
-          <>
-            <label>Select Repeat Days:</label>
-            <div className="checkbox-group">
-              {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => (
-                <label key={day}>
-                  <input
-                    type="checkbox"
-                    value={day}
-                    checked={repeatDays.includes(day)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setRepeatDays([...repeatDays, day]);
-                      } else {
-                        setRepeatDays(repeatDays.filter((d) => d !== day));
-                      }
-                    }}
-                  />
-                  {day}
-                </label>
+          <label>Start Time:</label>
+          <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
+
+          <label>End Time:</label>
+          <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
+
+          <label>Location:</label>
+          <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
+
+          <div className="form-group">
+            <label>Select Tutors:</label>
+            <select 
+              multiple 
+              className="form-control" 
+              value={selectedTutors}
+              onChange={(e) => {
+                const values = Array.from(e.target.selectedOptions, option => option.value);
+                setSelectedTutors(values);
+              }}
+            >
+              {availableTutors.map(tutor => (
+                <option key={tutor.id} value={tutor.id}>
+                  {tutor.first_name} {tutor.last_name} ({tutor.email})
+                </option>
               ))}
-            </div>
+            </select>
+          </div>
 
-            <label>Repeat Until:</label>
-            <input type="date" value={repeatUntil} onChange={(e) => setRepeatUntil(e.target.value)} />
-          </>
-        )}
+          <label>Is Recurring?</label>
+          <input type="checkbox" checked={isRecurring} onChange={(e) => setIsRecurring(e.target.checked)} />
 
-        <button type="submit">Create Event</button>
-      </form>
+          {isRecurring && (
+            <>
+              <label>Select Repeat Days:</label>
+              <div className="checkbox-group">
+                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day) => (
+                  <label key={day}>
+                    <input
+                      type="checkbox"
+                      value={day}
+                      checked={repeatDays.includes(day)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setRepeatDays([...repeatDays, day]);
+                        } else {
+                          setRepeatDays(repeatDays.filter((d) => d !== day));
+                        }
+                      }}
+                    />
+                    {day}
+                  </label>
+                ))}
+              </div>
+
+              <label>Repeat Until:</label>
+              <input type="date" value={repeatUntil} onChange={(e) => setRepeatUntil(e.target.value)} />
+            </>
+          )}
+
+          <button type="submit">Create Event</button>
+        </form>
+      </div>
     </div>
   );
 };

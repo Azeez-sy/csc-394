@@ -3,7 +3,6 @@ import '../styles/sidebar.css';
 
 import clock from '../components/icons/clock.png';
 import chat from '../components/icons/chat.png';
-import gear from '../components/icons/gear.png';
 import home from '../components/icons/logo.png';
 import logout from '../components/icons/logout.png';
 import notes from '../components/icons/notes.png';
@@ -68,14 +67,6 @@ const Sidebar = ({ handleLogout }) => {
       </div>
 
       <div className="sidebar-bottom">
-        <div className="sidebar-item">
-          <Link to="./settings-page">
-            <button className="sidebar-image-button">
-              <img src={gear} alt="Settings" />
-              <span className="sidebar-button-text">Settings</span>
-            </button>
-          </Link>
-        </div>
         <div className="sidebar-item">
           <button className="sidebar-image-button" onClick={handleLogout}>
             <img src={logout} alt="Logout" />

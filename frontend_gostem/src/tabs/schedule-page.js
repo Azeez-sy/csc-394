@@ -142,13 +142,15 @@ const SchedulePage = ({ handleLogout }) => {
     <div className="schedule-page-container">
       <Sidebar handleLogout={handleLogout} />
 
-      {isFaculty && (
-        <button className="add-event-button" onClick={() => setShowCreateEvent(!showCreateEvent)}>
-          {showCreateEvent ? "Close Event Form" : "Add Event"}
-        </button>
+      {showCreateEvent && isFaculty && (
+        <CreateEvent 
+          onEventCreated={() => {
+            fetchSchedules();
+            setShowCreateEvent(false);
+          }}
+          onClose={() => setShowCreateEvent(false)}
+        />
       )}
-
-      {showCreateEvent && isFaculty && <CreateEvent onEventCreated={fetchSchedules} />}
 
       <div className="calendar-wrapper">
         {loading && <div>Loading schedules...</div>}
@@ -165,7 +167,13 @@ const SchedulePage = ({ handleLogout }) => {
           headerToolbar={{
             left: 'today,prev,next',
             center: 'title',
-            right: 'dayGridMonth,timeGridWeek'
+            right: isFaculty ? 'addEventButton,dayGridMonth,timeGridWeek' : 'dayGridMonth,timeGridWeek'
+          }}
+          customButtons={{
+            addEventButton: {
+              text: showCreateEvent ? 'Close Event Form' : 'Add Event',
+              click: () => setShowCreateEvent(!showCreateEvent)
+            }
           }}
           buttonText={{
             today: 'Today',

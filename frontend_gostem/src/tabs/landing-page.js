@@ -84,20 +84,9 @@ const LandingPage = ({ handleLogout }) => {
             <span className="button-text">Profile</span>
           </button>
         </Link>
-        <Link to="./user-list">
-          <button className="image-button">
-            <img src={group} alt="User List" />
-            <br></br>
-            <span className="button-text">User List</span>
-          </button>
-        </Link>
       </div>
 
       <div className="bottom-buttons">
-
-        <Link to="">
-          <button className="bottom-button">Settings</button>
-        </Link>
 
         <a onClick={handleLogout}>
           <button className="bottom-button">Log Out</button>

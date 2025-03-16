@@ -168,3 +168,33 @@
     margin-top: 10px;
     cursor: pointer;
   }
+
+.add-event-button {
+  background-color: #afdcd5 !important;
+  border: none !important;
+  color: black !important;
+  margin: 0 4px !important;
+  border-radius: 8px !important;
+  padding: 0.4em 0.65em !important; /* Match FullCalendar button padding */
+  font-size: 1em !important; /* Match FullCalendar button font size */
+  height: 2.1em !important; /* Match FullCalendar button height */
+  line-height: 1.5 !important; /* Match FullCalendar button line height */
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: absolute;
+  top: 10px; /* Align with other buttons */
+  right: 280px; /* Move further left of Month/Week buttons */
+  z-index: 2;
+}
+
+.add-event-button:hover {
+  background-color: #216661 !important;
+  color: white !important;
+  box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.add-event-button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
