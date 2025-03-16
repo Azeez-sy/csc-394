@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "users",
 
     "chat",
-    "channels",,
+    "channels",
     "notes",
     "hour_log"
 ]
