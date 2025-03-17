@@ -23,8 +23,14 @@ class GoogleLoginView(APIView):
         User = get_user_model()
         user, created = User.objects.get_or_create(email=email, defaults={
             "username": email,
-            "first_name": name
+            "first_name": name,
+            "profile_picture": profile_picture
         })
+        
+        # Update profile picture if user exists and picture has changed
+        if not created and profile_picture and user.profile_picture != profile_picture:
+            user.profile_picture = profile_picture
+            user.save(update_fields=['profile_picture'])
 
         # Automatically assign faculty role if email is in FACULTY_EMAILS
         if email in settings.FACULTY_EMAILS:
@@ -38,7 +44,8 @@ class GoogleLoginView(APIView):
             "user": {
                 "email": user.email,
                 "name": user.first_name,
-                "role": user.role
+                "role": user.role,
+                "photoURL": user.profile_picture  # Include profile picture in response
             }
         })
 

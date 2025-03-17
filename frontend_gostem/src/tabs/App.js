@@ -63,20 +63,20 @@ function MainApp() {
         localStorage.setItem("authToken", data.key);
         localStorage.setItem("user", JSON.stringify({ 
           email: data.user.email, 
-          name: data.user.name,
-          profile_picture: googleUser.photoURL,
-          role: data.user.role  // 🚀 Store user role
+          displayName: data.user.name,  // Changed 'name' to 'displayName'
+          photoURL: data.user.photoURL || googleUser.photoURL, // Changed 'profile_picture' to 'photoURL'
+          role: data.user.role
         }));
   
         setAuthToken(data.key);
         setUser({
           email: data.user.email, 
-          name: data.user.name,
-          profile_picture: googleUser.photoURL,
+          displayName: data.user.name,  // Changed to match localStorage
+          photoURL: data.user.photoURL || googleUser.photoURL, // Changed to match localStorage
           role: data.user.role
         });
   
-        console.log("Stored role:", localStorage.getItem("user"));
+        console.log("Stored user data:", localStorage.getItem("user"));
   
         setTimeout(() => {
           history.push("/landing-page");

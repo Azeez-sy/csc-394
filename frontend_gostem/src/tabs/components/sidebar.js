@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/sidebar.css'; 
 
 import clock from '../components/icons/clock.png';
@@ -9,12 +9,38 @@ import notes from '../components/icons/notes.png';
 import schedule from '../components/icons/schedule.png';
 import user from '../components/icons/user.png';
 
-
 import { Link } from 'react-router-dom';
 
 const Sidebar = ({ handleLogout }) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  
+  useEffect(() => {
+    // Get user data from localStorage on component mount
+    const userData = JSON.parse(localStorage.getItem("user"));
+    setCurrentUser(userData);
+  }, []);
+
   return (
     <div className="sidebar-container">
+      {currentUser && (
+        <div className="sidebar-profile">
+          <div className="profile-photo-container">
+            {currentUser.photoURL ? (
+              <img 
+                src={currentUser.photoURL} 
+                alt="Profile" 
+                className="profile-photo" 
+              />
+            ) : (
+              <div className="profile-photo-placeholder">
+                {currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U'}
+              </div>
+            )}
+          </div>
+          <span className="profile-name">{currentUser?.displayName || "User"}</span>
+        </div>
+      )}
+      
       <div className="sidebar-top">
         <div className="sidebar-item">
           <Link to="./landing-page">
@@ -78,6 +104,5 @@ const Sidebar = ({ handleLogout }) => {
     
   );
 };
-//const user = JSON.parse(localStorage.getItem("user"));
 
 export default Sidebar;

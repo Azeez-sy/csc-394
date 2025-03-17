@@ -1,45 +1,35 @@
 import './styles/landing-page.css';
 import clock from './components/icons/clock.png'
 import chat from './components/icons/chat.png'
-// import gear from './components/icons/gear.png'
-// import logout from './components/icons/logout.png'
 import notes from './components/icons/notes.png'
 import schedule from './components/icons/schedule.png'
 import user from './components/icons/user.png'
 import globe from './components/icons/globe.png'
 import group from './components/icons/group-users.png'
-// import BurgerMenu from './components/burger';  
-// import Sidebar from './components/sidebar';  
 
 import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 
 
 const LandingPage = ({ handleLogout }) => {
+  const [userName, setUserName] = useState('');
 
-
-  // const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setIsMobile(window.innerWidth <= 768);
-  //   };
-
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
+  useEffect(() => {
+    // Get user data from localStorage
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (userData && userData.displayName) {
+      // Extract just the first name by splitting at the space
+      const firstName = userData.displayName.split(' ')[0];
+      setUserName(firstName);
+    }
+  }, []);
 
   return (
     
     <div className="body">
       <header className="landing-header">
-        <h1>Welcome to GoStem</h1>
+        <h1>Welcome to GoStem{userName ? `, ${userName}` : ''}!</h1>
       </header>
-
-      {/* <BurgerMenu /> */}
-      {/* Show Sidebar on Large Screens, Hamburger Menu on Small Screens */}
-      {/* <BurgerMenu /> */}
-
 
       <div className="button-grid">
         <a href="https://thegostem.org/" target="_blank" rel="noopener noreferrer">
