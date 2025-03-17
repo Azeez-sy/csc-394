@@ -20,14 +20,18 @@ class NoteListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Get the 'all' query parameter, defaulting to False
+        # Get query parameters
         show_all = self.request.query_params.get('all', 'false').lower() == 'true'
+        program_filter = self.request.query_params.get('program')
         
-        # If 'all' parameter is true, return all notes
-        if show_all:
-            return Note.objects.all()
-        # Otherwise, return only the user's notes
-        return Note.objects.filter(author=self.request.user)
+        # Start with base queryset
+        queryset = Note.objects.all() if show_all else Note.objects.filter(author=self.request.user)
+        
+        # Apply program filter if specified
+        if program_filter and program_filter != "All Programs":
+            queryset = queryset.filter(program=program_filter)
+            
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

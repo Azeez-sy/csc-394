@@ -4,83 +4,172 @@ import edit from './icons/edit.png'
 import document from './icons/document.png'
 import "../styles/note-list-view.css"
 
-const NoteListView = ({ notes = [], onAddClick, onDeleteNote, onEditNote, onViewNote }) => {
-    const [program, setProgram] = useState('all-programs');
+const NoteListView = ({ 
+  notes = [], 
+  onAddClick, 
+  onDeleteNote, 
+  onEditNote, 
+  onViewNote, 
+  programFilter, 
+  onProgramFilterChange 
+}) => {
+  // Keep only the toast error state, remove errorMessage and showError
+  const [errorToast, setErrorToast] = useState({
+    show: false,
+    message: "",
+    position: { x: 0, y: 0 }
+  });
 
-    // Add this helper function to format dates nicely
-    const formatDate = (dateString) => {
-        if (!dateString) return "N/A";
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return "Invalid date";
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short', 
-            day: 'numeric'
-        });
-    };
+  // Use programFilter from props instead of local state
+  const handleProgramChange = (e) => {
+    if (onProgramFilterChange) {
+      onProgramFilterChange(e.target.value);
+    }
+  };
 
-    // Filter notes
-    const filteredNotes = notes.filter(note => {
-      if (program !== 'all-programs' && note.programName && 
-          !note.programName.toLowerCase().includes(program.replace('-', ' '))) {
-        return false;
-      }            
-      return true;
+  // Add this helper function to format dates nicely
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid date";
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short', 
+        day: 'numeric'
     });
+  };
 
-    const hasFiles = note => {
-      if (note.files && Array.isArray(note.files) && note.files.length > 0) {
-        return true;
-      }
-      
-      // Check if the note has a file string that's not "No files uploaded"
-      if (note.file && note.file !== "No files uploaded" && note.file !== "") {
-        return true;
-      }
-      
+  // Filter notes
+  const filteredNotes = notes.filter(note => {
+    if (programFilter === 'all-programs') {
+      return true; // Show all notes when "All Programs" is selected
+    }
+    
+    // Get standardized versions of both strings for comparison
+    const filterProgram = programFilter === 'program-1' ? 'program 1' : 'program 2';
+    
+    // Check if the note has a program name
+    if (!note.programName) {
       return false;
-    };
-
-    const handleDelete = (e, noteId) => {
-      e.stopPropagation();
-      if (window.confirm("Are you sure you want to delete this note?")) {
-        onDeleteNote(noteId)
-      }
-    };
-
-    const handleEdit = (e, note) => {
-      e.stopPropagation();
-      onEditNote(note);
     }
+    
+    // Normalize the program name for comparison (convert to lowercase)
+    const normalizedProgramName = note.programName.toLowerCase();
+    
+    // Check if the program name contains our filter value
+    return normalizedProgramName.includes(filterProgram);
+  });
 
-    const handleViewNote = (note) => {
-      if (onViewNote) {
-        onViewNote(note);
+  const hasFiles = note => {
+    if (note.files && Array.isArray(note.files) && note.files.length > 0) {
+      return true;
+    }
+    
+    // Check if the note has a file string that's not "No files uploaded"
+    if (note.file && note.file !== "No files uploaded" && note.file !== "") {
+      return true;
+    }
+    
+    return false;
+  };
+
+  // Updated handleDelete function
+  const handleDelete = async (e, noteId) => {
+    e.stopPropagation();
+    
+    // Get position for the toast
+    const rect = e.currentTarget.getBoundingClientRect();
+    const position = {
+      x: rect.left,
+      y: rect.bottom + window.scrollY + 10 // 10px below the button
+    };
+    
+    if (window.confirm("Are you sure you want to delete this note?")) {
+      try {
+        const result = await onDeleteNote(noteId);
+        
+        // If deletion failed due to permissions
+        if (result && result.error) {
+          // Show toast instead of modal
+          setErrorToast({
+            show: true,
+            message: result.error || "You can only delete your own notes",
+            position
+          });
+        }
+      } catch (error) {
+        // Handle any other errors with toast
+        setErrorToast({
+          show: true,
+          message: "You can only delete your own notes",
+          position
+        });
       }
     }
-      
-    return (
-      <div className="notes-body">
-      <div className="notes-wrapper">
-        <div className="notes-header">
-          <h1>Notes</h1>
-        </div>
-          <div className="notes-header-btn-filter">
-            <div className="notes-filters">
-            <select 
-                  value={program} 
-                  onChange={(e) => setProgram(e.target.value)}
-                  className="notes-select"
-                >
-                  <option value="all-programs">All Programs</option>
-                  <option value="program-1">Program 1</option>
-                  <option value="program-2">Program 2</option>
-              </select>
+  };
+
+  const handleEdit = (e, note) => {
+    e.stopPropagation();
+    onEditNote(note);
+  }
+
+  const handleViewNote = (note) => {
+    if (onViewNote) {
+      onViewNote(note);
+    }
+  }
+
+  // Remove the ErrorPopup component and keep only the toast
   
-            </div>
-            <button className="add-btn" onClick={onAddClick}>Add</button>
+  // Toast component within your component
+  const ErrorToast = () => {
+    // Auto-hide after 3 seconds
+    React.useEffect(() => {
+      if (errorToast.show) {
+        const timer = setTimeout(() => {
+          setErrorToast(prev => ({ ...prev, show: false }));
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
+    }, [errorToast.show]);
+
+    if (!errorToast.show) return null;
+    
+    return (
+      <div 
+        className="error-toast"
+        style={{
+          left: `${errorToast.position.x}px`,
+          top: `${errorToast.position.y}px`
+        }}
+      >
+        <p>{errorToast.message}</p>
+      </div>
+    );
+  };
+    
+  return (
+    <div className="notes-body">
+    <div className="notes-wrapper">
+      <div className="notes-header">
+        <h1>Notes</h1>
+      </div>
+        <div className="notes-header-btn-filter">
+          <div className="notes-filters">
+          <select 
+                value={programFilter || 'all-programs'} 
+                onChange={handleProgramChange}
+                className="notes-select"
+              >
+                <option value="all-programs">All Programs</option>
+                <option value="program-1">Program 1</option>
+                <option value="program-2">Program 2</option>
+            </select>
+
           </div>
-          <div className="notes-list-container">
+          <button className="add-btn" onClick={onAddClick}>Add</button>
+        </div>
+        <div className="notes-list-container">
           <div className="notes-grid">
           {filteredNotes.length > 0 ? (
             filteredNotes.map((note) => (
@@ -120,11 +209,12 @@ const NoteListView = ({ notes = [], onAddClick, onDeleteNote, onEditNote, onView
               <p>No notes available. Click "Add Note" to create one.</p>
             </div>
           )}
-        
           </div>
         </div>
-      </div>
     </div>
-    );
-  };
-  export default NoteListView;
+    {/* Remove ErrorPopup and keep only ErrorToast */}
+    <ErrorToast />
+  </div>
+  );
+};
+export default NoteListView;

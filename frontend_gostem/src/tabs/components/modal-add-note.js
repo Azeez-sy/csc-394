@@ -57,8 +57,8 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     
     const newNote = {
       title: title,
-      content: content  // Changed from 'description' to 'content'
-      // Remove fields that don't exist in your backend model
+      content: content,  // Changed from 'description' to 'content'
+      program: program   // Include program value
     };
     
     onAddNote(newNote);

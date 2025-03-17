@@ -16,54 +16,88 @@ const NotesContent = ({ handleLogout }) => {
   const [notes, setNotes] = useState([]);
   // New state for toggling between My Notes and All Notes
   const [showAllNotes, setShowAllNotes] = useState(false);
+  // Add this with other state variables
+  const [programFilter, setProgramFilter] = useState('all-programs');
 
   const authToken = localStorage.getItem("authToken");
 
   useEffect(() => {
     fetchNotes();
-  }, [showAllNotes]); // Re-fetch when view changes
+  }, [showAllNotes, programFilter]); // Re-fetch when view or program filter changes
 
   const fetchNotes = async () => {
     try {
-      // Add query parameter for all notes
-      const endpoint = showAllNotes 
-        ? "http://localhost:8000/api/notes/?all=true" 
-        : "http://localhost:8000/api/notes/";
+      // Start with base URL without query parameters
+      let endpoint = "http://localhost:8000/api/notes/";
+      
+      // Create array to hold query parameters
+      const queryParams = [];
+      
+      // Add the "all" parameter when showing all notes
+      if (showAllNotes) {
+        queryParams.push("all=true");
+      }
+      
+      // Add program filter if selected and it's not "All Programs"
+      if (programFilter && programFilter !== 'all-programs') {
+        const programValue = programFilter === 'program-1' ? 'Program 1' : 'Program 2';
+        queryParams.push(`program=${encodeURIComponent(programValue)}`);
+      }
+      
+      // Append query parameters to endpoint if we have any
+      if (queryParams.length > 0) {
+        endpoint += `?${queryParams.join('&')}`;
+      }
+      
+      console.log("Fetching notes from:", endpoint); // For debugging
       
       const response = await fetch(endpoint, {
         headers: { "Authorization": `Token ${authToken}` }
       });
+      
       const data = await response.json();
       
       // Transform backend field names to match frontend expectations
       const transformedNotes = Array.isArray(data) ? data.map(note => ({
         id: note.id,
         title: note.title,
-        description: note.content,          // Map content to description
-        dateCreated: note.date_created,     // Map date_created to dateCreated
-        dateModified: note.date_modified,   // Map date_modified to dateModified
-        authorName: note.author_name,       // Map author_name to authorName
-        programName: "All Programs",        // Default program name
-        files: []                           // Default empty files array
+        description: note.content,
+        dateCreated: note.date_created,
+        dateModified: note.date_modified,
+        authorName: note.author_name,
+        programName: note.program || "All Programs",
+        files: []
       })) : [];
       
       setNotes(transformedNotes);
-      console.log("Transformed notes:", transformedNotes);
     } catch (error) {
       console.error("Error fetching notes:", error);
-      setNotes([]); 
+      setNotes([]);
     }
   };
 
   const addNote = async (newNote) => {
     try {
+      // Extract program name from the frontend-style program identifier
+      let program = null;
+      if (newNote.program) {
+        program = newNote.program === 'program-1' ? 'Program 1' : 'Program 2';
+      }
+      
+      // Create a backend-compatible object
+      const noteData = {
+        title: newNote.title,
+        content: newNote.content,
+        program: program
+      };
+      
       const response = await fetch("http://localhost:8000/api/notes/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Token ${authToken}`
         },
-        body: JSON.stringify(newNote)
+        body: JSON.stringify(noteData)
       });
       if (response.ok) {
         fetchNotes();
@@ -76,23 +110,26 @@ const NotesContent = ({ handleLogout }) => {
 
   const updateNote = async (updatedNote, frontendData) => {
     try {
-      // Send only the backend-compatible fields to the API
+      // Add program information from frontendData
+      const noteDataForBackend = {
+        ...updatedNote,
+        program: frontendData?.programName || null
+      };
+      
       const response = await fetch(`http://localhost:8000/api/notes/${updatedNote.id}/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Token ${authToken}`
         },
-        body: JSON.stringify(updatedNote)
+        body: JSON.stringify(noteDataForBackend)
       });
       
       if (response.ok) {
-        // After successful update, refresh notes to get the latest data
         fetchNotes();
         setIsEditingNote(false);
         setCurrentNote(null);
       } else {
-        // Add error handling for debugging
         const errorData = await response.json();
         console.error("API Error:", errorData);
       }
@@ -105,13 +142,25 @@ const NotesContent = ({ handleLogout }) => {
     try {
       const response = await fetch(`http://localhost:8000/api/notes/${noteId}/`, {
         method: "DELETE",
-        headers: { "Authorization": `Token ${authToken}` }
+        headers: {
+          "Authorization": `Token ${authToken}`
+        }
       });
+      
       if (response.ok) {
-        fetchNotes();
+        fetchNotes(); // Refresh notes after successful deletion
+        return { success: true };
+      } else {
+        const errorData = await response.json();
+        return { 
+          error: errorData.detail || "You can only delete your own notes."
+        };
       }
     } catch (error) {
       console.error("Error deleting note:", error);
+      return { 
+        error: "Failed to delete note. You can only delete your own notes."
+      };
     }
   };
 
@@ -154,6 +203,8 @@ const NotesContent = ({ handleLogout }) => {
           }}
           onViewNote={viewNote}
           showAllNotes={showAllNotes}
+          programFilter={programFilter}
+          onProgramFilterChange={setProgramFilter}
         />
         {isAddingNote && <ModalAddNote isOpen={isAddingNote} onClose={() => setIsAddingNote(false)} onAddNote={addNote} />}
         {isEditingNote && currentNote && <ModalEditNote isOpen={isEditingNote} onClose={() => setIsEditingNote(false)} onUpdateNote={updateNote} note={currentNote} />}
