@@ -15,15 +15,23 @@ const NotesPage = () => {
   const [currentNote, setCurrentNote] = useState(null)
   const [isViewNote, setIsViewNote] = useState(false)
   const [selectedNote, setSelectedNote] = useState(null)
+  const [notes, setNotes] = useState([]);
+  const [programs, setPrograms] = useState([]); // New state for programs
+
   //const [notes, setNotes] = useState([]);
 
     useEffect(() => {
       fetchNotes();
+      fetchPrograms();
     }, []);
+    const authToken = localStorage.getItem("authToken");
 
     const fetchNotes = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/notes/');
+            //const authToken = localStorage.getItem("authToken");
+            const response = await axios.get('http://127.0.0.1:8000/api/notes/', {
+              headers: { "Authorization": `Token ${authToken}` }
+            });
             console.log("Response Data:", response.data); // Inspect response data
             setNotes(response.data);
         } catch (error) {
@@ -31,19 +39,16 @@ const NotesPage = () => {
         }
     };
 
-    const [notes, setNotes] = useState([
-      {
-        id: 1,
-        title: "ACT Prep",
-        dateCreated: "02-22-2025", // dateCreated is currently the only one being shown
-        dateModified: "02-23-2025",
-        authorName: "John Doe",
-        programName: "Program 1",
-        description: "Lorem ipsum odor amet, consectetuer adipiscing elit.",
-        file: "File names",
-        isShared: true
+    const fetchPrograms = async () => { //New fetch program function.
+      try {
+          const response = await axios.get('http://127.0.0.1:8000/api/programs/', {
+            headers: { "Authorization": `Token ${authToken}` }
+          });
+          setPrograms(response.data);
+      } catch (error) {
+          console.error('Error fetching programs:', error);
       }
-    ]);
+    };
 
     const handleEditClick = (note) => {
       setCurrentNote(note);
@@ -87,12 +92,15 @@ const NotesPage = () => {
         console.log("Sending FormData:", formData.get('file')); // Debugging
         const response = await axios.post('http://127.0.0.1:8000/api/notes/', formData, { // Send formData
             headers: {
-                'Content-Type': 'multipart/form-data',
+              'Content-Type': 'application/json',
+              "Authorization": `Token ${authToken}`
             },
         });
         console.log("Response:", response.data);
-        fetchNotes();
-        setIsAddingNote(false);
+        if (response.ok) {
+          fetchNotes();
+          setIsAddingNote(false);
+        }
       } catch (error) {
         if (error.response) {
             console.error('Error adding note:', error.response.data);
@@ -117,15 +125,21 @@ const NotesPage = () => {
     };*/
     const updateNote = async (updatedNote) => {
       try {
-          await axios.put(`http://127.0.0.1:8000/api/notes/${currentNote.id}/`, updatedNote, {
+          const response = await axios.put(`http://127.0.0.1:8000/api/notes/${currentNote.id}/`, updatedNote, {
               headers: {
-                  'Content-Type': 'multipart/form-data',
+                "Content-Type": "application/json",
+                "Authorization": `Token ${authToken}`
               },
           });
           
-          fetchNotes();
-          setIsEditingNote(false);
-          setCurrentNote(null);
+          if (response.ok) {
+            fetchNotes();
+            setIsEditingNote(false);
+            setCurrentNote(null);
+          } else {
+            const errorData = await response.json();
+            console.error("API Error:", errorData);
+          }
       } catch (error) {
           console.error('Error updating note:', error.response.data);
       }
@@ -146,8 +160,20 @@ const NotesPage = () => {
 
     const deleteNote = async (noteId) => {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/notes/${noteId}/`); // Correct URL
-        fetchNotes();
+        const response = await axios.delete(`http://127.0.0.1:8000/api/notes/${noteId}/`, {
+          headers: {  
+            "Authorization": `Token ${authToken}`
+          }
+        }); // Correct URL
+        if (response.ok) {
+          fetchNotes(); // Refresh notes after successful deletion
+          return { success: true };
+        } else {
+          const errorData = await response.json();
+          return { 
+            error: errorData.detail || "You can only delete your own notes."
+          };
+        }
       } catch (error) {
         console.error('Error deleting note:', error);
       }
@@ -178,13 +204,16 @@ const NotesPage = () => {
         onAddClick={handleAddClick}
         onDeleteNote={deleteNote}
         onEditNote={handleEditClick}
-        onViewNote={handleViewNote} />
+        onViewNote={handleViewNote} 
+        programs={programs}
+      />
 
       {isAddingNote && (
         <ModalAddNote
           isOpen={isAddingNote}
           onClose={handleCancel}
           onAddNote={addNote}
+          programs={programs}
         />
       )}
       {isEditingNote && currentNote && (
@@ -193,6 +222,7 @@ const NotesPage = () => {
           onClose={handleEditClose}
           onUpdateNote={updateNote}
           note={currentNote}
+          programs={programs}
         />
       )}
     </div>

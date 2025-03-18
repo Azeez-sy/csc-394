@@ -3,8 +3,9 @@ import Modal from './modal';
 import FileUploadZone from './drag-drop-files';
 import "../styles/modal-add-note.css"
 
-const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
-  const [program, setProgram] = useState('program-1');
+const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note, programs }) => {
+  const [programId, setProgramId] = useState('');
+  const [programName, setProgramName] = useState('');
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]); // Initialize files as an array
@@ -57,8 +58,8 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
           setFiles([]);
         }
       }
-      
-      setProgram(note.programName.toLowerCase().includes('program 1') ? 'program-1' : 'program-2');
+      setProgramId(note.programId === null || note.programId === undefined ? "" : note.programId);
+      setProgramName(note.programName);
     }
   }, [note]);
   
@@ -86,7 +87,8 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     setTitle("");
     setContent("");
     setFiles([]);
-    setProgram(note.programName.toLowerCase().includes('program 1') ? 'program-1' : 'program-2');
+    setProgramId("");
+    setProgramName("");
     setDeleteAttachments([]);
     //setNoteType(note.isShared ? 'shared-notes' : 'personal-notes');
     onClose();
@@ -143,13 +145,23 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     console.log("After update:", deleteAttachments);
   };
 
+  // handle program change:
+  const handleProgramChange = (e) => {
+    const selectedId = e.target.value;
+    setProgramId(selectedId);
+    const selectedProgram = programs.find(p => p.id === parseInt(selectedId));
+    if (selectedProgram) {
+        setProgramName(selectedProgram.program);
+    } else {
+        setProgramName('');
+    }
+  };
+
   // Updates note
   const handleUpdateClick = (event) => {
     event.preventDefault();
 
     if(!validateTitle() ||!validateContent()) {return;}
-
-    const programName = program === 'program-1' ? 'Program 1' : 'Program 2';
 
     // Get file names as a comma-separated string
     const fileNames = files.length > 0 
@@ -167,6 +179,7 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', content);
+    formData.append('programId', programId); 
     formData.append('programName', programName);
     formData.append('documents_attached', deleteAttachments);
     //formData.append('isShared', isShared);
@@ -250,13 +263,21 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
                 {contentError && <p className='error-message'>{contentError}</p>}
               </form>
               <div className="notes-filters-modal">
-                <select 
-                  value={program} 
-                  onChange={(e) => setProgram(e.target.value)}
+                <select
+                  value={programId} // Set value to programId
+                  onChange={handleProgramChange}
                   className="notes-select"
                 >
-                  <option value="program-1">Program 1</option>
-                  <option value="program-2">Program 2</option>
+                  <option value="" disabled>Select a Program</option>
+                  {Array.isArray(programs) && programs.length > 0 ? (
+                    programs.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.program}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="" disabled>Loading programs...</option>
+                  )}
                 </select>
               </div>
               <div>

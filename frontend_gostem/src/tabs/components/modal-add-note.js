@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from './modal';
 import FileUploadZone from './drag-drop-files';
 import "../styles/modal-add-note.css";
 
 
-const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
-  const [program, setProgram] = useState('program-1');
+const ModalAddNote = ({ isOpen, onClose, onAddNote, programs }) => {
+  const [program, setProgram] = useState(''); // Correctly declared
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
+  const [programId, setProgramId] = useState(''); // Store the program ID
+  const [programName, setProgramName] = useState(''); // Store the program Name
 
   // Resets modal after close
   const handleModalClose = () => {
@@ -19,7 +21,7 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     setTitle("");
     setContent("");
     setFiles([]);
-    setProgram('program-1');
+    setProgram("");
     onClose();
   };
 
@@ -81,6 +83,17 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     setNoteType('shared-notes');
   };*/
 
+  const handleProgramChange = (e) => {
+    const selectedId = e.target.value;
+    setProgramId(selectedId);
+    const selectedProgram = programs.find(p => p.id === parseInt(selectedId));
+    if (selectedProgram) {
+        setProgramName(selectedProgram.program);
+    } else {
+        setProgramName('');
+    }
+  };
+
   const handleAddClick = async (event) => {
     event.preventDefault();
 
@@ -88,13 +101,15 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
         return;
     }
 
-    const programName = program === 'program-1' ? 'Program 1' : 'Program 2';
+    //const programName = program === 'program-1' ? 'Program 1' : 'Program 2';
     //const isShared = noteType === 'shared-notes';
 
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', content);
-    formData.append('programName', programName);
+    console.log("program = "+program)
+    formData.append('programId', programId); // Send the program ID
+    formData.append('programName', programName); // Send the program name
     //formData.append('isShared', isShared);
     //formData.append('authorName', "Your Author Name"); // Add author name
     console.log(files)
@@ -180,13 +195,22 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
                 {contentError && <p className='error-message'>{contentError}</p>}
               </form>
               <div className="notes-filters-modal">
-                <select 
-                  value={program} 
-                  onChange={(e) => setProgram(e.target.value)}
+              <select
+                  key={"selectInput"}
+                  value={programId}
+                  onChange={handleProgramChange}
                   className="notes-select"
                 >
-                  <option value="program-1">Program 1</option>
-                  <option value="program-2">Program 2</option>
+                    <option value="" disabled>Select a Program</option>
+                    {Array.isArray(programs) && programs.length > 0 ? (
+                        programs.map((p) => (
+                            <option key={p.id} value={p.id}>
+                                {p.program}
+                            </option>
+                        ))
+                    ) : (
+                        <option value="" disabled>Loading programs...</option>
+                    )}
                 </select>
               </div>
               <div>

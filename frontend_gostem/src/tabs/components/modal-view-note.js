@@ -21,14 +21,15 @@ const ModalViewNote = ({ isOpen, onClose, note }) => {
 
   // Get note's info
   useEffect(() => {
-    if (note && note.attachments && Array.isArray(note.attachments)) {
+    if (note) {
       setNoteDetails({
         title: note.title,
         content: note.description,
         attachments: note.attachments,
         program: note.programName,
         author: note.authorName || "Unknown",
-        dateCreated: note.dateCreated || ""
+        dateCreated: note.dateCreated || "",
+        dateUpdated: note.dateUpdated || note.dateCreated,
       });
     }
   }, [note]);
@@ -70,7 +71,7 @@ const ModalViewNote = ({ isOpen, onClose, note }) => {
                 <h2 className="note-view-title">{noteDetails.title}</h2>
                 <div className="note-view-author">
                   <span>Author: {noteDetails.author}</span>
-                  <span>Created: {noteDetails.dateCreated}</span>
+                  <span>Date: {noteDetails.dateUpdated}</span>
                 </div>
               </div>
               

@@ -4,14 +4,14 @@ import edit from './icons/edit.png'
 import document from './icons/document.png'
 import "../styles/note-list-view.css"
 
-const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote }) => {
+const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote, programs }) => {
     const [program, setProgram] = useState('all-programs');
-    //const filteredNotes = [];
+
     // Filter notes
     const filteredNotes = notes.filter(note => {
-      if (program !== 'all-programs' && !note.programName.toLowerCase().includes(program.replace('-', ' '))) {
-        return false;
-      }            
+      if (program !== 'all-programs' && note.programName !== program) {
+          return false;
+      }
       return true;
     });
 
@@ -52,16 +52,18 @@ const NoteListView = ({ notes, onAddClick, onDeleteNote, onEditNote, onViewNote 
         </div>
           <div className="notes-header-btn-filter">
             <div className="notes-filters">
-            <select 
-                  value={program} 
-                  onChange={(e) => setProgram(e.target.value)}
-                  className="notes-select"
-                >
-                  <option value="all-programs">All Programs</option>
-                  <option value="program-1">Program 1</option>
-                  <option value="program-2">Program 2</option>
+              <select
+                value={program}
+                onChange={(e) => setProgram(e.target.value)}
+                className="notes-select"
+              >
+                <option value="all-programs">All Programs</option>
+                {programs.map(p => (
+                  <option key={p.id} value={p.program}>
+                    {p.program}
+                  </option>
+                ))}
               </select>
-  
             </div>
             <button className="add-btn" onClick={onAddClick}>Add</button>
           </div>

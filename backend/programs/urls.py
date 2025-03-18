@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import ProgramListCreate, ProgramRetrieveDestroy
+from .views import ProgramRetrieveDestroyView, ProgramCreateView, ProgramListView
 
 urlpatterns = [
-    path('', ProgramListCreate.as_view()),
-    path('<int:pk>/', ProgramRetrieveDestroy.as_view()),
+    path('programs/', ProgramListView.as_view(), name='program-list'),
+    path('programs/create/', ProgramCreateView.as_view(), name='program-create'),
+    path('programs/<int:pk>/', ProgramRetrieveDestroyView.as_view(), name='program-retrieve-destroy'),
 ]

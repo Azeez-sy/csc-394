@@ -12,7 +12,9 @@ from rest_framework import serializers
 from .models import Note, Attachment
 from django.utils import timezone # debugging purposes.
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 # import program and user serializer, needed for filtering through notes - sky
 
@@ -25,6 +27,7 @@ class NoteSerializer(serializers.ModelSerializer):
     # author = UserSerializer(read_only=True)       # TODO get user details when available  -sky
     # program = ProgramSerializer()                  # TODO get program details when avaialbel - sky
     # files = FileSerializer(many=True, read_only=True)  # TODO Serialize file details
+    author = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
 
     dateCreated = serializers.DateTimeField(format="%m-%d-%Y", read_only=True) # initalize date created 
     dateModified = serializers.DateTimeField(format="%m-%d-%Y", read_only=True) # initalize date updated

@@ -4,15 +4,26 @@ from django.db import models
 # Create your models here.
 from programs.models import Program
 
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
 class Note(models.Model):
     title       = models.CharField(max_length=50)
     description = models.TextField(max_length =500, blank=True, null=True)
-    authorName  = models.CharField(max_length = 100, default="Anonymous") 
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notes")
     programName = models.CharField(max_length=100, blank=True, null=True)
     dateCreated = models.DateTimeField(auto_now_add=True)
     dateModified = models.DateTimeField(auto_now=True)
     file = models.FileField(upload_to='note_attaches/', blank=True, null=True) 
     isShared = models.BooleanField(default=False)
+    programId = models.ForeignKey(
+        Program,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     """filter based on program name TODO"""
     # add programId back for filtering when model is set up in schedule - sky
@@ -25,7 +36,7 @@ class Note(models.Model):
         return f" {self.title}, {self.description}, {self.authorName}, {self.dateCreated}, {self.dateModified}"
 
 class Attachment(models.Model):
-    note = models.ForeignKey(Note, related_name='attachments', on_delete=models.CASCADE)
+    note = models.ForeignKey(Note, related_name='note_files', on_delete=models.CASCADE)
     file = models.FileField(upload_to='note_attachments/')
 
     def __str__(self):
