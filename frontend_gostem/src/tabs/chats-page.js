@@ -9,7 +9,25 @@ const ChatContent = () => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
 
+  const fetchChatHistory = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/chat/messages/');
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(data.messages.map(msg => ({
+          user: msg.username,
+          text: msg.message
+        })));
+      }
+    } catch (error) {
+      console.error('Failed to fetch chat history:', error);
+    }
+  };
+
   useEffect(() => {
+    // Fetch chat history when component mounts
+    fetchChatHistory();
+    
     console.log("Attempting to connect to WebSocket...");
     const chatSocket = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
 

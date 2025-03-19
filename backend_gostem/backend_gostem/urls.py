@@ -24,5 +24,7 @@ urlpatterns = [
     path('api/schedule/', include('schedule.urls')),
     path("api/notes/", include("notes.urls")),
     path('api/hour_log/', include('hour_log.urls')),
-    path('api/google-login/', GoogleLoginView.as_view(), name='google-login-direct'),
+    path('api/google-login/', GoogleLoginView.as_view(), name = 'google-login-direct'),
+     path('chat/', include('chat.urls')),
+
 ]
