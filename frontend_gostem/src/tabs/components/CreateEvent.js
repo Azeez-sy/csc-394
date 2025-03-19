@@ -113,21 +113,30 @@ const CreateEvent = ({ onEventCreated, onClose }) => {
 
           <div className="form-group">
             <label>Select Tutors:</label>
-            <select 
-              multiple 
-              className="form-control" 
-              value={selectedTutors}
-              onChange={(e) => {
-                const values = Array.from(e.target.selectedOptions, option => option.value);
-                setSelectedTutors(values);
-              }}
-            >
+            <div className="tutor-checkbox-container">
               {availableTutors.map(tutor => (
-                <option key={tutor.id} value={tutor.id}>
-                  {tutor.first_name} {tutor.last_name} ({tutor.email})
-                </option>
+                <div key={tutor.id} className="tutor-checkbox-item">
+                  <input 
+                    type="checkbox" 
+                    id={`tutor-${tutor.id}`}
+                    value={tutor.id}
+                    checked={selectedTutors.includes(tutor.id.toString())}
+                    onChange={(e) => {
+                      const tutorId = e.target.value;
+                      if (e.target.checked) {
+                        setSelectedTutors([...selectedTutors, tutorId]);
+                      } else {
+                        setSelectedTutors(selectedTutors.filter(id => id !== tutorId));
+                      }
+                    }}
+                  />
+                  <label htmlFor={`tutor-${tutor.id}`}>
+                    {tutor.first_name} {tutor.last_name} 
+                    <span className="tutor-email">({tutor.email})</span>
+                  </label>
+                </div>
               ))}
-            </select>
+            </div>
           </div>
 
           <label>Is Recurring?</label>

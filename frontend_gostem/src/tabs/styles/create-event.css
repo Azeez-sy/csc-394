@@ -148,3 +148,55 @@
     gap: 8px;   /* Increased gap */
     width: 100%;
   }
+
+  .tutor-checkbox-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #afdcd5;
+    border-radius: 4px;
+    background-color: #f9fffd;
+  }
+
+  .tutor-checkbox-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  .tutor-checkbox-item:hover {
+    background-color: #e5f5f2;
+  }
+
+  .tutor-checkbox-item input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: #216661;
+    cursor: pointer;
+  }
+
+  .tutor-checkbox-item label {
+    font-weight: normal;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .tutor-email {
+    color: #666;
+    font-size: 0.9em;
+    margin-left: 8px;
+  }
+
+  /* Style for selected tutors */
+  .tutor-checkbox-item input[type="checkbox"]:checked + label {
+    font-weight: 600;
+    color: #216661;
+  }
