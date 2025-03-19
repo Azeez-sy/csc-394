@@ -1,46 +1,56 @@
-import React, { useEffect, useState } from "react";
-import "./styles/profile-page.css"
-import Sidebar from './components/sidebar';
+import React, { useState, useEffect } from 'react';
+import Sidebar from './components/sidebar'; // Note the ../ to go up one directory
+import AdminEmailManager from '../components/AdminEmailManager'; // Same here
+import './styles/profile-page.css';
 
-const ProfileContent = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+const ProfilePage = ({ handleLogout }) => {
+  const [userInfo, setUserInfo] = useState({});
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    // Get user data from localStorage instead of API
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (storedUser) {
-      setUser(storedUser);
-    }   
-    setLoading(false);
+    // Get user info from local storage
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    setUserInfo(user);
+    
+    // Check if user is faculty/admin
+    // Adjust this logic based on how you store user role
+    setIsAdmin(user.role === 'faculty');
   }, []);
 
   return (
-    <div className="profile-body">
-      <header className="profile-header">
-        <h1>Profile</h1>
-      </header>
-      {loading ? (
-        <p>Loading profile...</p>
-      ) : user ? (
-        <div className="profile-info">
-          <img src={user.profile_picture} alt="Profile" className="profile-pic" />
-          <h2>{user.name}</h2>
-          <p>{user.email}</p>
+    <div className="profile-page-container">
+      <Sidebar handleLogout={handleLogout} />
+      
+      <div className="profile-content">
+        <h2 className="page-title">My Profile</h2>
+        
+        <div className="profile-card">
+          <div className="profile-header">
+            {userInfo.photoURL ? (
+              <img src={userInfo.photoURL} alt="Profile" className="profile-photo" />
+            ) : (
+              <div className="profile-photo-placeholder">
+                {userInfo.name ? userInfo.name.charAt(0).toUpperCase() : 'U'}
+              </div>
+            )}
+            <div className="profile-info">
+              <h3>{userInfo.name || 'User'}</h3>
+              <p>{userInfo.email || 'No email'}</p>
+              <p className="user-role">Role: {userInfo.role || 'Tutor'}</p>
+            </div>
+          </div>
         </div>
-      ) : (
-        <p>Could not load profile. Please try logging in again.</p>
-      )}
+        
+        {/* Only show admin tools for faculty/admins */}
+        {isAdmin && (
+          <div className="admin-section">
+            <h2 className="section-title">Admin Tools</h2>
+            <AdminEmailManager />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-const ProfilePage = ({ handleLogout }) => {
-  return (
-  <div className="chat-page-container">
-      <Sidebar handleLogout={handleLogout} />
-      <ProfileContent/>
-  </div>
-  );
-};
 export default ProfilePage;

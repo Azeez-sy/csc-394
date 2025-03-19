@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Modal from './modal';
-import FileUploadZone from './drag-drop-files';
 import "../styles/modal-add-note.css"
 import axios from 'axios';
 import noteService from '../../services/noteService';
@@ -10,7 +9,6 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
   const [programs, setPrograms] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [files, setFiles] = useState("No files uploaded");
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
 
@@ -36,7 +34,6 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     setTitleError("");
     setTitle("");
     setContent("");
-    setFiles("No files uploaded");
     setProgram('');
     onClose();
   };
@@ -85,13 +82,7 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     // Resets Modal after add
     setTitle("");
     setContent("");
-    setFiles("No files uploaded");
     setProgram('');
-  };
-
-  // Handle file uploads
-  const handleFileUpload = (uploadedFiles) => {
-    setFiles(uploadedFiles);
   };
 
   return (
@@ -145,12 +136,9 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
                   ))}
                 </select>
               </div>
-              <div>
-                <FileUploadZone onFileUpload={handleFileUpload}/>
-              </div>
               <div className="modify-notes-btns">
-              <button className="cancel-note-btn" onClick={handleModalClose}>Cancel</button>
-              <button className="add-note-btn" onClick={handleAddClick}>Add Note</button>
+                <button className="cancel-note-btn" onClick={handleModalClose}>Cancel</button>
+                <button className="add-note-btn" onClick={handleAddClick}>Add Note</button>
               </div>
             </div>
           </div>

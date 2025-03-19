@@ -3,12 +3,11 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     ROLE_CHOICES = (
-        ('student', 'Student'),
         ('tutor', 'Tutor'),
         ('faculty', 'Faculty'),
     )
     
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='tutor')
     email = models.EmailField(unique=True)
     profile_picture = models.URLField(max_length=500, blank=True, null=True)
     

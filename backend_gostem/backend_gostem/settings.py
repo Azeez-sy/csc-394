@@ -183,7 +183,7 @@ CORS_ALLOW_HEADERS = [
 
 # List of emails that should be assigned the 'faculty' role
 FACULTY_EMAILS = [
-    "aadilpatel6103@gmail.com"
+    "aadilpatel6103@gmail.com",
 ]
 
 # Add this line near the bottom of the file

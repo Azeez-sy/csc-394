@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './modal';
-import FileUploadZone from './drag-drop-files';
 import "../styles/modal-add-note.css"
 
 const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note, programs}) => { // added programs parameter since this will contain all the program avaialble names -sky
   const [program, setProgram] = useState('');
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [files, setFiles] = useState([]);
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
 
@@ -17,62 +15,11 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note, programs}) => { //
       setTitle(note.title);
       setContent(note.content);
       
-      // If the note has a files array with actual File objects, use it directly
-      if (note.files && Array.isArray(note.files) && note.files.length > 0) {
-        
-        const hasCompleteFileObjects = note.files.some(file => file.size !== undefined);
-        
-        if (hasCompleteFileObjects) {
-          setFiles(note.files);
-        } else {
-          // Create mockFile objects with name property for display
-          const mockFiles = note.files.map(file => ({
-            name: file.name,
-            size: 0,
-            type: guessFileType(file.name),
-            isMock: true
-          }));
-          setFiles(mockFiles);
-        }
-      } else {
-        // Otherwise, check if we have file names as a string
-        if (note.file && note.file !== "No files uploaded") {
-          const fileNames = note.file.split(", ");
-          const mockFiles = fileNames.map(name => ({
-            name: name,
-            size: 0,
-            type: guessFileType(name),
-            isMock: true
-          }));
-          setFiles(mockFiles);
-        } else {
-          setFiles([]);
-        }
-      }
-      
       if(note.program){
         setProgram(note.program.id);
       }
     }
   }, [note]);
-  
-  // Helper function to guess file type from name
-  const guessFileType = (fileName) => {
-    const extension = fileName.split('.').pop().toLowerCase();
-    switch (extension) {
-      case 'docx':
-        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      case 'pdf':
-        return 'application/pdf';
-      case 'png':
-        return 'image/png';
-      case 'jpg':
-      case 'jpeg':
-        return 'image/jpeg';
-      default:
-        return 'application/octet-stream';
-    }
-  };
 
   const handleModalClose = () => {
     setContentError("");
@@ -118,16 +65,8 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note, programs}) => { //
       title: title.trim(),
       content: content,  // Use "content" instead of "description"
       program_id: program
-        
-        // Don't include these fields in the API request:
-        // programName, file, files - they're not in your backend model
     };
     onUpdateNote(updatedNote);
-  };
-
-  // Handle files 
-  const handleFileUpload = (uploadedFiles) => {
-    setFiles(uploadedFiles);
   };
 
   return (
@@ -180,15 +119,9 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note, programs}) => { //
                   ))}
                 </select>
               </div>
-              <div>
-                <FileUploadZone 
-                  onFileUpload={handleFileUpload}
-                  initialFiles={files}
-                />
-              </div>
               <div className="modify-notes-btns">
-              <button className="cancel-note-btn" onClick={handleModalClose}>Cancel</button>
-              <button className="add-note-btn" onClick={handleUpdateClick}>Update Note</button>
+                <button className="cancel-note-btn" onClick={handleModalClose}>Cancel</button>
+                <button className="add-note-btn" onClick={handleUpdateClick}>Update Note</button>
               </div>
             </div>
           </div>
