@@ -137,7 +137,7 @@ function MainApp() {
       render={props =>
         authToken ? (
           <AuthenticatedLayout>
-            <Component {...props} />
+            <Component {...props} user={user} />
           </AuthenticatedLayout>
         ) : (
           <Redirect to="/" />
@@ -147,7 +147,9 @@ function MainApp() {
   );
 
   // For components with sidebar that need logout functionality
-  const withLogout = (Component) => (props) => <Component {...props} handleLogout={handleLogout} />;
+  const withLogout = (Component) => (props) => (
+    <Component {...props} handleLogout={handleLogout} user={user} />
+  );
 
   // Store admin status in local storage
   const handleLoginSuccess = (token, isAdmin) => {
