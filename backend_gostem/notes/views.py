@@ -27,7 +27,7 @@ class NoteListCreateView(generics.ListCreateAPIView):
         # Start with base queryset
         queryset = Note.objects.all() if show_all else Note.objects.filter(author=self.request.user)
         
-        # Apply program filter if specified
+        # Apply program filter 
         if program_filter and program_filter != "All Programs":
             queryset = queryset.filter(program=program_filter)
             
@@ -45,6 +45,7 @@ class NoteRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
         # For individual note operations, anyone can view any note
         # but only author can edit/delete (handled by IsAuthor permission)
         return Note.objects.all()
+    
 
 # Optional: Add a dedicated endpoint for all notes
 @api_view(['GET'])

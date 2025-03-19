@@ -3,8 +3,8 @@ import Modal from './modal';
 import FileUploadZone from './drag-drop-files';
 import "../styles/modal-add-note.css"
 
-const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
-  const [program, setProgram] = useState('program-1');
+const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note, programs}) => { // added programs parameter since this will contain all the program avaialble names -sky
+  const [program, setProgram] = useState('');
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
@@ -15,7 +15,7 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
   useEffect(() => {
     if (note) {
       setTitle(note.title);
-      setContent(note.description);
+      setContent(note.content);
       
       // If the note has a files array with actual File objects, use it directly
       if (note.files && Array.isArray(note.files) && note.files.length > 0) {
@@ -50,7 +50,9 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
         }
       }
       
-      setProgram(note.programName.toLowerCase().includes('program 1') ? 'program-1' : 'program-2');
+      if(note.program){
+        setProgram(note.program.id);
+      }
     }
   }, [note]);
   
@@ -107,26 +109,20 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
   // Update the handleUpdateClick function
   const handleUpdateClick = (event) => {
     event.preventDefault();
-  
+    
     if(!validateTitle() ||!validateContent()) {return;}
-  
+    
     // Create a backend-ready object with only the fields the API expects
     const updatedNote = {
       id: note.id,  // Keep the ID for the API endpoint
       title: title.trim(),
-      content: content  // Use "content" instead of "description"
-      
-      // Don't include these fields in the API request:
-      // programName, file, files - they're not in your backend model
+      content: content,  // Use "content" instead of "description"
+      program_id: program
+        
+        // Don't include these fields in the API request:
+        // programName, file, files - they're not in your backend model
     };
-  
-    // Pass frontend-specific data separately if needed for UI
-    const frontendData = {
-      programName: program === 'program-1' ? 'Program 1' : 'Program 2',
-      files: files
-    };
-  
-    onUpdateNote(updatedNote, frontendData);
+    onUpdateNote(updatedNote);
   };
 
   // Handle files 
@@ -173,13 +169,15 @@ const ModalEditNote = ({ isOpen, onClose, onUpdateNote, note }) => {
                 {contentError && <p className='error-message'>{contentError}</p>}
               </form>
               <div className="notes-filters-modal">
-                <select 
-                  value={program} 
+                {/* Display all available options for program names in select box - sy*/}
+                <select
+                  value={program}
                   onChange={(e) => setProgram(e.target.value)}
                   className="notes-select"
                 >
-                  <option value="program-1">Program 1</option>
-                  <option value="program-2">Program 2</option>
+                  {programs.map(p => (
+                    <option key={p.id} value={p.id}>{p.program}</option>
+                  ))}
                 </select>
               </div>
               <div>

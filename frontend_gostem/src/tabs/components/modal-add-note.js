@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from './modal';
 import FileUploadZone from './drag-drop-files';
 import "../styles/modal-add-note.css"
+import axios from 'axios';
+import noteService from '../../services/noteService';
 
 const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
-  const [program, setProgram] = useState('program-1');
+  const [program, setProgram] = useState('');
+  const [programs, setPrograms] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState("No files uploaded");
   const [titleError, setTitleError] = useState("");
   const [contentError, setContentError] = useState("");
+
+  useEffect(() => { // get all the program objects from the db
+        const fetchPrograms = async () => {
+            try {
+                const fetchedPrograms = await noteService.getPrograms();
+                setPrograms(fetchedPrograms);
+                if (fetchedPrograms.length > 0) {
+                    setProgram(fetchedPrograms[0].id);
+                }
+            } catch (error) {
+                console.error('Error fetching programs:', error);
+            }
+        };
+
+        fetchPrograms();
+    }, []);
 
   // Resets modal after close
   const handleModalClose = () => {
@@ -18,7 +37,7 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     setTitle("");
     setContent("");
     setFiles("No files uploaded");
-    setProgram('program-1');
+    setProgram('');
     onClose();
   };
 
@@ -57,8 +76,8 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     
     const newNote = {
       title: title,
-      content: content,  // Changed from 'description' to 'content'
-      program: program   // Include program value
+      content: content,  // changed from 'description' to 'content'
+      program_id: program   // include program value
     };
     
     onAddNote(newNote);
@@ -67,7 +86,7 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
     setTitle("");
     setContent("");
     setFiles("No files uploaded");
-    setProgram('program-1');
+    setProgram('');
   };
 
   // Handle file uploads
@@ -115,13 +134,15 @@ const ModalAddNote = ({ isOpen, onClose, onAddNote }) => {
                 {contentError && <p className='error-message'>{contentError}</p>}
               </form>
               <div className="notes-filters-modal">
+                {/* Display all available options for program names in select box - sky*/}
                 <select 
                   value={program} 
                   onChange={(e) => setProgram(e.target.value)}
                   className="notes-select"
                 >
-                  <option value="program-1">Program 1</option>
-                  <option value="program-2">Program 2</option>
+                  {programs.map(p => (
+                      <option key={p.id} value={p.id}>{p.program}</option>
+                  ))}
                 </select>
               </div>
               <div>

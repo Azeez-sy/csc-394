@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     "chat",
     "channels",
     "notes",
-    "hour_log"
+    "hour_log",
+    "programs"
 ]
 
 MIDDLEWARE = [
@@ -141,6 +142,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework_simplejwt.authentication.JWTAuthentication', # ADDED -SKY
+
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',  # Requires authentication for API requests

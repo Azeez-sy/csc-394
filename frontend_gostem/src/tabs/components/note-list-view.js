@@ -3,6 +3,7 @@ import trash from './icons/trash.png'
 import edit from './icons/edit.png'
 import document from './icons/document.png'
 import "../styles/note-list-view.css"
+import { Link } from 'react-router-dom'; // needed to link to program page - sky
 
 const NoteListView = ({ 
   notes = [], 
@@ -11,8 +12,10 @@ const NoteListView = ({
   onEditNote, 
   onViewNote, 
   programFilter, 
-  onProgramFilterChange 
+  onProgramFilterChange,
+  programs // Added to get all available programs - sky
 }) => {
+
   // Keep only the toast error state, remove errorMessage and showError
   const [errorToast, setErrorToast] = useState({
     show: false,
@@ -45,19 +48,12 @@ const NoteListView = ({
       return true; // Show all notes when "All Programs" is selected
     }
     
-    // Get standardized versions of both strings for comparison
-    const filterProgram = programFilter === 'program-1' ? 'program 1' : 'program 2';
-    
-    // Check if the note has a program name
-    if (!note.programName) {
-      return false;
+    if (!note.program || !note.program.program) {
+      return false; // Skip notes without the selected program name
     }
-    
-    // Normalize the program name for comparison (convert to lowercase)
-    const normalizedProgramName = note.programName.toLowerCase();
-    
-    // Check if the program name contains our filter value
-    return normalizedProgramName.includes(filterProgram);
+
+    // Check if true
+    return note.program.id === parseInt(programFilter);
   });
 
   const hasFiles = note => {
@@ -155,60 +151,73 @@ const NoteListView = ({
         <h1>Notes</h1>
       </div>
         <div className="notes-header-btn-filter">
+          <button className="add-btn" onClick={onAddClick}>Add Note</button>
           <div className="notes-filters">
           <select 
-                value={programFilter || 'all-programs'} 
-                onChange={handleProgramChange}
-                className="notes-select"
-              >
+            value={programFilter || 'all-programs'} 
+            onChange={handleProgramChange}
+            className="notes-select"
+          >
                 <option value="all-programs">All Programs</option>
-                <option value="program-1">Program 1</option>
-                <option value="program-2">Program 2</option>
-            </select>
+                {/* Maping through all available programs to populate the dropdown */}
+                {programs && programs.map(program => (
+              <option key={program.id} value={program.id}>
+                {program.program}
+              </option>
+            ))}
+          </select>
 
           </div>
-          <button className="add-btn" onClick={onAddClick}>Add</button>
+          <Link className="link" to="/programs-manager">
+              <button className="burger-image-button">
+                <span className="burger-button-text">Add Program</span>
+              </button>
+          </Link>
         </div>
         <div className="notes-list-container">
           <div className="notes-grid">
           {filteredNotes.length > 0 ? (
-            filteredNotes.map((note) => (
-              <div className="note-item" 
-              key={note.id}
-              onClick={()=> handleViewNote(note)}>
-                <div className='note-item-header'>
-                  <div className='program'><p>{note.programName}</p></div>
-                </div>
-                <h3 className="note-final-title">{note.title}</h3>
-                <p className='author-name'>{note.authorName}</p>
-                <p className='description'>
-                  {note.description && note.description.length > 50 
-                    ? `${note.description.substring(0, 50)}...` 
-                    : (note.description || note.content || "No description")}
-                </p>
-                {hasFiles(note) && (
-                  <div className="file-icon-container">
-                    <img src={document} alt="File attached" className="file-icon" />
-                  </div>
-                )}
-              <div className="notes-item-footer">
-                <div className='date-info'><p>{formatDate(note.dateCreated)}</p></div>
-                <div className='button-group'> 
-                  <button onClick={(e)=> handleEdit(e, note)}>
-                      <img src={edit} alt="Modify" className="edit-icon"/>
-                  </button>
-                  <button onClick={(e)=> handleDelete(e, note.id)}>
-                      <img src={trash} alt="Delete" className="trash-icon"/>
-                  </button>
-                </div>
-              </div>
-              </div>
-            ))
-          ) : (
+            filteredNotes.map((note) => { 
+                return ( 
+                    <div className="note-item" 
+                        key={note.id}
+                        onClick={()=> handleViewNote(note)}>
+                        <div className='note-item-header'>
+                            <div className='program'>
+                                <p>{note.program && note.program.program}</p>
+                            </div>
+                        </div>
+                        <h3 className="note-final-title">{note.title}</h3>
+                        <p className='author-name'>{note.author_name}</p>
+                        <p className='description'>
+                            {note.description && note.description.length > 50 
+                                ? `${note.description.substring(0, 50)}...` 
+                                : (note.description || note.content || "No description")}
+                        </p>
+                        {hasFiles(note) && (
+                            <div className="file-icon-container">
+                                <img src={document} alt="File attached" className="file-icon" />
+                            </div>
+                        )}
+                        <div className="notes-item-footer">
+                            <div className='date-info'><p>{formatDate(note.date_created)}</p></div>
+                            <div className='button-group'> 
+                                <button onClick={(e)=> handleEdit(e, note)}>
+                                    <img src={edit} alt="Modify" className="edit-icon"/>
+                                </button>
+                                <button onClick={(e)=> handleDelete(e, note.id)}>
+                                    <img src={trash} alt="Delete" className="trash-icon"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })
+        ) : (
             <div className="no-notes-message">
-              <p>No notes available. Click "Add Note" to create one.</p>
+                <p>No notes available. Click "Add Note" to create one.</p>
             </div>
-          )}
+        )}
           </div>
         </div>
     </div>

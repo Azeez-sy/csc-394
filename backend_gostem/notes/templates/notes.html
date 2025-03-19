@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>Notes on notes</h1>
+    <h2>Filter by Program:</h2>
+    <ul>
+        <li><a href="{% url 'notes' %}">All Programs</a></li>  
+        {% for program in programs %}
+            <li><a href="{% url 'notes' program.programName %}">{{ program.programName }}</a></li>  
+        {% endfor %}
+    </ul>
+    <ul>
+        {% for note in notes %}
+            <li>
+                <h3>{{ note.title }}</h3>  {% if note.author %}
+                    <p>By: {{ note.author.username }}</p>
+                {% else %}
+                    <p>By: Anonymous</p>
+                {% endif %}
+                <p>{{ note.content }}</p>
+
+                {% if note.fileNotes.all.count > 0 %}  <h4>Files:</h4>
+                <ul>
+                    {% for file in note.fileNotes.all %}  <li><a href="{{ file.file.url }}">{{ file.file.name }}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'create_note' %}">click here to add a note bih</a>
+</body>
+</html>

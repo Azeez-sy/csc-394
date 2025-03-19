@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1> Create a new note</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ note_form.as_p }}
+        {{ file_form.as_p }} 
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

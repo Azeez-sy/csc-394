@@ -25,4 +25,5 @@ urlpatterns = [
     path("api/notes/", include("notes.urls")),
     path('api/hour_log/', include('hour_log.urls')),
     path('api/google-login/', GoogleLoginView.as_view(), name='google-login-direct'),
+    path('api/programs/', include('programs.urls')), # for programs page
 ]

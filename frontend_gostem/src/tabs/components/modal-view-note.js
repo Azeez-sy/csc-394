@@ -16,13 +16,14 @@ const ModalViewNote = ({ isOpen, onClose, note }) => {
         
         <div className="note-view-metadata">
           <div className="note-view-program-type">
-            <span className="program-badge">{note.programName || "All Programs"}</span>
+            <span className="program-badge">{note.program.program || "All Programs"}</span> {/* Change to program name found in the note - sky*/}
           </div>
           
           <div className="note-view-author">
-            <span>Created by {note.authorName || "Unknown"}</span>
-            <span>Created: {new Date(note.dateCreated).toLocaleDateString()}</span>
-            <span>Last modified: {new Date(note.dateModified).toLocaleDateString()}</span>
+            {/* Set to author_name, date_created, and date_modified as they match in the serializer - sky*/}
+            <span>Created by {note.author_name || "Unknown"}</span>
+            <span>Created: {new Date(note.date_created).toLocaleDateString()}</span> 
+            <span>Last modified: {new Date(note.date_modified).toLocaleDateString()}</span>
           </div>
         </div>
         

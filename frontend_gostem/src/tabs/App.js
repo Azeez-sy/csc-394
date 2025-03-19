@@ -11,6 +11,7 @@ import HoursPage from "./hours-page";
 import ProfilePage from "./profile-page";
 import SchedulePage from "./schedule-page";
 import AdminSchedulePage from "./admin/admin-schedule-page";
+import ProgramsManager from './program-page'; 
 
 function App() {
   return (
@@ -172,6 +173,7 @@ function MainApp() {
       <PrivateRoute path="/profile-page" component={withLogout(ProfilePage)} />
       <PrivateRoute path="/schedule-page" component={withLogout(SchedulePage)} />
       <PrivateRoute path="/admin-schedule-page" component={withLogout(AdminSchedulePage)} />
+      <PrivateRoute path="/programs-manager" component={withLogout(ProgramsManager)} />
     </Switch>
   );
 }
