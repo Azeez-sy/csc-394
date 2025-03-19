@@ -112,16 +112,17 @@ const TimeCard = () => {
 
     return (
         <div className="hours-container">
+             {error && (
+                <div className="error-message">
+                    {error}
+                </div>
+            )}
             <div className="hours-header">
                 <h2>Time Card: Tutor Hours</h2>
                 {currentPeriod && <div className="current-period">{currentPeriod}</div>}
             </div>
 
-            {error && (
-                <div className="error-message">
-                    {error}
-                </div>
-            )}
+           
 
             <div className="form-section">
                 <h3 className='form-header'>New Entry</h3>
