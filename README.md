@@ -1,12 +1,13 @@
-#Purpose:
+Purpose:
 This internal application is designed to streamline scheduling, note-taking, hour logging, and inter-program communication within the GoSTEM organization. Whether a user is an administrator managing schedules or a tutor keeping track of tutoring sessions, this application provides an intuitive and secure environment to enhance collaboration and efficiency.
 
-#Project Team:
-##Frontend
+Project Team:
+Frontend
 Abubaker Surangiwala
 Aamar Khan – Scrum Master
 Mya Von Behren
-##Backend
+
+Backend
 Aadil Patel – Web Master
 Daniel Allard
 Roberto Nieves
@@ -15,7 +16,7 @@ Haaris Shakir
 Azeez Syed – Software Architect
 Cielo Roman – Product Owner
 
-#How to Run:
+How to Run:
 Clone Final-Build branch
 Open in IDE and open terminal
 cd into backend_gostem
@@ -31,20 +32,20 @@ npm run install
 npm run start
 The localhost will automatically open in your browser
 
-#Languages:
-##Frontend 
+Languages:
+Frontend 
 React.js
 Javascript
 
-##Backend
+Backend
 Python
 REST API
 
-#Frameworks:
+Frameworks:
 Django
 
 
-#Libraries & Packages:
+Libraries & Packages:
 CORs Headers
 Channels
 Admin
@@ -53,7 +54,7 @@ Daphne
 SQLite3
 REST Frameworks
 
-#requirements.txt:
+requirements.txt:
 asgiref==3.8.1
 attrs==25.3.0
 autobahn==24.4.2
@@ -81,12 +82,11 @@ txaio==23.1.1
 typing_extensions==4.12.2
 zope.interface==7.2
 
-#Any important variables:
+Any important variables:
 Those defined in the settings.py file
 
-#.env:
+.env:
 SECRET_KEY="django-insecure-j-pe4^680&z4fepz1fxp0iculhm@wuzu@dihs%8s0dio^r(!9k"
 DEBUG=False  
 CLIENT_ID = "863327870751-7r4s2lgmv2pgljdnfpqqcu165bvglk9a.apps.googleusercontent.com"
 CLIENT_SECRET="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"
-# Set to False in production
