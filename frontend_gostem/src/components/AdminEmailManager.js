@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../tabs/styles/admin-email-manager.css'; // Path to your CSS file
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+// Use the same pattern as other components
+const getApiBaseUrl = () => {
+  const baseUrl = process.env.REACT_APP_API_BASE_URL;
+  return baseUrl?.startsWith('http') 
+    ? baseUrl 
+    : `http://${baseUrl}`;
+};
 
 // Update this function to match how other components get the token
 const getAuthHeader = () => {
@@ -27,8 +33,9 @@ const AdminEmailManager = () => {
         setLoading(true);
         console.log("Attempting to fetch faculty emails...");
         
-        // Match the authentication pattern from hourLogService.js
-        const response = await axios.get(`${API_URL}/users/faculty-emails/`, {
+        // Fix URL construction
+        const apiBaseUrl = getApiBaseUrl();
+        const response = await axios.get(`${apiBaseUrl}/api/users/faculty-emails/`, {
           headers: getAuthHeader()
         });
         
@@ -46,15 +53,16 @@ const AdminEmailManager = () => {
     fetchFacultyEmails();
   }, []);
 
-  // Add new faculty email
+  // Add new faculty email - fix API URL
   const handleAddEmail = async (e) => {
     e.preventDefault();
     if (!newEmail.trim()) return;
 
     try {
       setLoading(true);
+      const apiBaseUrl = getApiBaseUrl();
       const response = await axios.post(
-        `${API_URL}/users/faculty-emails/`,
+        `${apiBaseUrl}/api/users/faculty-emails/`, // Fixed path
         { email: newEmail },
         { headers: getAuthHeader() }
       );
@@ -73,12 +81,13 @@ const AdminEmailManager = () => {
     }
   };
 
-  // Remove faculty email
+  // Remove faculty email - fix API URL
   const handleRemoveEmail = async (emailToRemove) => {
     if (window.confirm(`Are you sure you want to remove ${emailToRemove}?`)) {
       try {
         setLoading(true);
-        const response = await axios.delete(`${API_URL}/users/faculty-emails/`, {
+        const apiBaseUrl = getApiBaseUrl();
+        const response = await axios.delete(`${apiBaseUrl}/api/users/faculty-emails/`, { // Fixed path
           headers: getAuthHeader(),
           data: { email: emailToRemove }
         });

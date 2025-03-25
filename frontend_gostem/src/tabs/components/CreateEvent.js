@@ -18,8 +18,14 @@ const CreateEvent = ({ onEventCreated, onClose }) => {
   useEffect(() => {
     const fetchTutors = async () => {
       const authToken = localStorage.getItem("authToken");
+      
+      // Use environment variable instead of hardcoded localhost
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL.startsWith('http') 
+        ? process.env.REACT_APP_API_BASE_URL 
+        : `http://${process.env.REACT_APP_API_BASE_URL}`;
+        
       try {
-        const response = await fetch("http://localhost:8000/api/users/all-users/", {
+        const response = await fetch(`${apiBaseUrl}/api/users/all-users/`, {
           headers: {
             "Authorization": `Token ${authToken}`
           }
@@ -52,7 +58,12 @@ const CreateEvent = ({ onEventCreated, onClose }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:8000/api/schedule/events/create/", {
+      // Use environment variable instead of hardcoded localhost
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL.startsWith('http') 
+        ? process.env.REACT_APP_API_BASE_URL 
+        : `http://${process.env.REACT_APP_API_BASE_URL}`;
+        
+      const response = await fetch(`${apiBaseUrl}/api/schedule/events/create/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -45,8 +45,13 @@ function MainApp() {
     try {
       const result = await signInWithPopup(auth, provider);
       const googleUser = result.user;
+      
+      // Ensure the base URL has the correct protocol
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL.startsWith('http') 
+        ? process.env.REACT_APP_API_BASE_URL 
+        : `http://${process.env.REACT_APP_API_BASE_URL}`;
   
-      const response = await fetch("http://localhost:8000/api/google-login/", {
+      const response = await fetch(`${apiBaseUrl}/api/google-login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

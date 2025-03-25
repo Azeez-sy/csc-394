@@ -55,9 +55,9 @@
   background-color: rgba(175, 221, 213, 0.3) !important;
 }
 
-.event-title {
-  font-weight: 600;
-}
+.event-tutor-name {
+    font-weight: 600; /* Add bold weight to tutor names */
+  }
 
 .event-title,
 .event-location,

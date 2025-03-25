@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-w6ya=21(%%+x@^k6=ly06-zjooy4#$t1@pio85vlsgrd08u@mz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '3.148.142.95']
 
 
 # Application definition
@@ -154,6 +154,8 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React frontend
     "http://127.0.0.1:3000",
+    "http://3.148.142.95",    # Add your Lightsail server
+    "http://3.148.142.95:3000", # If hosting frontend on port 3000
 ]
 
 # CORS settings

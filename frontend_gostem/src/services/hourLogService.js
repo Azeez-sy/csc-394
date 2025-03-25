@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-// Base URL for API
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+// Ensure we have the proper base URL with protocol
+const baseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+const API_URL = baseUrl.startsWith('http') ? baseUrl : `http://${baseUrl}`;
 
 // Configure axios to include credentials for CORS
 axios.defaults.withCredentials = true;
@@ -13,7 +14,7 @@ const hourLogService = {
       // Get token from localStorage (same as in App.js)
       const token = localStorage.getItem("authToken");
       
-      const response = await axios.get(`${API_URL}/hour_log/`, {
+      const response = await axios.get(`${API_URL}/api/hour_log/`, {
         headers: {
           'Authorization': `Token ${token}`
         }
@@ -31,7 +32,7 @@ const hourLogService = {
       // Get token from localStorage (same as in App.js)
       const token = localStorage.getItem("authToken");
       
-      const response = await axios.post(`${API_URL}/hour_log/`, hourLogData, {
+      const response = await axios.post(`${API_URL}/api/hour_log/`, hourLogData, {
         headers: {
           'Authorization': `Token ${token}`
         }
@@ -49,7 +50,7 @@ const hourLogService = {
       // Get token from localStorage (same as in App.js)
       const token = localStorage.getItem("authToken");
       
-      await axios.delete(`${API_URL}/hour_log/${id}/`, {
+      await axios.delete(`${API_URL}/api/hour_log/${id}/`, {
         headers: {
           'Authorization': `Token ${token}`
         }
@@ -66,7 +67,7 @@ const hourLogService = {
     try {
       const token = localStorage.getItem("authToken");
       
-      const response = await axios.get(`${API_URL}/hour_log/faculty/all/`, {
+      const response = await axios.get(`${API_URL}/api/hour_log/faculty/all/`, {
         headers: {
           'Authorization': `Token ${token}`
         }

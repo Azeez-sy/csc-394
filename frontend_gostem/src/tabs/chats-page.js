@@ -18,7 +18,17 @@ const ChatContent = ({ user }) => {
 
   const fetchChatHistory = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/chat/messages/');
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL.startsWith('http') 
+        ? process.env.REACT_APP_API_BASE_URL 
+        : `http://${process.env.REACT_APP_API_BASE_URL}`;
+      
+      const token = localStorage.getItem("authToken");
+      
+      const response = await fetch(`${apiBaseUrl}/chat/messages/`, {
+        headers: {
+          'Authorization': `Token ${token}`
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         // Reverse the messages array before setting it
@@ -36,24 +46,41 @@ const ChatContent = ({ user }) => {
   };
 
   useEffect(() => {
-    // Fetch chat history when component mounts
     fetchChatHistory();
     
     console.log("Attempting to connect to WebSocket...");
-    const chatSocket = new WebSocket(`ws://127.0.0.1:8000/ws/chat/`);
-
+    
+    // Add authentication token
+    const token = localStorage.getItem("authToken");
+    
+    // Extract domain from API base URL for WebSocket
+    const wsBaseUrl = process.env.REACT_APP_API_BASE_URL.replace(/^https?:\/\//, '');
+    console.log(`Attempting to connect to WebSocket at: ws://${wsBaseUrl}/ws/chat/?token=${token}`);
+    const chatSocket = new WebSocket(`ws://${wsBaseUrl}/ws/chat/?token=${token}`);
+  
     chatSocket.onopen = () => {
       console.log("WebSocket connected successfully");
       setIsConnected(true);
     };
 
-    chatSocket.onmessage = (event) => {
-      console.log("Received message:", event.data);
-      const data = JSON.parse(event.data);
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { user: data.username, text: data.message }
-      ]);
+    chatSocket.onmessage = (e) => {
+      console.log("WebSocket message received:", e.data);
+      
+      try {
+        const data = JSON.parse(e.data);
+        // Check if it's an error message
+        if (data.error) {
+          console.error("Server reported error:", data.error);
+          return;
+        }
+        // Normal processing continues...
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { user: data.username, text: data.message }
+        ]);
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
+      }
     };
 
     chatSocket.onclose = (event) => {
@@ -63,6 +90,10 @@ const ChatContent = ({ user }) => {
 
     chatSocket.onerror = (error) => {
       console.error("WebSocket Error:", error);
+      console.error("Connection details:", {
+        url: `ws://${wsBaseUrl}/ws/chat/`,
+        readyState: chatSocket.readyState
+      });
       setIsConnected(false);
     };
 
@@ -86,11 +117,14 @@ const ChatContent = ({ user }) => {
     }
 
     if (input.trim() !== "") {
-      const messageData = { 
-        message: input, 
-        username: user.displayName  // Changed from user.name to user.displayName
-      };
-      socket.send(JSON.stringify(messageData));
+      // Simplest possible message format
+      const messageData = { message: input };
+      try {
+        socket.send(JSON.stringify(messageData));
+        console.log("Test message sent successfully");
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
       setInput("");
     }
   };

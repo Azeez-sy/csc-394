@@ -47,7 +47,7 @@ class EventCreateView(generics.CreateAPIView):
 
             # Create duplicate events
             for repeat_date in repeat_dates:
-                Event.objects.create(
+                recurring_event = Event.objects.create(
                     class_name=event.class_name,
                     date=repeat_date,
                     start_time=event.start_time,
@@ -55,6 +55,9 @@ class EventCreateView(generics.CreateAPIView):
                     location=event.location,
                     is_recurring=False,  # Individual occurrences are NOT recurring
                 )
+                
+                # ADD THIS ONE LINE RIGHT HERE:
+                recurring_event.tutors.set(event.tutors.all())
 
 # ✅ Admin-only: Update event
 class EventUpdateView(generics.UpdateAPIView):

@@ -24,8 +24,13 @@ const SchedulePage = ({ handleLogout }) => {
     try {
       setLoading(true);
       const authToken = localStorage.getItem("authToken");
+      
+      // Use environment variable instead of hardcoded localhost
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL.startsWith('http') 
+        ? process.env.REACT_APP_API_BASE_URL 
+        : `http://${process.env.REACT_APP_API_BASE_URL}`;
 
-      const response = await fetch("http://localhost:8000/api/schedule/events/", {
+      const response = await fetch(`${apiBaseUrl}/api/schedule/events/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -79,12 +84,18 @@ const SchedulePage = ({ handleLogout }) => {
     setShowPopup(true);
   };
 
+  // Update the handleDelete function
   const handleDelete = async () => {
     if (!selectedEvent) return;
 
     const authToken = localStorage.getItem("authToken");
+    
+    // Use environment variable instead of hardcoded localhost
+    const apiBaseUrl = process.env.REACT_APP_API_BASE_URL.startsWith('http') 
+      ? process.env.REACT_APP_API_BASE_URL 
+      : `http://${process.env.REACT_APP_API_BASE_URL}`;
 
-    const response = await fetch(`http://localhost:8000/api/schedule/events/${selectedEvent.id}/delete/`, {
+    const response = await fetch(`${apiBaseUrl}/api/schedule/events/${selectedEvent.id}/delete/`, {
       method: "DELETE",
       headers: {
         "Authorization": `Token ${authToken}`,
@@ -112,7 +123,7 @@ const SchedulePage = ({ handleLogout }) => {
     if (isMonthView) {
       return (
         <div className="event-content-month">
-          <div className="event-title">{eventInfo.event.title}</div>
+          <div className="event-tutor-name">{eventInfo.event.extendedProps.tutors}</div>
         </div>
       );
     }
@@ -120,7 +131,7 @@ const SchedulePage = ({ handleLogout }) => {
     if (durationMinutes <= 75) {
       return (
         <div className="event-content event-content-short">
-          <div className="event-title">{eventInfo.event.title}</div>
+          <div className="event-tutor-name">{eventInfo.event.extendedProps.tutors}</div>
         </div>
       );
     }
@@ -130,8 +141,8 @@ const SchedulePage = ({ handleLogout }) => {
 
     return (
       <div className="event-content">
-        <div className="event-title">{eventInfo.event.title}</div>
         <div className="event-tutor-name">{eventInfo.event.extendedProps.tutors}</div>
+        <div className="event-title">{eventInfo.event.title}</div>
         <div className="event-location">{eventInfo.event.extendedProps.location}</div>
         <div className="event-time">{startTime} - {endTime}</div>
       </div>
