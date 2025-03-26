@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-w6ya=21(%%+x@^k6=ly06-zjooy4#$t1@pio85vlsgrd08u@mz"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['aadilpatel.me', 'localhost', '127.0.0.1','3.148.142.95']
 
 
 # Application definition
@@ -152,8 +152,11 @@ REST_FRAMEWORK = {
 
 # Enable CORS for React frontend
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React frontend
-    "http://127.0.0.1:3000",
+"http://localhost:3000",  # React frontend
+"http://127.0.0.1:3000",
+"http://3.148.142.95",
+"http://aadilpatel.me",
+"http://3.148.142.95:3000"
 ]
 
 # CORS settings
@@ -197,3 +200,6 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer",  # Use Redis in production
     },
 }
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'http://aadilpatel.me/accounts/google/login/callback/'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'

@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
+from django.views.generic import TemplateView
 from users.views import GoogleLoginView  # Import the view directly
 
 urlpatterns = [
@@ -27,4 +28,5 @@ urlpatterns = [
     path('api/google-login/', GoogleLoginView.as_view(), name='google-login-direct'),
     path('chat/', include('chat.urls')),
     path('api/programs/', include('programs.urls')), # for programs page
+    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
 ]
