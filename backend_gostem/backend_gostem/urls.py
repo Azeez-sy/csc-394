@@ -27,6 +27,6 @@ urlpatterns = [
     path('api/hour_log/', include('hour_log.urls')),
     path('api/google-login/', GoogleLoginView.as_view(), name='google-login-direct'),
     path('chat/', include('chat.urls')),
-    path('api/programs/', include('programs.urls')), # for programs page
+    path('api/programs/', include('programs.urls')),
     re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
 ]

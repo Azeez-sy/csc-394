@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from './components/sidebar'; // Note the ../ to go up one directory
 import AdminEmailManager from '../components/AdminEmailManager'; // Same here
+import AllowedEmailManager from '../components/AllowedEmailManager';
 import './styles/profile-page.css';
 
 const ProfilePage = ({ handleLogout }) => {
@@ -46,6 +47,10 @@ const ProfilePage = ({ handleLogout }) => {
           <div className="admin-section">
             <h2 className="section-title">Admin Tools</h2>
             <AdminEmailManager />
+            
+            {/* Add the new component */}
+            <div className="admin-tool-spacer" style={{ height: '30px' }}></div>
+            <AllowedEmailManager />
           </div>
         )}
       </div>

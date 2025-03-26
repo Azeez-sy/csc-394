@@ -25,6 +25,13 @@ const AdminEmailManager = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [currentUserEmail, setCurrentUserEmail] = useState('');
+
+  // Get current user's email when component mounts
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    setCurrentUserEmail(user.email || '');
+  }, []);
 
   // Fetch current faculty emails
   useEffect(() => {
@@ -83,6 +90,15 @@ const AdminEmailManager = () => {
 
   // Remove faculty email - fix API URL
   const handleRemoveEmail = async (emailToRemove) => {
+    // Check if user is trying to remove their own email
+    if (emailToRemove.toLowerCase() === currentUserEmail.toLowerCase()) {
+      setError("You cannot remove your own email from the faculty list");
+      
+      // Clear error after 5 seconds
+      setTimeout(() => setError(''), 5000);
+      return;
+    }
+
     if (window.confirm(`Are you sure you want to remove ${emailToRemove}?`)) {
       try {
         setLoading(true);
@@ -149,9 +165,12 @@ const AdminEmailManager = () => {
                 <button
                   className="remove-button"
                   onClick={() => handleRemoveEmail(email)}
-                  disabled={loading}
+                  disabled={loading || email.toLowerCase() === currentUserEmail.toLowerCase()}
+                  title={email.toLowerCase() === currentUserEmail.toLowerCase() ? 
+                    "You cannot remove your own email" : ""}
                 >
-                  Remove
+                  {email.toLowerCase() === currentUserEmail.toLowerCase() ? 
+                    "Cannot Remove Self" : "Remove"}
                 </button>
               </li>
             ))}

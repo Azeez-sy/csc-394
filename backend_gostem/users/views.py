@@ -14,6 +14,7 @@ from django.core.validators import validate_email
 import os
 import re
 from .permissions import IsFaculty  # Import the permission from permissions.py
+from .models import AllowedEmail
 
 @api_view(['GET', 'POST', 'DELETE'])
 @permission_classes([IsAuthenticated, IsFaculty])  # Use IsFaculty instead of IsAdmin
@@ -83,6 +84,13 @@ def manage_faculty_emails(request):
         
         if not email:
             return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Prevent users from removing their own email
+        if request.user.email.lower() == email.lower():
+            return Response(
+                {'error': 'You cannot remove your own email from the faculty list'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
             
         if not hasattr(settings, 'FACULTY_EMAILS') or email not in settings.FACULTY_EMAILS:
             return Response({'error': 'Email not found in faculty list'}, 
@@ -129,6 +137,73 @@ def manage_faculty_emails(request):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['GET', 'POST', 'DELETE'])
+@permission_classes([IsAuthenticated, IsFaculty])
+def manage_allowed_emails(request):
+    """Endpoint to get, add, or remove allowed emails"""
+    
+    # Get current allowed emails
+    if request.method == 'GET':
+        emails = AllowedEmail.objects.all().values_list('email', flat=True)
+        return Response({'allowed_emails': list(emails)})
+    
+    # Add a new allowed email
+    elif request.method == 'POST':
+        email = request.data.get('email')
+        
+        if not email:
+            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Validate email format
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({'error': 'Invalid email format'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        # Add to allowed emails
+        try:
+            allowed_email, created = AllowedEmail.objects.get_or_create(
+                email=email,
+                defaults={'added_by': request.user}
+            )
+            
+            if not created:
+                return Response({'error': 'Email already in allowed list'}, 
+                               status=status.HTTP_400_BAD_REQUEST)
+                
+            emails = AllowedEmail.objects.all().values_list('email', flat=True)
+            return Response({
+                'message': 'Email added to allowed list successfully',
+                'allowed_emails': list(emails)
+            })
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    # Delete an allowed email
+    elif request.method == 'DELETE':
+        email = request.data.get('email')
+        
+        if not email:
+            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            allowed_email = AllowedEmail.objects.filter(email=email).first()
+            if not allowed_email:
+                return Response({'error': 'Email not found in allowed list'}, 
+                               status=status.HTTP_404_NOT_FOUND)
+            
+            allowed_email.delete()
+            
+            emails = AllowedEmail.objects.all().values_list('email', flat=True)
+            return Response({
+                'message': 'Email removed from allowed list successfully',
+                'allowed_emails': list(emails)
+            })
+            
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 class GoogleLoginView(APIView):
     permission_classes = [AllowAny]
 
@@ -159,6 +234,18 @@ class GoogleLoginView(APIView):
             user.save()
 
         token, _ = Token.objects.get_or_create(user=user)
+
+        # Check if email is allowed (faculty emails are automatically allowed)
+        is_allowed = (
+            email in settings.FACULTY_EMAILS or
+            AllowedEmail.objects.filter(email=email).exists()
+        )
+        
+        if not is_allowed:
+            return Response(
+                {"error": "Your email is not authorized to use this application."}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         return Response({
             "key": token.key,

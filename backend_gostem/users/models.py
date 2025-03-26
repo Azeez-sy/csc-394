@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 class User(AbstractUser):
     ROLE_CHOICES = (
@@ -26,3 +27,12 @@ class User(AbstractUser):
         related_name='custom_user_set',
         help_text='Specific permissions for this user.',
     )
+
+class AllowedEmail(models.Model):
+    email = models.EmailField(unique=True)
+    added_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='added_emails')
+    added_on = models.DateTimeField(auto_now_add=True)
+    notes = models.CharField(max_length=255, blank=True)  # Optional field for admins to add notes
+    
+    def __str__(self):
+        return self.email
