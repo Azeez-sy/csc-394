@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/sidebar.css'; 
 
 import clock from '../components/icons/clock.png';
-import chat from '../components/icons/chat.png';
+// import chat from '../components/icons/chat.png';
 import home from '../components/icons/logo.png';
 import logout from '../components/icons/logout.png';
 import notes from '../components/icons/notes.png';
@@ -74,14 +74,14 @@ const Sidebar = ({ handleLogout }) => {
             </button>
           </Link>
         </div>
-        <div className="sidebar-item">
+        {/* <div className="sidebar-item">
           <Link to="./chats-page">
             <button className="sidebar-image-button">
               <img src={chat} alt="Chats" />
               <span className="sidebar-button-text">Chats</span>
             </button>
           </Link>
-        </div>
+        </div> */}
         <div className="sidebar-item">
           <Link to="./profile-page">
             <button className="sidebar-image-button">

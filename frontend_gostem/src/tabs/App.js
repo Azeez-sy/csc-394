@@ -6,7 +6,7 @@ import { auth, provider, signInWithPopup } from "./firebase-config";  // Firebas
 
 import LandingPage from "./landing-page";
 import NotePage from "./note-page";
-import ChatPage from "./chats-page";
+// import ChatPage from "./chats-page";
 import HoursPage from "./hours-page";
 import ProfilePage from "./profile-page";
 import SchedulePage from "./schedule-page";
@@ -175,7 +175,7 @@ function MainApp() {
         } 
       />
       <PrivateRoute path="/note-page" component={withLogout(NotePage)} />
-      <PrivateRoute path="/chats-page" component={withLogout(ChatPage)} />
+      {/* <PrivateRoute path="/chats-page" component={withLogout(ChatPage)} /> */}
       <PrivateRoute path="/hours-page" component={withLogout(HoursPage)} />
       <PrivateRoute path="/profile-page" component={withLogout(ProfilePage)} />
       <PrivateRoute path="/schedule-page" component={withLogout(SchedulePage)} />
